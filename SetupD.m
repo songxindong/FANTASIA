@@ -479,8 +479,8 @@ for disp = 1
     TP.D.Mon.PMT.MontGainNoise =        0;             	% in mV
     
     TP.D.Mon.Image.DisplayEnable =      0;    
-    TP.D.Mon.Image.DisplayMode =     	'Rltv';
-    TP.D.Mon.Image.DisplayModeNum =     2;
+    TP.D.Mon.Image.DisplayMode =     	'Abs';
+    TP.D.Mon.Image.DisplayModeNum =     1;
 	TP.D.Mon.Image.UpdtCallback =       @updateImage2Drandom;
 
 end

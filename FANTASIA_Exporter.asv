@@ -466,7 +466,7 @@ global TP
 function SelectFile
 %% Setup the Selected File and according VlmeList 
 global TP
-    % to avoid conflict change of "display mode", use the selection in Exporter GUI (Yueqi)
+    
     TP.EX.D.File(TP.EX.D.CurFileNum).D.Mon.Image.DisplayMode = TP.D.Mon.Image.DisplayMode;
     TP.EX.D.File(TP.EX.D.CurFileNum).D.Mon.Image.DisplayModeNum = TP.D.Mon.Image.DisplayModeNum;
     % Different from FANTASIA('GUI_ScanParameters')
