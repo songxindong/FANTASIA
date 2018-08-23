@@ -28,7 +28,7 @@ switch A.Transpose
             A.TrailingEdge =                    'x';
     otherwise; errordlg('Transpose error');
 end
-switch [num2str(A.Transpose) upper(A.MkySide)]
+switch [num2str(A.Transpose),A.MkySide]
     case '1LEFT';   A.AngleD1MatTheta =         mod(45+A.AngleArmAlpha, 360);
     case '1RIGHT';  A.AngleD1MatTheta =         mod(225+A.AngleArmAlpha, 360);
     case '0LEFT';   A.AngleD1MatTheta =         mod(225+A.AngleArmAlpha, 360);
