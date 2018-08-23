@@ -28,6 +28,7 @@ function InitializeTASKS
 %% CLEAN AND RECREATE THE WORKSPACE
 clc;
 clear all
+fclose('all'); % prevent fseek errors when switching files in "SelectFile" (Yueqi)
 global TP
 
 TP.EX.Name =            mfilename;
@@ -41,8 +42,9 @@ set(TP.EX.UI.H0.hVlmeList,                      'Callback', [TP.EX.Name, '(''Sel
 set(TP.EX.UI.H.hImage_DisplayMode_Rocker,       'SelectionChangeFcn', [TP.EX.Name, '(''SelectDisplayMode'')']);
 set(TP.EX.UI.H.hImage_SaveVideoAVI_Momentary,	'Callback', [TP.EX.Name, '(''SaveVideoAVI'')']);
 set(TP.EX.UI.H.hImage_SaveVideoMP4_Momentary,   'Callback', [TP.EX.Name, '(''SaveVideoMP4'')']);
-
-
+set(TP.EX.UI.H.hImage_SaveImageOne_Momentary,	'Callback', [TP.EX.Name, '(''SaveImageOne'')']);
+set(TP.EX.UI.H.hImage_SaveSessionOne_Momentary,   'Callback', [TP.EX.Name, '(''SaveSessionOne'')']);
+set(TP.EX.UI.H.hImage_SaveSessionAll_Momentary,   'Callback', [TP.EX.Name, '(''SaveSessionAll'')']);
 function SetupFigurePI
 global TP
 
@@ -233,6 +235,19 @@ TP.EX.UI.C =        S.Color;
         
 %% UI Panelettes   
 S.PnltImage.column = 1;     S.PnltImage.row = 1;
+
+% create MomentarySwitch panels 'Save One Image' (added by Yueqi 8/22/18)
+    WP.handleseed = 'TP.EX.UI.H0.Panelette';
+    WP.type = 'MomentarySwitch';  WP.name = 'Save One Image';
+    WP.row = S.PnltImage.row + 1; 	WP.column = S.PnltImage.column + 3;  
+    WP.text = {'Save the CURRENT image',''};
+    WP.tip = { 'Save the CURRENT image',''};
+    WP.inputEnable = {'on','on'};
+    Panelette(S, WP, 'TP');
+    TP.EX.UI.H.hImage_SaveImageOne_Momentary = TP.EX.UI.H0.Panelette{WP.row,WP.column}.hMomentary{1}; 
+%     TP.EX.UI.H.hImage_SaveImageOne_Momentary = TP.EX.UI.H0.Panelette{WP.row,WP.column}.hMomentary{2}; 
+    clear WP;
+    
 % create Edit panel 'Image Arm Pos'
     WP.handleseed = 'TP.EX.UI.H0.Panelette';
     WP.type = 'Edit';           WP.name = 'Image Arm Pos';
@@ -265,14 +280,14 @@ S.PnltImage.column = 1;     S.PnltImage.row = 1;
   
 % create MomentarySwitch panels 'Image Save'
     WP.handleseed = 'TP.EX.UI.H0.Panelette';
-    WP.type = 'MomentarySwitch';  WP.name = 'Save Image(s)';
+    WP.type = 'MomentarySwitch';  WP.name = 'Save Images';
     WP.row = S.PnltImage.row; 	WP.column = S.PnltImage.column + 2;  
-    WP.text = {'Save the CURRENT image','Save ALL images w/ movement correction'};
-    WP.tip = { 'Save the CURRENT image','Save ALL images w/ movement correction'};
+    WP.text = {'Save the CURRENT session','Save ALL sessions'};
+    WP.tip = { 'Save the CURRENT session','Save ALL sessions'};
     WP.inputEnable = {'on','on'};
     Panelette(S, WP, 'TP');
-    TP.EX.UI.H.hImage_SaveImageOne_Momentary = TP.EX.UI.H0.Panelette{WP.row,WP.column}.hMomentary{1}; 
-    TP.EX.UI.H.hImage_SaveImageAll_Momentary = TP.EX.UI.H0.Panelette{WP.row,WP.column}.hMomentary{2}; 
+    TP.EX.UI.H.hImage_SaveSessionOne_Momentary = TP.EX.UI.H0.Panelette{WP.row,WP.column}.hMomentary{1}; 
+    TP.EX.UI.H.hImage_SaveSessionAll_Momentary = TP.EX.UI.H0.Panelette{WP.row,WP.column}.hMomentary{2}; 
     clear WP;
     
 % create MomentarySwitch panels 'Video Save'
@@ -629,7 +644,296 @@ end;
 close(TP.EX.D.CurVideoObj);
 close(TP.EX.UI.H0.hWaitBar);
 
+% =================== Added by Yueqi 5/8/18 (start) ===========================
+function SaveImageOne
+global TP
+% ------------------- select folder for saving tiff -----------------------
+TP.EX.Dir.DirSaveString =   uigetdir('D:\=data=\80Z_imaging\img_2p', 'Pick a Directory for saving Tiff files');
+% set Tiff name
+% TP.EX.Dir.FileList changed to TP.EX.Dir.FileListT in new version of Exporter (5/8/18) by Yueqi 
+fnametemp = TP.EX.Dir.FileListT(TP.EX.D.CurFileNum).name; 
+vnametemp = num2str(get(TP.EX.UI.H0.hVlmeList, 'value'));
+tiffnametemp = [TP.EX.Dir.DirSaveString,'\', fnametemp(1:15), '_', vnametemp,'.tif'];
+% ------------------------- if file already exist -------------------------
+if exist(tiffnametemp) 
+    % popout dialogut window
+    choice = questdlg('Tiff file already exist, overwrite or rename?', ...
+	'Duplicated file', ...
+	'Overwrite','Rename','Cancel','Cancel');
+    % Handle response
+    switch choice
+        case 'Overwrite'
+            FIDs = fopen('all');
+            if length(FIDs) > 4 % if the object is open in MATLAB, close it. Otherwise delete won't be successful
+                fclose(FIDs(end));
+            end
+            delete(tiffnametemp);    
+        case 'Rename'
+            prompt={'Enter an alternative file name'};
+            name = 'New name for tiff file';
+            defaultans = {[fnametemp(1:15), '_', vnametemp]};
+            options.Interpreter = 'tex';
+            answer = inputdlg(prompt,name,[1 40],defaultans,options);
+            tiffnametemp = [TP.EX.Dir.DirSaveString,'\', answer{1}, '.tif'];
+        case 'Cancel'
+            return
+    end
+end
+
+SelectVlme
+SetupFrame
+
+% ------------------- chose a tiff saving algorithm -----------------
+option = 2; % 1 for LibTiff, 2 for TifFantasia
+if option == 1
+% option 1: use MATLAB LibTiff 
+    TP.EX.D.CurTiffObj = Tiff(tiffnametemp,'w');
+    % set required tags
+    tagTemp.ImageLength = 653;
+    tagTemp.ImageWidth = 652;
+    tagTemp.Photometric = 1;
+    tagTemp.BitsPerSample = 16; % this is not true in the future
+    tagTemp.SamplesPerPixel = 1; 
+    tagTemp.RowsPerStrip = 16;
+    tagTemp.PlanarConfiguration = 1;
+    tagTemp.Software = 'FANTASIA';
+    setTag(TP.EX.D.CurTiffObj,tagTemp);
+    write(TP.EX.D.CurTiffObj,TP.D.Vol.Frame{1}); % write selected frame
+else
+% option 2: use self-defined class based on ScanImage 
+    % dateTimeTemp = datestr(TP.D.Trl.TimeStampStopped,'yyyy:mm:dd HH:MM:SS');
+    % TP.EX.D.CurTiffObj = TifFantasia(tiffnametemp,652,653,TP.D.Mky.ID,'dateTime',dateTimeTemp);
+    TP.EX.D.CurTiffObj = TifFantasia(tiffnametemp,652,653,TP.D);
+    appendFrame(TP.EX.D.CurTiffObj,TP.D.Vol.Frame{1})
+end
+close(TP.EX.D.CurTiffObj)
+disp(['file ', fnametemp(1:15), '_', vnametemp,' saved!']);
 
 
+function SaveSessionOne
+global TP
+% ------------------- select folder for saving tiff -----------------------
+TP.EX.Dir.DirSaveString =   uigetdir('D:\=data=\80Z_imaging\img_2p', 'Pick a Directory for saving Tiff files');
+% set Tiff name
+% TP.EX.Dir.FileList changed to TP.EX.Dir.FileListT in new version of Exporter (5/8/18) by Yueqi 
+fnametemp = TP.EX.Dir.FileListT(TP.EX.D.CurFileNum).name;
+tiffnametemp = [TP.EX.Dir.DirSaveString,'\', fnametemp(1:15),'.tif'];
+
+% ------------------------- if file already exist -------------------------
+if exist(tiffnametemp) 
+    % popout dialogut window
+    choice = questdlg('Tiff file already exist, overwrite or rename?', ...
+	'Duplicated file', ...
+	'Overwrite','Rename','Cancel','Cancel');
+    % Handle response
+    switch choice
+        case 'Overwrite'
+            FIDs = fopen('all');
+            if length(FIDs) > 4 % if the object is open in MATLAB, close it. Otherwise delete won't be successful
+                fclose(FIDs(end));
+            end
+            delete(tiffnametemp);            
+        case 'Rename'
+            prompt={'Enter an alternative file name'};
+            name = 'New name for tiff file';
+            defaultans = {fnametemp(1:15)};
+            options.Interpreter = 'tex';
+            answer = inputdlg(prompt,name,[1 40],defaultans,options);
+            tiffnametemp = [TP.EX.Dir.DirSaveString,'\', answer{1}, '.tif'];
+        case 'Cancel'
+            return
+    end
+end
+set(TP.EX.UI.H0.hVlmeList, 'value', 1);
+SelectVlme;
+SetupFrame; 
+
+% ------------------- chose a tiff saving algorithm --------------
+option = 2; % 1 for LibTiff, 2 for TifFantasia (fastest), 3 for saveastiff (slowest)
+tic
+% ------------------- set the first frame -----------------
+if option == 1    
+% option 1: use MATLAB LibTiff 
+    TP.EX.D.CurTiffObj = Tiff(tiffnametemp,'w');
+    % set required tags
+    tagTemp.ImageLength = 653;
+    tagTemp.ImageWidth = 652;
+    tagTemp.Photometric = 1;
+    tagTemp.BitsPerSample = 16;
+    tagTemp.SamplesPerPixel = 1;
+    tagTemp.RowsPerStrip = 16;
+    tagTemp.PlanarConfiguration = 1;
+    tagTemp.Software = 'FANTASIA';
+    setTag(TP.EX.D.CurTiffObj,tagTemp);
+    write(TP.EX.D.CurTiffObj,TP.D.Vol.Frame{1}); 
+    
+else
+% option 2: use self-defined class based on ScanImage 
+    % ts = TifFantasia(filename, frameWidth, frameHeight, imageDescription, Property1, Value1, ...)
+    % dateTimeTemp = datestr(TP.D.Trl.TimeStampStopped,'yyyy:mm:dd HH:MM:SS');
+    TP.EX.D.CurTiffObj = TifFantasia(tiffnametemp,652,653,TP.D);
+    appendFrame(TP.EX.D.CurTiffObj,TP.D.Vol.Frame{1});
+end
+
+% progress bar
+TP.EX.UI.H0.hWaitBar = waitbar(0,...
+    ['Totally ', num2str(TP.EX.D.CurFileVlmeMax), ' frames, ',...
+    num2str(0), ' finished.'],...
+    'Name', ['Exporting ', fnametemp(1:16), '.rec to a tiff file']);
+
+disp(['file ', fnametemp(1:15),' started...'])
+
+% ------------------- set appending frames -----------------
+for i = 2:TP.EX.D.CurFileVlmeMax % start from 2nd frame
+    set(TP.EX.UI.H0.hVlmeList, 'value', i);
+    SelectVlme;
+    SetupFrame;
+    
+    if option == 1
+    % option 1: use MATLAB LibTiff 
+    
+        writeDirectory(TP.EX.D.CurTiffObj);
+        setTag(TP.EX.D.CurTiffObj,tagTemp)
+        write(TP.EX.D.CurTiffObj,TP.D.Vol.Frame{1}); 
+
+    else
+    % option 2: use self-defined class based on ScanImage
+        appendFrame(TP.EX.D.CurTiffObj,TP.D.Vol.Frame{1});
+
+    end
+    
+    % progress bar updated every 100 frames
+    if mod(i,100) == 0
+        waitbar(...
+        i/TP.EX.D.CurFileVlmeMax,...
+        TP.EX.UI.H0.hWaitBar,...
+        ['Totally ', num2str(TP.EX.D.CurFileVlmeMax), ' frames, ',...
+        num2str(i), ' finished.']);
+    end
+
+end
+
+close(TP.EX.UI.H0.hWaitBar);
+close(TP.EX.D.CurTiffObj)
+ 
+disp(['file ', fnametemp(1:15),' saved!']);
+toc
+
+
+function SaveSessionAll
+global TP
+
+% ------------------- select folder for saving tiff -----------------------
+TP.EX.Dir.DirSaveString =   uigetdir('D:\=data=\80Z_imaging\img_2p', 'Pick a Directory for saving Tiff files');
+
+for k = 1:length(TP.EX.Dir.FileListT)
+
+    % set Tiff name
+    % TP.EX.Dir.FileList changed to TP.EX.Dir.FileListT in new version of Exporter (5/8/18) by Yueqi 
+    set(TP.EX.UI.H0.hFileList, 'value', k); % iterate through different sessions
+    SelectFile;
+    
+    fnametemp = TP.EX.Dir.FileListT(TP.EX.D.CurFileNum).name;
+    tiffnametemp = [TP.EX.Dir.DirSaveString,'\', fnametemp(1:15),'.tif'];
+
+    % ------------------------- if file already exist -------------------------
+    if exist(tiffnametemp) 
+        % popout dialogut window
+        choice = questdlg(['File ', fnametemp(1:15), ' already exist, overwrite or rename?'], ...
+        'Duplicated file', ...
+        'Overwrite','Rename','Cancel','Cancel');
+        % Handle response
+        switch choice
+            case 'Overwrite'
+                FIDs = fopen('all');
+                if length(FIDs) > 4 % if the object is open in MATLAB, close it. Otherwise delete won't be successful
+                    fclose(FIDs(end));
+                end
+                delete(tiffnametemp);            
+            case 'Rename'
+                prompt={'Enter an alternative file name'};
+                name = 'New name for tiff file';
+                defaultans = {fnametemp(1:15)};
+                options.Interpreter = 'tex';
+                answer = inputdlg(prompt,name,[1 40],defaultans,options);
+                tiffnametemp = [TP.EX.Dir.DirSaveString,'\', answer{1}, '.tif'];
+            case 'Cancel'
+                return
+        end
+    end
+    set(TP.EX.UI.H0.hVlmeList, 'value', 1); % start from first frame
+    SelectVlme;
+    SetupFrame; 
+
+    % ------------------- chose a tiff saving algorithm --------------
+    option = 2; % 1 for LibTiff, 2 for TifFantasia (fastest), 3 for saveastiff (slowest)
+    tic
+    % ------------------- set the first frame -----------------
+    if option == 1    
+    % option 1: use MATLAB LibTiff 
+        TP.EX.D.CurTiffObj = Tiff(tiffnametemp,'w');
+        % set required tags
+        tagTemp.ImageLength = 653;
+        tagTemp.ImageWidth = 652;
+        tagTemp.Photometric = 1;
+        tagTemp.BitsPerSample = 16;
+        tagTemp.SamplesPerPixel = 1;
+        tagTemp.RowsPerStrip = 16;
+        tagTemp.PlanarConfiguration = 1;
+        tagTemp.Software = 'FANTASIA';
+        setTag(TP.EX.D.CurTiffObj,tagTemp);
+        write(TP.EX.D.CurTiffObj,TP.D.Vol.Frame{1}); 
+
+    else
+    % option 2: use self-defined class based on ScanImage 
+        % ts = TifFantasia(filename, frameWidth, frameHeight, imageDescription, Property1, Value1, ...)
+        % dateTimeTemp = datestr(TP.D.Trl.TimeStampStopped,'yyyy:mm:dd HH:MM:SS');
+        TP.EX.D.CurTiffObj = TifFantasia(tiffnametemp,652,653,TP.D);
+        appendFrame(TP.EX.D.CurTiffObj,TP.D.Vol.Frame{1});
+    end
+
+    % progress bar
+    TP.EX.UI.H0.hWaitBar = waitbar(0,...
+        ['Totally ', num2str(TP.EX.D.CurFileVlmeMax), ' frames, ',...
+        num2str(0), ' finished.'],...
+        'Name', ['Exporting ', fnametemp(1:16), '.rec to a tiff file']);
+
+    disp(['file ', fnametemp(1:15),' started...'])
+
+    % ------------------- set appending frames -----------------
+    for i = 2:TP.EX.D.CurFileVlmeMax % start from 2nd frame
+        set(TP.EX.UI.H0.hVlmeList, 'value', i);
+        SelectVlme;
+        SetupFrame;
+
+        if option == 1
+        % option 1: use MATLAB LibTiff 
+            writeDirectory(TP.EX.D.CurTiffObj);
+            setTag(TP.EX.D.CurTiffObj,tagTemp)
+            write(TP.EX.D.CurTiffObj,TP.D.Vol.Frame{1}); 
+        else
+        % option 2: use self-defined class based on ScanImage
+            appendFrame(TP.EX.D.CurTiffObj,TP.D.Vol.Frame{1});
+        end
+
+        % progress bar updated every 100 frames
+        if mod(i,100) == 0
+            waitbar(...
+            i/TP.EX.D.CurFileVlmeMax,...
+            TP.EX.UI.H0.hWaitBar,...
+            ['Totally ', num2str(TP.EX.D.CurFileVlmeMax), ' frames, ',...
+            num2str(i), ' finished.']);
+        end
+    end
+
+    close(TP.EX.UI.H0.hWaitBar);
+    close(TP.EX.D.CurTiffObj)
+ 
+    disp(['file ', fnametemp(1:15),' saved!']);
+    toc
+    
+end
+disp(['========= All sessions are saved! ==========='])
+% =================== Added by Yueqi 5/8/18 (end) ===========================
 
 
