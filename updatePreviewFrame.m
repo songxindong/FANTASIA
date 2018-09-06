@@ -70,9 +70,9 @@ else
 
         % HISTOGRAM
         if Xin.D.Sys.PointGreyCam(i).UpdatePreviewHistogram
-            Xin.D.Sys.PointGreyCam(i).DispHistMax =     max(Xin.D.Sys.PointGreyCam(i).DispImage, [], 2);
-            Xin.D.Sys.PointGreyCam(i).DispHistMean =	uint8(mean(Xin.D.Sys.PointGreyCam(i).DispImage,2)); 
-            Xin.D.Sys.PointGreyCam(i).DispHistMin =     min(Xin.D.Sys.PointGreyCam(i).DispImage, [], 2);
+            Xin.D.Sys.PointGreyCam(i).DispHistMax =     max(Xin.D.Sys.PointGreyCam(i).DispImg, [], 2);
+            Xin.D.Sys.PointGreyCam(i).DispHistMean =	uint8(mean(Xin.D.Sys.PointGreyCam(i).DispImg,2)); 
+            Xin.D.Sys.PointGreyCam(i).DispHistMin =     min(Xin.D.Sys.PointGreyCam(i).DispImg, [], 2);
         end
         
     %% Update GUI with hImage, hHist, and timing Data
@@ -80,10 +80,10 @@ else
     set(Xin.UI.FigPGC(i).CP.hMon_CamPreviewFR_Edit,	'String',   Xin.D.Sys.PointGreyCam(i).PreviewStrFR);
     set(Xin.UI.FigPGC(i).CP.hMon_CamPreviewTS_Edit,	'String',   Xin.D.Sys.PointGreyCam(i).PreviewStrTS);
 	if Xin.D.Sys.PointGreyCam(i).UpdatePreviewHistogram
-        set(Xin.UI.FigPGC(N).hHistMax,                  'YData',    Xin.D.Sys.PointGreyCam(i).DispHistMax);
-        set(Xin.UI.FigPGC(N).hHistMean,                 'YData',    Xin.D.Sys.PointGreyCam(i).DispHistMean);
-        set(Xin.UI.FigPGC(N).hHistMin,                  'YData',    Xin.D.Sys.PointGreyCam(i).DispHistMin); 
-    end
+        set(Xin.UI.FigPGC(i).hHistMax,                  'YData',    Xin.D.Sys.PointGreyCam(i).DispHistMax);
+        set(Xin.UI.FigPGC(i).hHistMean,                 'YData',    Xin.D.Sys.PointGreyCam(i).DispHistMean);
+        set(Xin.UI.FigPGC(i).hHistMin,                  'YData',    Xin.D.Sys.PointGreyCam(i).DispHistMin); 
+	end
 end
 
 

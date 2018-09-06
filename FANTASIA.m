@@ -27,7 +27,7 @@ end
 %% CLEAN AND RECREATE THE WORKSPACE
 clc;
 clear java global;
-global TP;
+global TP Xin;
 
 %% INITIALIZATION
     StringTemp = SetupD;   
@@ -37,6 +37,7 @@ global TP;
     end      
     logfilename = [TP.D.Sys.PC.Data_Dir, datestr(now,30), '_', TP.D.Sys.Name, '_log.txt'];
     TP.D.Sys.PC.hLog = fopen(logfilename, 'w');
+    Xin.D.Exp.hLog =    TP.D.Sys.PC.hLog;
     
     fprintf( TP.D.Sys.PC.hLog,	[datestr(now) '\t', TP.D.Sys.Name,...
                             '\tProgram Opened, What a BEAUTIFUL day!\r\n']);
@@ -193,7 +194,7 @@ function msg = GUI_ExpWideField(varargin)
     Xin.D.Sys.hLog = TP.D.Sys.PC.hLog;
     SetupFigurePointGrey(N);
     CtrlPointGreyCams('InitializeCallbacks', N);
-    CtrlPointGreyCams('Disp_Gain', N, 1);
+    CtrlPointGreyCams('Cam_DispGain', N, 1);
 %         SetupWideField;
         
 %% Ses.Scan GUI updates w/o touching NI-DAQ

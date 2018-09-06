@@ -3,7 +3,10 @@ function msg = SetupFigurePointGrey(N)
 
 global TP
 global Xin
-Xin.UI.C = TP.UI.C;
+try         
+    Xin.UI.C = TP.UI.C;
+catch
+end
 
 %% UI Figure                                        
     % Figure scale
@@ -222,7 +225,26 @@ S.PnltCurrent.row = 5;      S.PnltCurrent.column = 1;
 %         Xin.UI.FigPGC(N).CP.hSys_CamWhiteBalanceRB_Mode_Rocker =        Xin.UI.FigPGC(N).Panelette{WP.row,WP.column}.hRocker{1};
 %         clear WP; 
  
-S.PnltCurrent.row = 4;      S.PnltCurrent.column = 1;         
+S.PnltCurrent.row = 4;      S.PnltCurrent.column = 1;                                 
+    WP.name = 'Mon DispGain';
+        WP.handleseed =	['Xin.UI.FigPGC(', num2str(N), ').Panelette'];
+        WP.type =       'Potentiometer';	
+        WP.row =        S.PnltCurrent.row;
+        WP.column =     S.PnltCurrent.column;
+            S.PnltCurrent.column = S.PnltCurrent.column + 1;  
+        WP.text = 	{   ['Cam frame bin: [', sprintf('%d ', Xin.D.Sys.PointGreyCamDispGainNumRange), '] (frames)']};
+        WP.tip =    {   ['Cam frame bin: [', sprintf('%d ', Xin.D.Sys.PointGreyCamDispGainNumRange), '] (frames)']};
+        WP.inputValue =     Xin.D.Sys.PointGreyCam(N).DispGainBit;
+        WP.inputRange =     Xin.D.Sys.PointGreyCamDispGainBitRange([1, end]);
+        WP.inputSlideStep=  1/diff(WP.inputRange)*[1 1];
+        Panelette(S, WP, 'Xin');
+        Xin.UI.FigPGC(N).CP.hSys_CamDispGain_PotenSlider =	Xin.UI.FigPGC(N).Panelette{WP.row,WP.column}.hSlider{1};
+        Xin.UI.FigPGC(N).CP.hSys_CamDispGain_PotenEdit =   Xin.UI.FigPGC(N).Panelette{WP.row,WP.column}.hEdit{1};
+        set(Xin.UI.FigPGC(N).CP.hSys_CamDispGain_PotenSlider,	'UserData',     N);
+        set(Xin.UI.FigPGC(N).CP.hSys_CamDispGain_PotenEdit, 	'UserData',     N);
+        clear WP;
+
+S.PnltCurrent.row = 3;      S.PnltCurrent.column = 1;          
     WP.name = 'Exp RefImage';
         WP.handleseed = ['Xin.UI.FigPGC(', num2str(N), ').Panelette'];
         WP.type = 'MomentarySwitch'; 
@@ -241,7 +263,7 @@ S.PnltCurrent.row = 4;      S.PnltCurrent.column = 1;
         set(Xin.UI.FigPGC(N).CP.hExp_RefImage_Momentary,	'UserData',     N);
         clear WP;       
 
-S.PnltCurrent.row = 3;      S.PnltCurrent.column = 1;                
+S.PnltCurrent.row = 1;      S.PnltCurrent.column = 1;                
     WP.name = 'Mon PreviewSwt';
         WP.handleseed = ['Xin.UI.FigPGC(', num2str(N), ').Panelette'];
         WP.type = 'RockerSwitch';	
@@ -274,25 +296,6 @@ S.PnltCurrent.row = 3;      S.PnltCurrent.column = 1;
         Panelette(S, WP, 'Xin');    
         Xin.UI.FigPGC(N).CP.hMon_CamPreviewFR_Edit =	Xin.UI.FigPGC(N).Panelette{WP.row,WP.column}.hEdit{1};
         Xin.UI.FigPGC(N).CP.hMon_CamPreviewTS_Edit =	Xin.UI.FigPGC(N).Panelette{WP.row,WP.column}.hEdit{2};
-        clear WP;
-        
-S.PnltCurrent.row = 2;      S.PnltCurrent.column = 1;                                 
-    WP.name = 'Mon DispGain';
-        WP.handleseed =	['Xin.UI.FigPGC(', num2str(N), ').Panelette'];
-        WP.type =       'Potentiometer';	
-        WP.row =        S.PnltCurrent.row;
-        WP.column =     S.PnltCurrent.column;
-            S.PnltCurrent.column = S.PnltCurrent.column + 1;  
-        WP.text = 	{   ['Cam frame bin: [', sprintf('%d ', Xin.D.Sys.PointGreyCam(N).DispGainBinNummRange), '] (frames)']};
-        WP.tip =    {   ['Cam frame bin: [', sprintf('%d ', Xin.D.Sys.PointGreyCam(N).DispGainBinNummRange), '] (frames)']};
-        WP.inputValue =     Xin.D.Sys.PointGreyCam(N).DispGainBit;
-        WP.inputRange =     Xin.D.Sys.PointGreyCam(N).DispGainBitRange([1, end]);
-        WP.inputSlideStep=  1/diff(WP.inputRange)*[1 1];
-        Panelette(S, WP, 'Xin');
-        Xin.UI.FigPGC(N).CP.hMon_DispGain_PotenSlider =	Xin.UI.FigPGC(N).Panelette{WP.row,WP.column}.hSlider{1};
-        Xin.UI.FigPGC(N).CP.hMon_DispGain_PotenEdit =   Xin.UI.FigPGC(N).Panelette{WP.row,WP.column}.hEdit{1};
-        set(Xin.UI.FigPGC(N).CP.hMon_DispGain_PotenSlider,	'UserData',     N);
-        set(Xin.UI.FigPGC(N).CP.hMon_DispGain_PotenEdit,	'UserData',     N);
         clear WP;
         
 % S.PnltCurrent.row = 1;      S.PnltCurrent.column = 1;                
@@ -353,9 +356,6 @@ S.PnltCurrent.row = 2;      S.PnltCurrent.column = 1;
 %     javax.swing.UIManager.setLookAndFeel('com.sun.java.swing.plaf.windows.WindowsLookAndFeel');
 
 %% LOG MSG
-msg = [datestr(now) '\tSetupFigure\tSetup the GUI for the program\r\n'];
-try
-	fprintf(Xin.D.Sys.hLog, msg);
-catch
-	disp(msg);
-end
+msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tSetupFigurePointGrey\tSetup the GUI for PointGrey Camera #:',...
+    num2str(N) ,'\r\n'];
+updateMsg(Xin.D.Exp.hLog, msg);

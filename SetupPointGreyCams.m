@@ -25,12 +25,40 @@ for i = 1:length(info.DeviceInfo)
     delete(info.hVid);
 end
 
+%% Shared settings
+    Xin.D.Sys.PointGreyCamDispGainBitRange =    0:4;
+    Xin.D.Sys.PointGreyCamDispGainNumRange =    2.^Xin.D.Sys.PointGreyCamDispGainBitRange;
+    i = 1;
+    Xin.D.Sys.PointGreyCamTriggerMode(i).Name =              'SoftwareGrab';
+    Xin.D.Sys.PointGreyCamTriggerMode(i).TriggerType =       'immediate';
+    Xin.D.Sys.PointGreyCamTriggerMode(i).TriggerCondition =  'none';
+    Xin.D.Sys.PointGreyCamTriggerMode(i).TriggerSource =     'none';    
+    i = 2;
+    Xin.D.Sys.PointGreyCamTriggerMode(i).Name =              'SoftwareRec';
+    Xin.D.Sys.PointGreyCamTriggerMode(i).TriggerType =       'immediate';
+    Xin.D.Sys.PointGreyCamTriggerMode(i).TriggerCondition =  'none';
+    Xin.D.Sys.PointGreyCamTriggerMode(i).TriggerSource =     'none';
+    i = 3;
+    Xin.D.Sys.PointGreyCamTriggerMode(i).Name =              'HardwareRec';
+    Xin.D.Sys.PointGreyCamTriggerMode(i).TriggerType =       'hardware';
+    Xin.D.Sys.PointGreyCamTriggerMode(i).TriggerCondition =  'risingEdge';
+    Xin.D.Sys.PointGreyCamTriggerMode(i).TriggerSource =     'externalTriggerMode14-Source0';
+        
 %% Setting Up Cameras
 for i = 1:length(Xin.D.Sys.PointGreyCam)    
+      
+    ic = 1;
+    Xin.D.Sys.PointGreyCam(i).TriggerName =      Xin.D.Sys.PointGreyCamTriggerMode(ic).Name;  
+    Xin.D.Sys.PointGreyCam(i).TriggerType =      Xin.D.Sys.PointGreyCamTriggerMode(ic).TriggerType;         
+    Xin.D.Sys.PointGreyCam(i).TriggerCondition = Xin.D.Sys.PointGreyCamTriggerMode(ic).TriggerCondition; 
+    Xin.D.Sys.PointGreyCam(i).TriggerSource =    Xin.D.Sys.PointGreyCamTriggerMode(ic).TriggerSource;  
+    
     if Xin.D.Sys.PointGreyCam(i).Located
         Xin.HW.PointGrey.Cam(i).hVid = videoinput('pointgrey',...
                                         Xin.D.Sys.PointGreyCam(i).Located,...
                                         Xin.D.Sys.PointGreyCam(i).Format);
+        set(Xin.HW.PointGrey.Cam(i).hVid,...
+            'UserData',                                 ['PGC(', num2str(i), ').hVid']);  
         Xin.HW.PointGrey.Cam(i).hSrc = getselectedsource( Xin.HW.PointGrey.Cam(i).hVid);
              
         %% Getting Parameters from Cameras        
@@ -59,14 +87,16 @@ for i = 1:length(Xin.D.Sys.PointGreyCam)
         Xin.HW.PointGrey.Cam(i).hSrc.TriggerDelayMode = 'Off';      % no delay
         Xin.HW.PointGrey.Cam(i).hSrc.ExposureMode = 	'Off';       
         Xin.HW.PointGrey.Cam(i).hSrc.ShutterMode =      'Manual';  
-        Xin.HW.PointGrey.Cam(i).hSrc.GainMode =         'Manual'; 
+        Xin.HW.PointGrey.Cam(i).hSrc.GainMode =         'Manual';         
 
         %% Variable Settings for Individual Cameras
-        Xin.HW.PointGrey.Cam(i).hSrc.FrameRate =        Xin.D.Sys.PointGreyCam(i).FrameRate; 
-        
-        Xin.D.Sys.PointGreyCam(i).ShutterRange =        pSrc.Shutter.ConstraintValue;
-        Xin.D.Sys.PointGreyCam(i).Shutter =             Xin.D.Sys.PointGreyCam(i).ShutterRange(2);
-        Xin.HW.PointGrey.Cam(i).hSrc.Shutter =          Xin.D.Sys.PointGreyCam(i).Shutter;        
+            Xin.HW.PointGrey.Cam(i).hSrc.FrameRate =	Xin.D.Sys.PointGreyCam(i).FrameRate;
+        pause(1.0);
+        pSrc = propinfo(Xin.HW.PointGrey.Cam(i).hSrc); 
+        Xin.D.Sys.PointGreyCam(i).Shutter =             pSrc.Shutter.ConstraintValue(2) - ...
+                                                        Xin.D.Sys.PointGreyCam(i).ShutterResv;                                                    
+        Xin.D.Sys.PointGreyCam(i).ShutterRange =        [pSrc.Shutter.ConstraintValue(1) Xin.D.Sys.PointGreyCam(i).Shutter];
+            Xin.HW.PointGrey.Cam(i).hSrc.Shutter =      Xin.D.Sys.PointGreyCam(i).Shutter;        
         
         Xin.D.Sys.PointGreyCam(i).GainRange =        	pSrc.Gain.ConstraintValue;  
         switch Xin.D.Sys.PointGreyCam(i).GainPolar
@@ -75,70 +105,74 @@ for i = 1:length(Xin.D.Sys.PointGreyCam)
             case 'Max' 
                 Xin.D.Sys.PointGreyCam(i).Gain =        Xin.D.Sys.PointGreyCam(i).GainRange(2);
             otherwise
-                errordlg(...
-                    ['PointGrey Camera #', num2str(i),...
-                    ': unidentifiable "GainPolar"']);
+                errordlg(['PointGrey Camera #', num2str(i), ': unidentifiable "GainPolar"']);
                 Xin.D.Sys.PointGreyCam(i).Gain =        Xin.D.Sys.PointGreyCam(i).GainRange(1); 
         end 
-        Xin.HW.PointGrey.Cam(i).hSrc.Gain =             Xin.D.Sys.PointGreyCam(i).Gain;
+            Xin.HW.PointGrey.Cam(i).hSrc.Gain =         Xin.D.Sys.PointGreyCam(i).Gain;
+        
+        Xin.D.Sys.PointGreyCam(i).DispGainBit =         0;
+        Xin.D.Sys.PointGreyCam(i).DispGainNum =         2^Xin.D.Sys.PointGreyCam(i).DispGainBit;
+        
+        % % For Color Cameras
+        % Xin.HW.PointGrey.Cam(i).hSrc.WhiteBalanceRB =   Xin.D.Sys.PointGreyCam(i).WhiteBalanceRB; 
+        % Xin.HW.PointGrey.Cam(i).hSrc.WhiteBalanceRBMode = ...
+        %                                                 Xin.D.Sys.PointGreyCam(i).WhiteBalanceRBMode;
 
-%         % For Color Cameras
-%         Xin.HW.PointGrey.Cam(i).hSrc.WhiteBalanceRB =   Xin.D.Sys.PointGreyCam(i).WhiteBalanceRB; 
-%         Xin.HW.PointGrey.Cam(i).hSrc.WhiteBalanceRBMode = ...
-%                                                         Xin.D.Sys.PointGreyCam(i).WhiteBalanceRBMode;
-
-        %% Setting up Display Related Parameters
-        set(Xin.HW.PointGrey.Cam(i).hVid,...
-            'UserData',                                 ['PGC(', num2str(i), ').hVid']);        
+        %% Setting up Resolution Related Parameters      
         Xin.D.Sys.PointGreyCam(i).RawVideoResolution =	pVid.VideoResolution.DefaultValue;
         Xin.D.Sys.PointGreyCam(i).RawWidth =            Xin.D.Sys.PointGreyCam(i).RawVideoResolution(1); 
         Xin.D.Sys.PointGreyCam(i).RawHeight =           Xin.D.Sys.PointGreyCam(i).RawVideoResolution(2);
-        Xin.D.Sys.PointGreyCam(i).DispClipROI =         0;        
-        Xin.D.Sys.PointGreyCam(i).DispPeriod =          0.1;  % in second, fixed for all cameras
-        Xin.D.Sys.PointGreyCam(i).DispTimer =           second(now);  
-        Xin.D.Sys.PointGreyCam(i).DispGainBit =         0;
-        Xin.D.Sys.PointGreyCam(i).DispGainNum =         2^Xin.D.Sys.PointGreyCam(i).DispGainBit;
-        Xin.D.Sys.PointGreyCam(i).DispGainBitRange =    0:4;
-        Xin.D.Sys.PointGreyCam(i).DispGainBinNummRange= 2.^Xin.D.Sys.PointGreyCam(i).DispGainBitRange;
-            % Xin.D.Sys.PointGreyCam(i).ROIPosition
+        Xin.D.Sys.PointGreyCam(i).ZoomWidth =           Xin.D.Sys.PointGreyCam(i).RawWidth/...
+                                                            Xin.D.Sys.PointGreyCam(i).PreviewZoom;
+        Xin.D.Sys.PointGreyCam(i).ZoomHeight =          Xin.D.Sys.PointGreyCam(i).RawHeight/...
+                                                            Xin.D.Sys.PointGreyCam(i).PreviewZoom;
+        %% Display rotaion reltaed parameters
+        switch Xin.D.Sys.PointGreyCam(i).PreviewRot
+            case 0;     Xin.D.Sys.PointGreyCam(i).DispWidth =	Xin.D.Sys.PointGreyCam(i).ZoomWidth;
+                        Xin.D.Sys.PointGreyCam(i).DispHeight =	Xin.D.Sys.PointGreyCam(i).ZoomHeight;
+            case 90;	Xin.D.Sys.PointGreyCam(i).DispWidth =	Xin.D.Sys.PointGreyCam(i).ZoomHeight;
+                        Xin.D.Sys.PointGreyCam(i).DispHeight =	Xin.D.Sys.PointGreyCam(i).ZoomWidth;
+            case 180;	Xin.D.Sys.PointGreyCam(i).DispWidth =	Xin.D.Sys.PointGreyCam(i).ZoomWidth;
+                        Xin.D.Sys.PointGreyCam(i).DispHeight =	Xin.D.Sys.PointGreyCam(i).ZoomHeight;
+            case 270;	Xin.D.Sys.PointGreyCam(i).DispWidth =	Xin.D.Sys.PointGreyCam(i).ZoomHeight;
+                        Xin.D.Sys.PointGreyCam(i).DispHeight =	Xin.D.Sys.PointGreyCam(i).ZoomWidth;
+            otherwise;  errordlg('Disp Rotation Angle Not Support');
+        end
         
-        %% Camera preview inputs
-        switch  Xin.D.Sys.PointGreyCam(i).PreviewBitDepth
-            case 8
-                Xin.D.Sys.PointGreyCam(i).PreviewImageIn = ...
+        %% Camera preview inputs       
+        Xin.D.Sys.PointGreyCam(i).PreviewClipROI =      0;         
+            % Xin.D.Sys.PointGreyCam(i).ROIPosition     
+        Xin.D.Sys.PointGreyCam(i).PreviewImageIn = ...
                                                         uint8(256*rand(...
                                                         Xin.D.Sys.PointGreyCam(i).RawHeight,...
                                                         Xin.D.Sys.PointGreyCam(i).RawWidth, 1));   
-            case 16
-                Xin.D.Sys.PointGreyCam(i).PreviewImageIn = ...
-                                                        uint16(256*rand(...
-                                                        Xin.D.Sys.PointGreyCam(i).RawHeight,...
-                                                        Xin.D.Sys.PointGreyCam(i).RawWidth, 1));  
-            otherwise
-        end
-            Xin.D.Sys.PointGreyCam(i).PreviewStrFR =	[num2str(Xin.D.Sys.PointGreyCam(i).FrameRate) '.00 FPS'];
-            Xin.D.Sys.PointGreyCam(i).PreviewStrTS =	'00:00:00.0';
+        Xin.D.Sys.PointGreyCam(i).PreviewStrFR =        [num2str(Xin.D.Sys.PointGreyCam(i).FrameRate) '.00 FPS'];
+        Xin.D.Sys.PointGreyCam(i).PreviewStrTS =        '00:00:00.0';
+        Xin.D.Sys.PointGreyCam(i).DispPeriod =          0.1;
+        Xin.D.Sys.PointGreyCam(i).DispTimer =           second(now); 
        
-        %% process display image
-        % BINNING
-        BinW =	Xin.D.Sys.PointGreyCam(i).RawWidth/ Xin.D.Sys.PointGreyCam(i).PreviewZoom;
-        BinH =	Xin.D.Sys.PointGreyCam(i).RawHeight/Xin.D.Sys.PointGreyCam(i).PreviewZoom;
-        Bin =     Xin.D.Sys.PointGreyCam(i).PreviewZoom;
-        
-            Xin.D.Sys.PointGreyCam(i).DispImgB1 =       uint16( Xin.D.Sys.PointGreyCam(i).PreviewImageIn); 
-        if Bin == 1
+        %% process display image: .Zoom, Gain, Rotate, ROI        
+        % ZOOM in
+        Xin.D.Sys.PointGreyCam(i).DispImgB1 =           uint16( Xin.D.Sys.PointGreyCam(i).PreviewImageIn); 
+        if Xin.D.Sys.PointGreyCam(i).PreviewZoom == 1
+            Xin.D.Sys.PointGreyCam(i).DispImgB2 =       [];
+            Xin.D.Sys.PointGreyCam(i).DispImgB3 =       [];
+            Xin.D.Sys.PointGreyCam(i).DispImgB4 =       [];
             Xin.D.Sys.PointGreyCam(i).DispImgBO =       Xin.D.Sys.PointGreyCam(i).DispImgB1;
         else 	
             Xin.D.Sys.PointGreyCam(i).DispImgB2 =       reshape(Xin.D.Sys.PointGreyCam(i).DispImgB1,...
-                                                            Bin,      BinH,...
-                                                            Bin,      BinW); 
+                                                            Xin.D.Sys.PointGreyCam(i).PreviewZoom,...
+                                                            Xin.D.Sys.PointGreyCam(i).ZoomHeight,...
+                                                            Xin.D.Sys.PointGreyCam(i).PreviewZoom,...
+                                                            Xin.D.Sys.PointGreyCam(i).ZoomWidth); 
             Xin.D.Sys.PointGreyCam(i).DispImgB3 =       sum(Xin.D.Sys.PointGreyCam(i).DispImgB2, 1, 'native');  
             Xin.D.Sys.PointGreyCam(i).DispImgB4 =       sum(Xin.D.Sys.PointGreyCam(i).DispImgB3, 3, 'native');
             Xin.D.Sys.PointGreyCam(i).DispImgBO =       squeeze(Xin.D.Sys.PointGreyCam(i).DispImgB4);
         end
         % GAIN & NORMALIZATION
             Xin.D.Sys.PointGreyCam(i).DispImgGO =       uint8(...
-                                                            Xin.D.Sys.PointGreyCam(i).DispImgBO/Bin^2*...
+                                                            Xin.D.Sys.PointGreyCam(i).DispImgBO/...
+                                                            Xin.D.Sys.PointGreyCam(i).PreviewZoom^2*...
                                                             Xin.D.Sys.PointGreyCam(i).DispGainNum);        
         % ROTATE
         try
@@ -149,7 +183,7 @@ for i = 1:length(Xin.D.Sys.PointGreyCam)
             disp('Preview Rotation Angle Not Support');
         end        
         % ROI 
-        if  Xin.D.Sys.PointGreyCam(i).DispClipROI
+        if  Xin.D.Sys.PointGreyCam(i).PreviewClipROI
             Xin.D.Sys.PointGreyCam(i).DispImgOO =       Xin.D.Sys.PointGreyCam(i).DispImgRO.*...
                                                         Xin.D.Sys.PointGreyCam(i).ROIi;
         else
@@ -157,22 +191,11 @@ for i = 1:length(Xin.D.Sys.PointGreyCam)
         end       
         Xin.D.Sys.PointGreyCam(i).DispImg =             Xin.D.Sys.PointGreyCam(i).DispImgOO;
 
-%         % HISTOGRAM
-%         Xin.D.Sys.PointGreyCam(i).DispHistMax =   	max(Xin.D.Sys.PointGreyCam(i).DispImage, [], 2);
-%         Xin.D.Sys.PointGreyCam(i).DispHistMean =      uint8(mean(Xin.D.Sys.PointGreyCam(i).DispImage,2)); 
-%         Xin.D.Sys.PointGreyCam(i).DispHistMin =       min(Xin.D.Sys.PointGreyCam(i).DispImage, [], 2);
-        
-        %% Display rotaion reltaed parameters
-        switch Xin.D.Sys.PointGreyCam(i).PreviewRot
-            case 0;     Xin.D.Sys.PointGreyCam(i).DispWidth =	BinW;
-                        Xin.D.Sys.PointGreyCam(i).DispHeight =	BinH;
-            case 90;	Xin.D.Sys.PointGreyCam(i).DispWidth =	BinH;
-                        Xin.D.Sys.PointGreyCam(i).DispHeight =	BinW;
-            case 180;	Xin.D.Sys.PointGreyCam(i).DispWidth =	BinW;
-                        Xin.D.Sys.PointGreyCam(i).DispHeight =	BinH;
-            case 270;	Xin.D.Sys.PointGreyCam(i).DispWidth =	BinH;
-                        Xin.D.Sys.PointGreyCam(i).DispHeight =	BinW;
-            otherwise;  errordlg('Preview Rotation Angle Not Support');
+        % HISTOGRAM
+        if Xin.D.Sys.PointGreyCam(i).UpdatePreviewHistogram
+            Xin.D.Sys.PointGreyCam(i).DispHistMax =     max(Xin.D.Sys.PointGreyCam(i).DispImg, [], 2);
+            Xin.D.Sys.PointGreyCam(i).DispHistMean =	uint8(mean(Xin.D.Sys.PointGreyCam(i).DispImg,2)); 
+            Xin.D.Sys.PointGreyCam(i).DispHistMin =     min(Xin.D.Sys.PointGreyCam(i).DispImg, [], 2);
         end
 
     else
@@ -181,9 +204,5 @@ for i = 1:length(Xin.D.Sys.PointGreyCam)
 end
 
 %% LOG MSG
-msg = [datestr(now) '\tSetupPointGreyCamera\tSetup PointGrey Cameras\r\n'];  
-try
-	fprintf(Xin.D.Sys.hLog, msg);
-catch
-	disp(msg);
-end
+msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tSetupPointGreyCamera\tSetup PointGrey Cameras\r\n'];  
+updateMsg(Xin.D.Exp.hLog, msg);

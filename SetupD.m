@@ -274,12 +274,14 @@ for disp = 1
     Xin.D.Sys.PointGreyCam(1).Comments =        'Animal Monitor';
     Xin.D.Sys.PointGreyCam(1).Located =         0;
  	Xin.D.Sys.PointGreyCam(1).FrameRate =       10;
-    Xin.D.Sys.PointGreyCam(i).ShutterResv =     0;
+    Xin.D.Sys.PointGreyCam(1).ShutterResv =     0;
     Xin.D.Sys.PointGreyCam(1).GainPolar =       'Max';
     Xin.D.Sys.PointGreyCam(1).PreviewRot =      90;
     Xin.D.Sys.PointGreyCam(1).PreviewZoom =     1;
-    Xin.D.Sys.PointGreyCam(1).PreviewBitDepth = 8;
-	Xin.D.Sys.PointGreyCam(1).UpdatePreviewWindowFcn =   @updatePreviewFrame;
+    Xin.D.Sys.PointGreyCam(1).RecUpdateRate =	NaN;
+    Xin.D.Sys.PointGreyCam(1).RecFrameBlockNum =        NaN;     
+	Xin.D.Sys.PointGreyCam(1).UpdatePreviewHistogram =  0;  
+	Xin.D.Sys.PointGreyCam(1).UpdatePreviewWindowFcn =	@updatePreviewFrame;
     
 	Xin.D.Sys.PointGreyCam(2).DeviceName =      'Flea3 FL3-U3-88S2C';
 %     Xin.D.Sys.PointGreyCam(2).Format =          'F7_BayerRG8_4000x3000_Mode10';
@@ -293,31 +295,34 @@ for disp = 1
     Xin.D.Sys.PointGreyCam(2).PreviewRot =      180;
     Xin.D.Sys.PointGreyCam(2).PreviewZoom =     4;
     Xin.D.Sys.PointGreyCam(2).PreviewBitDepth = 8;
-	Xin.D.Sys.PointGreyCam(2).UpdatePreviewWindowFcn =   @updatePreviewFrame;
+    Xin.D.Sys.PointGreyCam(2).RecUpdateRate =	NaN;
+    Xin.D.Sys.PointGreyCam(2).RecFrameBlockNum =        NaN;       
+	Xin.D.Sys.PointGreyCam(2).UpdatePreviewHistogram =  0;  
+	Xin.D.Sys.PointGreyCam(2).UpdatePreviewWindowFcn =	@updatePreviewFrame;                                      
    
-	% Trigger Modes
-    i = 1;
-    Xin.D.Sys.PointGreyCam(1).TriggerMode(i).Name =              'SoftwareGrab';
-    Xin.D.Sys.PointGreyCam(1).TriggerMode(i).TriggerType =       'immediate';
-    Xin.D.Sys.PointGreyCam(1).TriggerMode(i).TriggerCondition =  'none';
-    Xin.D.Sys.PointGreyCam(1).TriggerMode(i).TriggerSource =     'none';   
-    ic = 1;
-    Xin.D.Sys.PointGreyCam(1).TriggerName =      Xin.D.Sys.PointGreyCam(1).TriggerMode(ic).Name;  
-    Xin.D.Sys.PointGreyCam(1).TriggerType =      Xin.D.Sys.PointGreyCam(1).TriggerMode(ic).TriggerType;         
-    Xin.D.Sys.PointGreyCam(1).TriggerCondition = Xin.D.Sys.PointGreyCam(1).TriggerMode(ic).TriggerCondition; 
-    Xin.D.Sys.PointGreyCam(1).TriggerSource =    Xin.D.Sys.PointGreyCam(1).TriggerMode(ic).TriggerSource;
-    
-    i = 1;
-    Xin.D.Sys.PointGreyCam(2).TriggerMode(i).Name =              'SoftwareGrab';
-    Xin.D.Sys.PointGreyCam(2).TriggerMode(i).TriggerType =       'immediate';
-    Xin.D.Sys.PointGreyCam(2).TriggerMode(i).TriggerCondition =  'none';
-    Xin.D.Sys.PointGreyCam(2).TriggerMode(i).TriggerSource =     'none';   
-    ic = 1;
-    Xin.D.Sys.PointGreyCam(2).TriggerName =      Xin.D.Sys.PointGreyCam(2).TriggerMode(ic).Name;  
-    Xin.D.Sys.PointGreyCam(2).TriggerType =      Xin.D.Sys.PointGreyCam(2).TriggerMode(ic).TriggerType;         
-    Xin.D.Sys.PointGreyCam(2).TriggerCondition = Xin.D.Sys.PointGreyCam(2).TriggerMode(ic).TriggerCondition; 
-    Xin.D.Sys.PointGreyCam(2).TriggerSource =    Xin.D.Sys.PointGreyCam(2).TriggerMode(ic).TriggerSource;
-    
+% 	% Trigger Modes
+%     i = 1;
+%     Xin.D.Sys.PointGreyCam(1).TriggerMode(i).Name =              'SoftwareGrab';
+%     Xin.D.Sys.PointGreyCam(1).TriggerMode(i).TriggerType =       'immediate';
+%     Xin.D.Sys.PointGreyCam(1).TriggerMode(i).TriggerCondition =  'none';
+%     Xin.D.Sys.PointGreyCam(1).TriggerMode(i).TriggerSource =     'none';   
+%     ic = 1;
+%     Xin.D.Sys.PointGreyCam(1).TriggerName =      Xin.D.Sys.PointGreyCam(1).TriggerMode(ic).Name;  
+%     Xin.D.Sys.PointGreyCam(1).TriggerType =      Xin.D.Sys.PointGreyCam(1).TriggerMode(ic).TriggerType;         
+%     Xin.D.Sys.PointGreyCam(1).TriggerCondition = Xin.D.Sys.PointGreyCam(1).TriggerMode(ic).TriggerCondition; 
+%     Xin.D.Sys.PointGreyCam(1).TriggerSource =    Xin.D.Sys.PointGreyCam(1).TriggerMode(ic).TriggerSource;
+%     
+%     i = 1;
+%     Xin.D.Sys.PointGreyCam(2).TriggerMode(i).Name =              'SoftwareGrab';
+%     Xin.D.Sys.PointGreyCam(2).TriggerMode(i).TriggerType =       'immediate';
+%     Xin.D.Sys.PointGreyCam(2).TriggerMode(i).TriggerCondition =  'none';
+%     Xin.D.Sys.PointGreyCam(2).TriggerMode(i).TriggerSource =     'none';   
+%     ic = 1;
+%     Xin.D.Sys.PointGreyCam(2).TriggerName =      Xin.D.Sys.PointGreyCam(2).TriggerMode(ic).Name;  
+%     Xin.D.Sys.PointGreyCam(2).TriggerType =      Xin.D.Sys.PointGreyCam(2).TriggerMode(ic).TriggerType;         
+%     Xin.D.Sys.PointGreyCam(2).TriggerCondition = Xin.D.Sys.PointGreyCam(2).TriggerMode(ic).TriggerCondition; 
+%     Xin.D.Sys.PointGreyCam(2).TriggerSource =    Xin.D.Sys.PointGreyCam(2).TriggerMode(ic).TriggerSource;
+%     
     
 end
 
