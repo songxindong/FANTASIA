@@ -19,7 +19,7 @@ global TP
   	'GUI_AO_6115',[ TP.D.Mon.PMT.CtrlGainValue  TP.D.Mon.Power.AOD_CtrlAmpValue]);
         %           PMT Gain Control            AOD Amp, && StartTrigStop==2
     feval(TP.D.Sys.Name,...        
-	'GUI_DO_6115',[ TP.D.Ses.Image.Enable;	TP.D.Ses.Image.Enable;	0]);
+	'GUI_DO_6115',[ TP.D.Exp.BCD.ImageEnable;	TP.D.Exp.BCD.ImageEnable;	0]);
     	%       	PMTon,                  FANoff,                 PELoff
     % Speed Testing on T3500, 12GB RAM, 7200rpm HD
     % w/ PMT GUI update,    these 2 cells takes ~0.015s,    15ms

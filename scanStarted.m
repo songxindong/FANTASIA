@@ -13,7 +13,7 @@ global TP
     %   -3 = Timeout,       -2 = Stopping by GUI,   -1=Stopping by ExtTrig, 
     %   0 = Stopped,        1 = Started,            2 = Triggered
     TP.D.Trl.TimeStampStarted =     datestr(now, 'yy/mm/dd HH:MM:SS.FFF'); 
-    TP.D.Trl.TimeStampSesCom =      TP.D.Ses.TimeStampCommitted; 
+    TP.D.Trl.TimeStampBCDCom =      TP.D.Exp.BCD.CommitedTimeStamp; 
           
 %% TP.D Initialization / Reset & Stream File Openned
     % Setup Timing
@@ -28,13 +28,12 @@ global TP
     set(TP.UI.H.hTrl_Tdone_Edit,                'string',           sprintf('%5.1f',TP.D.Trl.Tdone));
 
 %% Imaging Data Allocation    
-	if TP.D.Ses.Image.Enable  
+	if TP.D.Exp.BCD.ImageEnable  
         %% Clean Up TP.D.Trl.VS.
         %%
         %% Allocate Memories  
         %% MOVE THE FOLLOWING PART INTO TRL CTRL
-        %% save TP.D.Ses.SessionName for later Trls
-        Vmax = floor( TP.D.Trl.Tmax4GB * TP.D.Ses.Scan.VolumeRate);
+        Vmax = floor( TP.D.Trl.Tmax4GB * TP.D.Exp.BCD.ScanVolumeRate);
         TP.D.Trl.VS.TimeStampUpdt =             zeros(Vmax,1);
         TP.D.Trl.VS.PMT_PMTctrl =               zeros(Vmax,1);
         TP.D.Trl.VS.PMT_FANctrl =               zeros(Vmax,1);
@@ -77,5 +76,5 @@ global TP
 
 %% MSG LOG
     msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tscanStarted\tScanning Started w/ Volume time = ',...
-        num2str(TP.D.Ses.Scan.VolumeTime),' sec\r\n'];
+        num2str(TP.D.Exp.BCD.ScanVolumeTime),' sec\r\n'];
     updateMsg(TP.D.Exp.hLog, msg);

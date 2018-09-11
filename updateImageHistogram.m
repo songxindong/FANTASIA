@@ -45,7 +45,7 @@ set(phandle.hMarkPeak,  'xdata',    binpeak);
 % 0.47 ms for 2D raster 1s/px 	on T3500
 TP.D.Vol.SampleMax =    -min(TP.D.Vol.DataColFlt);
 TP.D.Vol.SampleMin =    -max(TP.D.Vol.DataColFlt);
-TP.D.Vol.SampleMean =   mean(TP.D.Vol.PixlCol)/TP.D.Ses.Image.NumSmplPerPixl;
+TP.D.Vol.SampleMean =   mean(TP.D.Vol.PixlCol)/TP.D.Exp.BCD.ImageNumSmplPerPixl;
 
 % 2 ms for	2D random 256p  	on T5810
 % 0.40 ms                       on T3500

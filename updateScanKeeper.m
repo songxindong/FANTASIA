@@ -14,7 +14,7 @@ persistent TimeStampUpdt
 TimeStampUpdt = now;                                            % Read Current Time
 
 %% Stream and Save Data
-    if TP.D.Ses.Image.Enable
+    if TP.D.Exp.BCD.ImageEnable
         TP.D.Vol.DataColRaw = evnt.data;                            % Read PMT data
         fwrite(TP.D.Trl.StreamFid, TP.D.Vol.DataColRaw, 'int16');   % Save Streaming Data 
         % record 0.9s data takes ~9ms to log on to harddrive (T3500, 12GB RAM, Raid 0, 7200rpm x2)
@@ -24,12 +24,12 @@ TimeStampUpdt = now;                                            % Read Current T
 
     TP.D.Trl.Udone =	TP.D.Trl.Udone + 1;                          	% always integer
     Udone =             TP.D.Trl.Udone;
-    TP.D.Trl.Vdone =    TP.D.Trl.Udone * TP.D.Ses.Image.NumVlmePerUpdt;	% can be float
+    TP.D.Trl.Vdone =    TP.D.Trl.Udone * TP.D.Exp.BCD.ImageNumVlmePerUpdt;	% can be float
     TP.D.Trl.Vnum =     ceil(TP.D.Trl.Vdone);
-    TP.D.Trl.Unum =     mod(TP.D.Trl.Udone-1, TP.D.Ses.Image.NumUpdtPerVlme)+1;
+    TP.D.Trl.Unum =     mod(TP.D.Trl.Udone-1, TP.D.Exp.BCD.ImageNumUpdtPerVlme)+1;
                                                                         
     % Record System Status, if Imaging
-    if TP.D.Ses.Image.Enable
+    if TP.D.Exp.BCD.ImageEnable
         TP.D.Trl.VS.TimeStampUpdt(Udone) =           	TimeStampUpdt;
         TP.D.Trl.VS.PMT_PMTctrl(Udone) =               	TP.D.Mon.PMT.PMTctrl;
         TP.D.Trl.VS.PMT_FANctrl(Udone) =               	TP.D.Mon.PMT.FANctrl;
@@ -46,7 +46,7 @@ TimeStampUpdt = now;                                            % Read Current T
     end
     
     % Tdone, and  UI Update. Precision is 100ms
-    Tdone =     TP.D.Trl.Udone * TP.D.Ses.Image.NumSmplPerUpdt /...
+    Tdone =     TP.D.Trl.Udone * TP.D.Exp.BCD.ImageNumSmplPerUpdt /...
                 TP.D.Sys.NI.Task_AI_6115_SR;
     Tdone =     floor(Tdone*10)/10;
     if TP.D.Trl.Tdone ~= Tdone
@@ -60,10 +60,10 @@ TimeStampUpdt = now;                                            % Read Current T
 % Render the Image for Dispaly
 if TP.D.Mon.Image.DisplayEnable    
     % Imaging Reconstruction
-    feval(TP.D.Ses.Image.ImgFunc);    
+    feval(TP.D.Exp.BCD.ImageImgFunc);    
     % Image Display
     set(TP.UI.H0.hImage,    'cdata', ...
-        TP.D.Vol.LayerDisp{ (TP.D.Ses.Scan.NumLayrPerVlme+1)/2 } );
+        TP.D.Vol.LayerDisp{ (TP.D.Exp.BCD.ScanNumLayrPerVlme+1)/2 } );
     % Histogram Display
     updateImageHistogram(TP.UI.H0.Hist0);
 end

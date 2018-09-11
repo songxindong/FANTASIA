@@ -16,7 +16,7 @@ function msg = SetupPowerCalibration
     disp('This function will calibration the laser excitation power throught the system, including:2 steps');
     disp('   1st: HWP (Half Wave Plate) Angle vs. Power');
     disp('   2nd: AOD Control Amplitude       vs. Power');
-    disp('        After objective             vs. S121C sesnor Dichroic Ratio');
+    disp('        After objective             vs. S121C sensor Dichroic Ratio');
     disp('Please follow the opration instructions now');
     disp('   * DON''T connect S170c silde sensor now. Connectting it too early will damage the sensor');
     disp('   * It''s a good practice to point the imaging arm right down, and put some light absorptive medium to cover potential leaking excitation laser light');

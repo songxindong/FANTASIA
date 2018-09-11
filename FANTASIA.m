@@ -48,20 +48,20 @@ SetupPointGreyCams;
 % Sys Registrations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 set(TP.UI.H.hSys_PowerCalib_Momentary,      'callback',             'SetupPowerCalibration');
 
-% Mky / Exp / Ses Registrations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Mky / Exp Registrations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Parameter Input
-set(TP.UI.H.hMky_ID_Edit,                   'callback',             [TP.D.Sys.Name,'(''GUI_MkyExpSes'')']);
-set(TP.UI.H.hExp_Mech_EstX_Edit,         	'callback',             [TP.D.Sys.Name,'(''GUI_MkyExpSes'')']);
-set(TP.UI.H.hExp_Mech_EstY_Edit,         	'callback',             [TP.D.Sys.Name,'(''GUI_MkyExpSes'')']);
-set(TP.UI.H.hExp_Mech_Z0_SM1Z_Edit,       	'callback',             [TP.D.Sys.Name,'(''GUI_MkyExpSes'')']);
-set(TP.UI.H.hSes_Mech_Zs_SM1Z_Edit,        	'callback',             [TP.D.Sys.Name,'(''GUI_MkyExpSes'')']);
-set(TP.UI.H.hMky_Side_Edit,                 'callback',             [TP.D.Sys.Name,'(''GUI_MkyExpSes'')']);
-set(TP.UI.H.hExp_AngleArm_Edit,             'callback',             [TP.D.Sys.Name,'(''GUI_MkyExpSes'')']);
+set(TP.UI.H.hMky_ID_Edit,                   'callback',             [TP.D.Sys.Name,'(''GUI_MkyExp'')']);
+set(TP.UI.H.hExp_Mech_EstX_Edit,         	'callback',             [TP.D.Sys.Name,'(''GUI_MkyExp'')']);
+set(TP.UI.H.hExp_Mech_EstY_Edit,         	'callback',             [TP.D.Sys.Name,'(''GUI_MkyExp'')']);
+set(TP.UI.H.hExp_Mech_Z0_SM1Z_Edit,       	'callback',             [TP.D.Sys.Name,'(''GUI_MkyExp'')']);
+set(TP.UI.H.hExp_Mech_Zs_SM1Z_Edit,        	'callback',             [TP.D.Sys.Name,'(''GUI_MkyExp'')']);
+set(TP.UI.H.hMky_Side_Edit,                 'callback',             [TP.D.Sys.Name,'(''GUI_MkyExp'')']);
+set(TP.UI.H.hExp_AngleArm_Edit,             'callback',             [TP.D.Sys.Name,'(''GUI_MkyExp'')']);
     % Wide Field
 set(TP.UI.H.hExp_WF1_Momentary,            	'callback',             [TP.D.Sys.Name,'(''GUI_ExpWideField'')']);
 set(TP.UI.H.hExp_WF2_Momentary,            	'callback',             [TP.D.Sys.Name,'(''GUI_ExpWideField'')']);
 
-% Scanning Pattern %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Exp.BCD Scanning Pattern %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Preset Modes
 for i =1:length(TP.D.Sys.Scan.PresetGroup)
 set(TP.UI.H.hSys_Scan_PresetCfg_Toggle{i},  'SelectionChangeFcn',   [TP.D.Sys.Name,'(''GUI_PresetCfg'')']);
@@ -69,15 +69,15 @@ end
     % Scan Pattern
 set(TP.UI.H.hSys_AOD_FreqBW_Edit,       	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
 set(TP.UI.H.hSys_AOD_FreqCF_Edit,         	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
-set(TP.UI.H.hSes_Scan_Mode_Rocker,          'SelectionChangeFcn',   [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
-set(TP.UI.H.hSes_Image_NumSmplPerPixl_Edit,	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
-set(TP.UI.H.hSes_Scan_NumPixlPerAxis_Edit,	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
-set(TP.UI.H.hSes_Scan_NumLayrPerVlme_Edit,	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
-set(TP.UI.H.hSes_Scan_LayrSpacingInZ_Edit, 	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
-set(TP.UI.H.hSes_Image_NumUpdtPerVlme_Edit,	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
-set(TP.UI.H.hSes_Image_NumVlmePerUpdt_Edit,	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
+set(TP.UI.H.hExp_BCD_Scan_Mode_Rocker,          'SelectionChangeFcn',   [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
+set(TP.UI.H.hExp_BCD_Image_NumSmplPerPixl_Edit,	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
+set(TP.UI.H.hExp_BCD_Scan_NumPixlPerAxis_Edit,	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
+set(TP.UI.H.hExp_BCD_Scan_NumLayrPerVlme_Edit,	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
+set(TP.UI.H.hExp_BCD_Scan_LayrSpacingInZ_Edit, 	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
+set(TP.UI.H.hExp_BCD_Image_NumUpdtPerVlme_Edit,	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
+set(TP.UI.H.hExp_BCD_Image_NumVlmePerUpdt_Edit,	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
     % Scan Commit
-set(TP.UI.H.hSes_Commit_Rocker,             'SelectionChangeFcn', 	[TP.D.Sys.Name,'(''GUI_SesCommit'')']);     
+set(TP.UI.H.hExp_BCD_Commit_Rocker,             'SelectionChangeFcn', 	[TP.D.Sys.Name,'(''GUI_BCD_Commit'')']);     
 % Trial Control %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Scheme
 set(TP.UI.H.hTrl_DataLogging_Rocker,        'SelectionChangeFcn',   [TP.D.Sys.Name,'(''GUI_ImageDataLogging'')']);
@@ -117,14 +117,14 @@ function flag = CheckRunning
         flag = 0;
     end
             
-function msg = GUI_MkyExpSes(varargin)
+function msg = GUI_MkyExp(varargin)
     global TP 	
         % notes by 10/24/2014
-        % need to prepare Mky-Exp-Ses DATABASE etc
+        % need to prepare Mky-Exp DATABASE etc
 
     %% Where the Call is from   
     if nargin ==0
-        % called by GUI:            GUI_MkyExpSes
+        % called by GUI:            GUI_MkyExp
      	switch get(gcbo, 'tag')
             case 'hMky_Side_Edit';       	t = 0;
             case 'hExp_AngleArm_Edit';      t = 0;
@@ -132,7 +132,7 @@ function msg = GUI_MkyExpSes(varargin)
             case 'hExp_Mech_EstX_Edit';     t = 1;
             case 'hExp_Mech_EstY_Edit';     t = 1;
             case 'hExp_Mech_Z0_SM1Z_Edit';  t = 2;
-            case 'hSes_Mech_Zs_SM1Z_Edit';  t = 2;
+            case 'hExp_Mech_Zs_SM1Z_Edit';  t = 2;
             otherwise
                 errordlg ('What button did you press?');
         end
@@ -147,28 +147,28 @@ function msg = GUI_MkyExpSes(varargin)
                 TP.D.Exp.Mech.EstY =    str2double(get(TP.UI.H.hExp_Mech_EstX_Edit,'String'));
             case 2  % Update Z and Estimated Z                
                 TP.D.Exp.Mech.Z0_SM1Z = str2double(get(TP.UI.H.hExp_Mech_Z0_SM1Z_Edit,'String'));
-                TP.D.Ses.Mech.Zs_SM1Z = str2double(get(TP.UI.H.hSes_Mech_Zs_SM1Z_Edit,'String'));
-                TP.D.Ses.Mech.EstZ = TP.D.Ses.Mech.Zs_SM1Z - TP.D.Exp.Mech.Z0_SM1Z;
-                set(TP.UI.H.hSes_Mech_EstZ_Edit, 'string', num2str(TP.D.Ses.Mech.EstZ) );
+                TP.D.Exp.Mech.Zs_SM1Z = str2double(get(TP.UI.H.hExp_Mech_Zs_SM1Z_Edit,'String'));
+                TP.D.Exp.Mech.EstZ = TP.D.Exp.Mech.Zs_SM1Z - TP.D.Exp.Mech.Z0_SM1Z;
+                set(TP.UI.H.hExp_Mech_EstZ_Edit, 'string', num2str(TP.D.Exp.Mech.EstZ) );
         end
     else
-        % called by general update: GUI_MkyExpSes('Right', 30) 
-        %                       or  GUI_MkyExpSes('Left', 0)   style
+        % called by general update: GUI_MkyExp('Right', 30) 
+        %                       or  GUI_MkyExp('Left', 0)   style
         % TP.D.Image.ArmSide =     varargin{1};
         % TP.D.Image.ArmAngle =    varargin{2};
     end
     
-    %% Uncommit the session
-    TP.D.Ses.Committed =            0;
-    h = get(TP.UI.H.hSes_Commit_Rocker, 'children');
-    set(TP.UI.H.hSes_Commit_Rocker, 'SelectedObject',   h(2));
+    %% Uncommit the BCD
+    TP.D.Exp.BCD.Committed =            0;
+    h = get(TP.UI.H.hExp_BCD_Commit_Rocker, 'children');
+    set(TP.UI.H.hExp_BCD_Commit_Rocker, 'SelectedObject',   h(2));
     set(h(2), 	'backgroundcolor',  TP.UI.C.SelectB);
     set(h(3), 	'backgroundcolor',  TP.UI.C.TextBG);
     h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'children');
     set(h(2),   'enable',           'inactive');
     
 	%% MSG LOG
-    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_MkyExpSes\tUpdated','\r\n'];
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_MkyExp\tUpdated','\r\n'];
     updateMsg(TP.D.Exp.hLog, msg);  
 
 function msg = GUI_ExpWideField(varargin)
@@ -185,7 +185,7 @@ function msg = GUI_ExpWideField(varargin)
     CtrlPointGreyCams('Cam_DispGain', N, 1);
 %         SetupWideField;
         
-%% Ses.Scan GUI updates w/o touching NI-DAQ
+%% Exp.BCD.Scan GUI updates w/o touching NI-DAQ
 function msg = GUI_PresetCfg(varargin)  
     global TP
     
@@ -227,27 +227,27 @@ function msg = GUI_PresetCfg(varargin)
     Cfg = TP.D.Sys.Scan.PresetCfg{ScanCfgNum};
 
     %% Update further GUI elements 
-    h1 = get(TP.UI.H.hSes_Scan_Mode_Rocker,             'children');
+    h1 = get(TP.UI.H.hExp_BCD_Scan_Mode_Rocker,             'children');
   	switch Cfg.ScanMode
         case '2D random';  	Cfg.ScanModeChild = 3;
         case '2D raster'; 	Cfg.ScanModeChild = 2;
         case '3D raster';  	Cfg.ScanModeChild = 1;
     end
-    set(TP.UI.H.hSes_Scan_Mode_Rocker,              'SelectedObject',   h1(Cfg.ScanModeChild));
+    set(TP.UI.H.hExp_BCD_Scan_Mode_Rocker,              'SelectedObject',   h1(Cfg.ScanModeChild));
         for j = 1:length(h1)
             if j==Cfg.ScanModeChild;    set(h1(j),  'backgroundcolor',  TP.UI.C.SelectB);
             else                        set(h1(j),  'backgroundcolor',  TP.UI.C.TextBG);     end
         end
-    set(TP.UI.H.hSes_Image_NumSmplPerPixl_Edit,   	'string',   num2str(Cfg.NumSmplPerPixl6115));
-    set(TP.UI.H.hSes_Scan_NumPixlPerAxis_Edit,      'string',   num2str(Cfg.NumPixlPerAxis));
-    set(TP.UI.H.hSes_Scan_NumLayrPerVlme_Edit,      'string',   num2str(Cfg.NumLayrPerVlme));
-    set(TP.UI.H.hSes_Scan_LayrSpacingInZ_Edit,      'string',   num2str(Cfg.LayrSpacingInZ));
-    set(TP.UI.H.hSes_Image_NumUpdtPerVlme_Edit,     'string',   num2str(Cfg.NumUpdtPerVlme));
-    set(TP.UI.H.hSes_Image_NumVlmePerUpdt_Edit,     'string',   num2str(1/Cfg.NumUpdtPerVlme));
+    set(TP.UI.H.hExp_BCD_Image_NumSmplPerPixl_Edit,   	'string',   num2str(Cfg.NumSmplPerPixl6115));
+    set(TP.UI.H.hExp_BCD_Scan_NumPixlPerAxis_Edit,      'string',   num2str(Cfg.NumPixlPerAxis));
+    set(TP.UI.H.hExp_BCD_Scan_NumLayrPerVlme_Edit,      'string',   num2str(Cfg.NumLayrPerVlme));
+    set(TP.UI.H.hExp_BCD_Scan_LayrSpacingInZ_Edit,      'string',   num2str(Cfg.LayrSpacingInZ));
+    set(TP.UI.H.hExp_BCD_Image_NumUpdtPerVlme_Edit,     'string',   num2str(Cfg.NumUpdtPerVlme));
+    set(TP.UI.H.hExp_BCD_Image_NumVlmePerUpdt_Edit,     'string',   num2str(1/Cfg.NumUpdtPerVlme));
     
     %% Update TP.D, and Generate ScanSeq
-    TP.D.Ses.Scan.GenFunc = Cfg.GenFunc;
-    TP.D.Ses.Image.Enable = Cfg.ImagingEnable;
+    TP.D.Exp.BCD.ScanGenFunc = Cfg.GenFunc;
+    TP.D.Exp.BCD.ImageEnable = Cfg.ImagingEnable;
     GUI_ImageDataLogging(Cfg.ImagingEnable);
     GUI_ImageDisplayEnable(Cfg.ImagingEnable);
     GUI_ScanParameters(0);
@@ -283,120 +283,120 @@ function msg = GUI_ScanParameters(varargin)
     TP.D.Sys.AOD.FreqBW =   1e6 * str2double(get(TP.UI.H.hSys_AOD_FreqBW_Edit, 'string'));
     TP.D.Sys.AOD.FreqCF =   1e6 * str2double(get(TP.UI.H.hSys_AOD_FreqCF_Edit, 'string')); 
     % According to Scan.Mode, Change UI components availability, and TP.D
-   	TP.D.Ses.Scan.Mode =    get(get(TP.UI.H.hSes_Scan_Mode_Rocker,'SelectedObject'),'string');         
-    switch TP.D.Ses.Scan.Mode
+   	TP.D.Exp.BCD.ScanMode =    get(get(TP.UI.H.hExp_BCD_Scan_Mode_Rocker,'SelectedObject'),'string');         
+    switch TP.D.Exp.BCD.ScanMode
         case '2D random'  
-            TP.D.Ses.Scan.ModeNum = 1;
-            TP.D.Ses.Image.NumSmplPerPixl = round(str2double(get(TP.UI.H.hSes_Image_NumSmplPerPixl_Edit, 'string'))/2)*2;
-            set(TP.UI.H.hSes_Scan_NumLayrPerVlme_Edit,  'enable', 'inactive',   'Foregroundcolor', TP.UI.C.FG,	'String', '1');
-            set(TP.UI.H.hSes_Scan_LayrSpacingInZ_Edit, 	'enable', 'inactive',	'Foregroundcolor', TP.UI.C.FG,	'String', 'NaN');
-            set(TP.UI.H.hSes_Image_NumUpdtPerVlme_Edit, 'enable', 'on',       	'Foregroundcolor', TP.UI.C.SelectT);
-            set(TP.UI.H.hSes_Image_NumVlmePerUpdt_Edit, 'enable', 'inactive',  	'Foregroundcolor', TP.UI.C.FG);
-            TP.D.Ses.Image.NumUpdtPerVlme = round(str2double(get(TP.UI.H.hSes_Image_NumUpdtPerVlme_Edit, 'string')));
-            TP.D.Ses.Image.NumVlmePerUpdt = 1/TP.D.Ses.Image.NumUpdtPerVlme;
+            TP.D.Exp.BCD.ScanModeNum = 1;
+            TP.D.Exp.BCD.ImageNumSmplPerPixl = round(str2double(get(TP.UI.H.hExp_BCD_Image_NumSmplPerPixl_Edit, 'string'))/2)*2;
+            set(TP.UI.H.hExp_BCD_Scan_NumLayrPerVlme_Edit,  'enable', 'inactive',   'Foregroundcolor', TP.UI.C.FG,	'String', '1');
+            set(TP.UI.H.hExp_BCD_Scan_LayrSpacingInZ_Edit, 	'enable', 'inactive',	'Foregroundcolor', TP.UI.C.FG,	'String', 'NaN');
+            set(TP.UI.H.hExp_BCD_Image_NumUpdtPerVlme_Edit, 'enable', 'on',       	'Foregroundcolor', TP.UI.C.SelectT);
+            set(TP.UI.H.hExp_BCD_Image_NumVlmePerUpdt_Edit, 'enable', 'inactive',  	'Foregroundcolor', TP.UI.C.FG);
+            TP.D.Exp.BCD.ImageNumUpdtPerVlme = round(str2double(get(TP.UI.H.hExp_BCD_Image_NumUpdtPerVlme_Edit, 'string')));
+            TP.D.Exp.BCD.ImageNumVlmePerUpdt = 1/TP.D.Exp.BCD.ImageNumUpdtPerVlme;
         case '2D raster'
-            TP.D.Ses.Scan.ModeNum = 2;
-            TP.D.Ses.Image.NumSmplPerPixl = round(str2double(get(TP.UI.H.hSes_Image_NumSmplPerPixl_Edit, 'string'))/1)*1;
-            set(TP.UI.H.hSes_Scan_NumLayrPerVlme_Edit,  'enable', 'inactive',   'Foregroundcolor', TP.UI.C.FG,  'String', '1');
-            set(TP.UI.H.hSes_Scan_LayrSpacingInZ_Edit, 	'enable', 'inactive',	'Foregroundcolor', TP.UI.C.FG,	'String', 'NaN');
-            set(TP.UI.H.hSes_Image_NumUpdtPerVlme_Edit,	'enable', 'inactive',   'Foregroundcolor', TP.UI.C.FG);
-            set(TP.UI.H.hSes_Image_NumVlmePerUpdt_Edit,	'enable', 'on',         'Foregroundcolor', TP.UI.C.SelectT);
-            TP.D.Ses.Image.NumVlmePerUpdt = round(str2double(get(TP.UI.H.hSes_Image_NumVlmePerUpdt_Edit, 'string')));
-            TP.D.Ses.Image.NumUpdtPerVlme = 1/TP.D.Ses.Image.NumVlmePerUpdt;
+            TP.D.Exp.BCD.ScanModeNum = 2;
+            TP.D.Exp.BCD.ImageNumSmplPerPixl = round(str2double(get(TP.UI.H.hExp_BCD_Image_NumSmplPerPixl_Edit, 'string'))/1)*1;
+            set(TP.UI.H.hExp_BCD_Scan_NumLayrPerVlme_Edit,  'enable', 'inactive',   'Foregroundcolor', TP.UI.C.FG,  'String', '1');
+            set(TP.UI.H.hExp_BCD_Scan_LayrSpacingInZ_Edit, 	'enable', 'inactive',	'Foregroundcolor', TP.UI.C.FG,	'String', 'NaN');
+            set(TP.UI.H.hExp_BCD_Image_NumUpdtPerVlme_Edit,	'enable', 'inactive',   'Foregroundcolor', TP.UI.C.FG);
+            set(TP.UI.H.hExp_BCD_Image_NumVlmePerUpdt_Edit,	'enable', 'on',         'Foregroundcolor', TP.UI.C.SelectT);
+            TP.D.Exp.BCD.ImageNumVlmePerUpdt = round(str2double(get(TP.UI.H.hExp_BCD_Image_NumVlmePerUpdt_Edit, 'string')));
+            TP.D.Exp.BCD.ImageNumUpdtPerVlme = 1/TP.D.Exp.BCD.ImageNumVlmePerUpdt;
       	case '3D raster'
-            TP.D.Ses.Scan.ModeNum = 3;
-         	TP.D.Ses.Image.NumSmplPerPixl = round(str2double(get(TP.UI.H.hSes_Image_NumSmplPerPixl_Edit, 'string'))/1)*1;
-            set(TP.UI.H.hSes_Scan_NumLayrPerVlme_Edit,  'enable', 'on',         'Foregroundcolor', TP.UI.C.SelectT);
-            set(TP.UI.H.hSes_Scan_LayrSpacingInZ_Edit,	'enable', 'on',         'Foregroundcolor', TP.UI.C.SelectT);
-            set(TP.UI.H.hSes_Image_NumUpdtPerVlme_Edit,	'enable', 'inactive',   'Foregroundcolor', TP.UI.C.FG);
-            set(TP.UI.H.hSes_Image_NumVlmePerUpdt_Edit, 'enable', 'inactive',  	'Foregroundcolor', TP.UI.C.FG);
-            TP.D.Ses.Image.NumVlmePerUpdt = round(str2double(get(TP.UI.H.hSes_Image_NumVlmePerUpdt_Edit, 'string')));
-            TP.D.Ses.Image.NumUpdtPerVlme = 1/TP.D.Ses.Image.NumVlmePerUpdt;
+            TP.D.Exp.BCD.ScanModeNum = 3;
+         	TP.D.Exp.BCD.ImageNumSmplPerPixl = round(str2double(get(TP.UI.H.hExp_BCD_Image_NumSmplPerPixl_Edit, 'string'))/1)*1;
+            set(TP.UI.H.hExp_BCD_Scan_NumLayrPerVlme_Edit,  'enable', 'on',         'Foregroundcolor', TP.UI.C.SelectT);
+            set(TP.UI.H.hExp_BCD_Scan_LayrSpacingInZ_Edit,	'enable', 'on',         'Foregroundcolor', TP.UI.C.SelectT);
+            set(TP.UI.H.hExp_BCD_Image_NumUpdtPerVlme_Edit,	'enable', 'inactive',   'Foregroundcolor', TP.UI.C.FG);
+            set(TP.UI.H.hExp_BCD_Image_NumVlmePerUpdt_Edit, 'enable', 'inactive',  	'Foregroundcolor', TP.UI.C.FG);
+            TP.D.Exp.BCD.ImageNumVlmePerUpdt = round(str2double(get(TP.UI.H.hExp_BCD_Image_NumVlmePerUpdt_Edit, 'string')));
+            TP.D.Exp.BCD.ImageNumUpdtPerVlme = 1/TP.D.Exp.BCD.ImageNumVlmePerUpdt;
         otherwise
     end
     % Change Scan.Mode Button Color
-    h = get(TP.UI.H.hSes_Scan_Mode_Rocker, 'children');
+    h = get(TP.UI.H.hExp_BCD_Scan_Mode_Rocker, 'children');
     for i = 1:3
-        if i ==TP.D.Ses.Scan.ModeNum; 	set(h(4-i), 'backgroundcolor', TP.UI.C.SelectB);
+        if i ==TP.D.Exp.BCD.ScanModeNum; 	set(h(4-i), 'backgroundcolor', TP.UI.C.SelectB);
         else                            set(h(4-i), 'backgroundcolor', TP.UI.C.TextBG);    end
     end
     % Update rounded TP.D
-    TP.D.Ses.Scan.NumSmplPerPixl =  TP.D.Ses.Image.NumSmplPerPixl * TP.D.Sys.NI.Task_DO_6536_SR / TP.D.Sys.NI.Task_AI_6115_SR;          
-    TP.D.Ses.Scan.NumPixlPerAxis =  round(str2double(get(TP.UI.H.hSes_Scan_NumPixlPerAxis_Edit, 'string')));
-    TP.D.Ses.Scan.NumLayrPerVlme =  round(str2double(get(TP.UI.H.hSes_Scan_NumLayrPerVlme_Edit, 'string'))/2)*2-1;  % must be odd number 2->1
-    TP.D.Ses.Scan.LayrSpacingInZ =  round(str2double(get(TP.UI.H.hSes_Scan_LayrSpacingInZ_Edit, 'string')));
+    TP.D.Exp.BCD.ScanNumSmplPerPixl =  TP.D.Exp.BCD.ImageNumSmplPerPixl * TP.D.Sys.NI.Task_DO_6536_SR / TP.D.Sys.NI.Task_AI_6115_SR;          
+    TP.D.Exp.BCD.ScanNumPixlPerAxis =  round(str2double(get(TP.UI.H.hExp_BCD_Scan_NumPixlPerAxis_Edit, 'string')));
+    TP.D.Exp.BCD.ScanNumLayrPerVlme =  round(str2double(get(TP.UI.H.hExp_BCD_Scan_NumLayrPerVlme_Edit, 'string'))/2)*2-1;  % must be odd number 2->1
+    TP.D.Exp.BCD.ScanLayrSpacingInZ =  round(str2double(get(TP.UI.H.hExp_BCD_Scan_LayrSpacingInZ_Edit, 'string')));
 
-    TP.D.Ses.Scan.NumSmplPerVlme =  NaN;
-    TP.D.Ses.Scan.VolumeRate =      NaN;
-    TP.D.Ses.Scan.VolumeTime =      NaN;
-    TP.D.Ses.Image.NumPixlPerUpdt = NaN;                                        
-    TP.D.Ses.Image.NumSmplPerUpdt = NaN;
-    TP.D.Ses.Image.UpdateRate =     NaN;
-    TP.D.Ses.Image.UpdateTime =     NaN;    
+    TP.D.Exp.BCD.ScanNumSmplPerVlme =  NaN;
+    TP.D.Exp.BCD.ScanVolumeRate =      NaN;
+    TP.D.Exp.BCD.ScanVolumeTime =      NaN;
+    TP.D.Exp.BCD.ImageNumPixlPerUpdt = NaN;                                        
+    TP.D.Exp.BCD.ImageNumSmplPerUpdt = NaN;
+    TP.D.Exp.BCD.ImageUpdateRate =     NaN;
+    TP.D.Exp.BCD.ImageUpdateTime =     NaN;    
     
     %% Update GUI
- 	set(TP.UI.H.hSes_Image_NumSmplPerPixl_Edit,	'string', num2str(TP.D.Ses.Image.NumSmplPerPixl));
-    set(TP.UI.H.hSes_Scan_NumPixlPerAxis_Edit, 	'string', num2str(TP.D.Ses.Scan.NumPixlPerAxis));
-   	set(TP.UI.H.hSes_Scan_NumLayrPerVlme_Edit, 	'string', num2str(TP.D.Ses.Scan.NumLayrPerVlme));
-   	set(TP.UI.H.hSes_Scan_LayrSpacingInZ_Edit, 	'string', num2str(TP.D.Ses.Scan.LayrSpacingInZ));
-  	set(TP.UI.H.hSes_Image_NumUpdtPerVlme_Edit,	'string', num2str(TP.D.Ses.Image.NumUpdtPerVlme));
-    set(TP.UI.H.hSes_Image_NumVlmePerUpdt_Edit,	'string', num2str(TP.D.Ses.Image.NumVlmePerUpdt));    
+ 	set(TP.UI.H.hExp_BCD_Image_NumSmplPerPixl_Edit,	'string', num2str(TP.D.Exp.BCD.ImageNumSmplPerPixl));
+    set(TP.UI.H.hExp_BCD_Scan_NumPixlPerAxis_Edit, 	'string', num2str(TP.D.Exp.BCD.ScanNumPixlPerAxis));
+   	set(TP.UI.H.hExp_BCD_Scan_NumLayrPerVlme_Edit, 	'string', num2str(TP.D.Exp.BCD.ScanNumLayrPerVlme));
+   	set(TP.UI.H.hExp_BCD_Scan_LayrSpacingInZ_Edit, 	'string', num2str(TP.D.Exp.BCD.ScanLayrSpacingInZ));
+  	set(TP.UI.H.hExp_BCD_Image_NumUpdtPerVlme_Edit,	'string', num2str(TP.D.Exp.BCD.ImageNumUpdtPerVlme));
+    set(TP.UI.H.hExp_BCD_Image_NumVlmePerUpdt_Edit,	'string', num2str(TP.D.Exp.BCD.ImageNumVlmePerUpdt));    
 
-    set(TP.UI.H.hSes_Scan_VolumeRate_Edit,	'string',   sprintf('%5.2f',TP.D.Ses.Scan.VolumeRate));
-  	set(TP.UI.H.hSes_Scan_VolumeTime_Edit,  'string',   sprintf('%5.7f',TP.D.Ses.Scan.VolumeTime));
-  	set(TP.UI.H.hSes_Image_UpdateRate_Edit,	'string',   sprintf('%5.2f',TP.D.Ses.Image.UpdateRate));
-  	set(TP.UI.H.hSes_Image_UpdateTime_Edit, 'string',   sprintf('%5.7f',TP.D.Ses.Image.UpdateTime));
+    set(TP.UI.H.hExp_BCD_Scan_VolumeRate_Edit,	'string',   sprintf('%5.2f',TP.D.Exp.BCD.ScanVolumeRate));
+  	set(TP.UI.H.hExp_BCD_Scan_VolumeTime_Edit,  'string',   sprintf('%5.7f',TP.D.Exp.BCD.ScanVolumeTime));
+  	set(TP.UI.H.hExp_BCD_Image_UpdateRate_Edit,	'string',   sprintf('%5.2f',TP.D.Exp.BCD.ImageUpdateRate));
+  	set(TP.UI.H.hExp_BCD_Image_UpdateTime_Edit, 'string',   sprintf('%5.7f',TP.D.Exp.BCD.ImageUpdateTime));
 
-    %% Uncommit the session
-    TP.D.Ses.Committed =            0;
-    h = get(TP.UI.H.hSes_Commit_Rocker, 'children');
-    set(TP.UI.H.hSes_Commit_Rocker, 'SelectedObject',   h(2));
+    %% Uncommit the Exp.BCD
+    TP.D.Exp.BCD.Committed =            0;
+    h = get(TP.UI.H.hExp_BCD_Commit_Rocker, 'children');
+    set(TP.UI.H.hExp_BCD_Commit_Rocker, 'SelectedObject',   h(2));
     set(h(2),	'backgroundcolor',  TP.UI.C.SelectB);
     set(h(3), 	'backgroundcolor',  TP.UI.C.TextBG);    
     h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'children');
     set(h(2),   'enable',           'inactive');
 
 %% GUI updates w/ NI-DAQ modifications
-function msg = GUI_SesCommit
+function msg = GUI_BCD_Commit
     global TP
     %% Generate Scanning Pattern: ScanSeq and ScanLUT
- 	[TP.D.Ses.Scan.ScanSeq, TP.D.Ses.Scan.ScanInd] = feval(...
-        TP.D.Ses.Scan.GenFunc, ...
-        TP.D.Ses.Scan.NumSmplPerPixl,	TP.D.Ses.Image.NumSmplPerPixl, ...
-    	TP.D.Ses.Scan.NumPixlPerAxis, ...
-		TP.D.Ses.Scan.NumLayrPerVlme,	TP.D.Ses.Scan.LayrSpacingInZ, ...
+ 	[TP.D.Exp.BCD.ScanScanSeq, TP.D.Exp.BCD.ScanScanInd] = feval(...
+        TP.D.Exp.BCD.ScanGenFunc, ...
+        TP.D.Exp.BCD.ScanNumSmplPerPixl,	TP.D.Exp.BCD.ImageNumSmplPerPixl, ...
+    	TP.D.Exp.BCD.ScanNumPixlPerAxis, ...
+		TP.D.Exp.BCD.ScanNumLayrPerVlme,	TP.D.Exp.BCD.ScanLayrSpacingInZ, ...
         TP.D.Sys.AOD.FreqCF,            TP.D.Sys.AOD.FreqBW );
     
-    %% Session parameters: Calculate & GUI Updates
-	TP.D.Ses.Committed =            1;
-    TP.D.Ses.TimeStampCommitted =   datestr(now, 'yy/mm/dd HH:MM:SS.FFF');
-    TP.D.Ses.SessionName =          [   datestr( datenum(TP.D.Ses.TimeStampCommitted), 'yymmddTHHMMSS'),...
-                                        '_Ses_', replace(TP.D.Ses.Scan.Mode, ' ', '_')];
-    TP.D.Ses.Scan.NumSmplPerVlme =  length(TP.D.Ses.Scan.ScanSeq);
-    TP.D.Ses.Scan.VolumeRate = TP.D.Sys.NI.Task_DO_6536_SR / TP.D.Ses.Scan.NumSmplPerVlme;
-    TP.D.Ses.Scan.VolumeTime = TP.D.Ses.Scan.NumSmplPerVlme / TP.D.Sys.NI.Task_DO_6536_SR;
-    TP.D.Ses.Image.NumPixlPerUpdt = TP.D.Ses.Scan.NumSmplPerVlme / TP.D.Ses.Scan.NumSmplPerPixl / TP.D.Ses.Image.NumUpdtPerVlme;                                    
-    TP.D.Ses.Image.NumSmplPerUpdt = TP.D.Ses.Image.NumSmplPerPixl * TP.D.Ses.Image.NumPixlPerUpdt;
-    TP.D.Ses.Image.UpdateRate = TP.D.Sys.NI.Task_AI_6115_SR / TP.D.Ses.Image.NumSmplPerUpdt;
-    TP.D.Ses.Image.UpdateTime = TP.D.Ses.Image.NumSmplPerUpdt / TP.D.Sys.NI.Task_AI_6115_SR;
-    set(TP.UI.H.hSes_Scan_VolumeRate_Edit,	'string',   sprintf('%5.2f',TP.D.Ses.Scan.VolumeRate));
-  	set(TP.UI.H.hSes_Scan_VolumeTime_Edit,  'string',   sprintf('%5.7f',TP.D.Ses.Scan.VolumeTime));
- 	set(TP.UI.H.hSes_Image_UpdateRate_Edit,	'string',   sprintf('%5.2f',TP.D.Ses.Image.UpdateRate));
-  	set(TP.UI.H.hSes_Image_UpdateTime_Edit, 'string',   sprintf('%5.7f',TP.D.Ses.Image.UpdateTime));
+    %% Exp.BCD parameters: Calculate & GUI Updates
+	TP.D.Exp.BCD.Committed =            1;
+    TP.D.Exp.BCD.CommitedTimeStamp =	datestr(now, 'yy/mm/dd HH:MM:SS.FFF');
+    TP.D.Exp.BCD.CommitedFileName =	[   datestr( datenum(TP.D.Exp.BCD.CommitedTimeStamp), 'yymmddTHHMMSS'),...
+                                        '_BCD_', replace(TP.D.Exp.BCD.ScanMode, ' ', '_')];
+    TP.D.Exp.BCD.ScanNumSmplPerVlme =  length(TP.D.Exp.BCD.ScanScanSeq);
+    TP.D.Exp.BCD.ScanVolumeRate = TP.D.Sys.NI.Task_DO_6536_SR / TP.D.Exp.BCD.ScanNumSmplPerVlme;
+    TP.D.Exp.BCD.ScanVolumeTime = TP.D.Exp.BCD.ScanNumSmplPerVlme / TP.D.Sys.NI.Task_DO_6536_SR;
+    TP.D.Exp.BCD.ImageNumPixlPerUpdt = TP.D.Exp.BCD.ScanNumSmplPerVlme / TP.D.Exp.BCD.ScanNumSmplPerPixl / TP.D.Exp.BCD.ImageNumUpdtPerVlme;                                    
+    TP.D.Exp.BCD.ImageNumSmplPerUpdt = TP.D.Exp.BCD.ImageNumSmplPerPixl * TP.D.Exp.BCD.ImageNumPixlPerUpdt;
+    TP.D.Exp.BCD.ImageUpdateRate = TP.D.Sys.NI.Task_AI_6115_SR / TP.D.Exp.BCD.ImageNumSmplPerUpdt;
+    TP.D.Exp.BCD.ImageUpdateTime = TP.D.Exp.BCD.ImageNumSmplPerUpdt / TP.D.Sys.NI.Task_AI_6115_SR;
+    set(TP.UI.H.hExp_BCD_Scan_VolumeRate_Edit,	'string',   sprintf('%5.2f',TP.D.Exp.BCD.ScanVolumeRate));
+  	set(TP.UI.H.hExp_BCD_Scan_VolumeTime_Edit,  'string',   sprintf('%5.7f',TP.D.Exp.BCD.ScanVolumeTime));
+ 	set(TP.UI.H.hExp_BCD_Image_UpdateRate_Edit,	'string',   sprintf('%5.2f',TP.D.Exp.BCD.ImageUpdateRate));
+  	set(TP.UI.H.hExp_BCD_Image_UpdateTime_Edit, 'string',   sprintf('%5.7f',TP.D.Exp.BCD.ImageUpdateTime));
 
 	%% Image Enabled
-    if TP.D.Ses.Image.Enable   
+    if TP.D.Exp.BCD.ImageEnable   
         if ~exist(TP.D.Exp.DataDir, 'dir')
             mkdir(TP.D.Exp.DataDir);
         end
-        save([TP.D.Exp.DataDir, TP.D.Ses.SessionName, '.mat'],...
+        save([TP.D.Exp.DataDir, TP.D.Exp.BCD.CommitedFileName, '.mat'],...
             '-struct','TP','D');
-            % Save Session Data
+            % Save BCD Data
             % this save along takes 1.27s on T5810 @2015/1/4
         SetupImageD;    
             % Setup TP.D.Vol 
         TP.UI.H0.hImage = image(...
-                TP.D.Vol.LayerDisp{ (TP.D.Ses.Scan.NumLayrPerVlme+1)/2 },...
+                TP.D.Vol.LayerDisp{ (TP.D.Exp.BCD.ScanNumLayrPerVlme+1)/2 },...
                 'parent',           TP.UI.H0.hAxesImage);
         axis off image; box on;                
             % Display Image
@@ -406,40 +406,36 @@ function msg = GUI_SesCommit
     % hTask_DO_6536
     try TP.HW.NI.T.hTask_DO_6536.control('DAQmx_Val_Task_Unreserve');   catch;	end
     TP.HW.NI.T.hTask_DO_6536.cfgSampClkTiming(...
-        TP.D.Sys.NI.Task_DO_6536_SR,    'DAQmx_Val_ContSamps',  TP.D.Ses.Scan.NumSmplPerVlme);
+        TP.D.Sys.NI.Task_DO_6536_SR,    'DAQmx_Val_ContSamps',  TP.D.Exp.BCD.ScanNumSmplPerVlme);
     TP.HW.NI.T.hTask_DO_6536.set(...
         'sampClkTimebaseRate',          TP.D.Sys.NI.Sys_TimingRate,...
         'sampClkTimebaseSrc',           TP.D.Sys.NI.Sys_TimingBridge{2});  
     TP.HW.NI.T.hTask_DO_6536.cfgDigEdgeStartTrig(...
         TP.D.Sys.NI.Sys_TrigBridge{2},  'DAQmx_Val_Rising');
-    TP.HW.NI.T.hTask_DO_6536.writeDigitalData(TP.D.Ses.Scan.ScanSeq);
+    TP.HW.NI.T.hTask_DO_6536.writeDigitalData(TP.D.Exp.BCD.ScanScanSeq);
         
     % hTask_AI_6115
     try TP.HW.NI.T.hTask_AI_6115.control('DAQmx_Val_Task_Unreserve');   catch;  end
     TP.HW.NI.T.hTask_AI_6115.cfgSampClkTiming(...
-        TP.D.Sys.NI.Task_AI_6115_SR,    'DAQmx_Val_ContSamps',  TP.D.Ses.Image.NumSmplPerUpdt*8);
+        TP.D.Sys.NI.Task_AI_6115_SR,    'DAQmx_Val_ContSamps',  TP.D.Exp.BCD.ImageNumSmplPerUpdt*8);
     TP.HW.NI.T.hTask_AI_6115.cfgDigEdgeStartTrig(...
         TP.D.Sys.NI.Sys_TrigBridge{2},  'DAQmx_Val_Rising');
     TP.HW.NI.T.hTask_AI_6115.registerEveryNSamplesEvent(...
-        @updateScanKeeper,              TP.D.Ses.Image.NumSmplPerUpdt,...
+        @updateScanKeeper,              TP.D.Exp.BCD.ImageNumSmplPerUpdt,...
         true,                           'native');
 
-    %% Turn Laser Shutter ON
-    
-    %% Turn PMT FAN OFF    
-    
-    %% Turn TDT
-    
-    %% Session Committed: GUI update & "Start" Enabled
-    h = get(TP.UI.H.hSes_Commit_Rocker, 'children');
-    set(TP.UI.H.hSes_Commit_Rocker, 'SelectedObject',   h(3));
+    %% Turn Laser Power ON
+        
+    %% BCD Committed: GUI update & "Start" Enabled
+    h = get(TP.UI.H.hExp_BCD_Commit_Rocker, 'children');
+    set(TP.UI.H.hExp_BCD_Commit_Rocker, 'SelectedObject',   h(3));
     set(h(3),	'backgroundcolor',  TP.UI.C.SelectB);
     set(h(2),  	'backgroundcolor',  TP.UI.C.TextBG);
     h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'children');
     set(h(2),   'enable',           'on');
   	
     %% MSG LOG
-    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_SesCommit\tSession is committed\r\n'];
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_BCD_Commit\tExp.BCD is committed\r\n'];
     updateMsg(TP.D.Exp.hLog, msg);  
     
 function msg = GUI_ScanScheme(varargin)
@@ -809,6 +805,11 @@ function msg = GUI_ScanStartTrigStop(varargin)
 	%% MSG LOG
     msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_ScanStartTrigStop Called\r\n'];
     updateMsg(TP.D.Exp.hLog, msg);  
+    
+    %% Turn Laser Shutter Down
+    %% Turn PMT FAN OFF    
+    %% Turn TDT
+    
     %% Controlling the UI &  Start or Stop         
 	switch StartTrigStop
       	case 'Start'

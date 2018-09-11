@@ -386,7 +386,7 @@ for disp=1
         
 end
 
-%% Mky / Exp / Ses.Mech  
+%% Mky / Exp 
 for disp=1
     
     S.PnltCurrent.row       = S.PnltMech.row;
@@ -463,12 +463,12 @@ for disp=1
         WP.text = { 'Obj & Comp Lens Configuration'};
         WP.tip = {'\n2D raster = 2D diagonal raster scanning\n3D sweep = 3D diagonal raster scanning across multi-layers'};
         WP.inputOptions = {'10x + 1000mm','25x + 1000mm', '25x + 500mm'};
-        WP.inputDefault = 1; % TP.D.Ses.Scan.ModeNum; unfinished
+        WP.inputDefault = 1; % TP.D.Exp.BCD.ScanModeNum; unfinished
         Panelette(S, WP, 'TP'); 
         TP.UI.H.hExp_Mech_LensCfg_Rocker = TP.UI.H0.Panelette{WP.row,WP.column}.hRocker{1};
         htemp = get(TP.UI.H.hExp_Mech_LensCfg_Rocker,'children');
         for j = 1:length(htemp)
-            set(htemp(j),'tag','hSes_Scan_Mode_Rocker');
+            set(htemp(j),'tag','hExp_BCD_Scan_Mode_Rocker');
         end
         clear WP;
         
@@ -509,36 +509,35 @@ for disp=1
         set(TP.UI.H.hExp_Mech_Z0_SM1Z_Edit,	'tag', 'hExp_Mech_Z0_SM1Z_Edit');
         clear WP;
         
-    %%%%%%%%%%%%%%%%%%%%%%% Ses     
-	WP.name = 'Ses Zs_SM1Z';
+	WP.name = 'Exp Zs_SM1Z';
         WP.handleseed = 'TP.UI.H0.Panelette';   
         WP.type =       'Edit';           
         WP.row =        S.PnltCurrent.row;
         WP.column =     S.PnltCurrent.column;
             S.PnltCurrent.column = S.PnltCurrent.column + 1;
         WP.text = {	'Estimated Z depth, (um), superfacial-deep',...
-                    'Z reading # on SM1Z @ this session level'};
+                    'Z reading # on SM1Z @ this recording level'};
         WP.tip = {	'Estimated Z depth, (um), define as superfacial-deep direction, in um',...
-                    'Z reading # on SM1Z @ this session level'}; 
-        WP.inputValue = {   TP.D.Ses.Mech.EstZ,...
-                            TP.D.Ses.Mech.Zs_SM1Z};    
+                    'Z reading # on SM1Z @ this recording level'}; 
+        WP.inputValue = {   TP.D.Exp.Mech.EstZ,...
+                            TP.D.Exp.Mech.Zs_SM1Z};    
         WP.inputFormat = {'%4.0f','%2.0f'};
         WP.inputEnable = {'inactive','on'};
         Panelette(S, WP, 'TP');    
-        TP.UI.H.hSes_Mech_EstZ_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
-        TP.UI.H.hSes_Mech_Zs_SM1Z_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
-        set(TP.UI.H.hSes_Mech_EstZ_Edit,	'tag', 'hSes_Mech_EstZ_Edit');
-     	set(TP.UI.H.hSes_Mech_Zs_SM1Z_Edit,	'tag', 'hSes_Mech_Zs_SM1Z_Edit');
+        TP.UI.H.hExp_Mech_EstZ_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
+        TP.UI.H.hExp_Mech_Zs_SM1Z_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
+        set(TP.UI.H.hExp_Mech_EstZ_Edit,	'tag', 'hExp_Mech_EstZ_Edit');
+     	set(TP.UI.H.hExp_Mech_Zs_SM1Z_Edit,	'tag', 'hExp_Mech_Zs_SM1Z_Edit');
         clear WP;         
 end
 
-%% Ses.Scan 
+%% Exp.BCD
 for disp=1
 
     S.PnltCurrent.row       = S.PnltScan.row;
     S.PnltCurrent.column    = S.PnltScan.column;
            
- 	WP.name = 'Ses Scan.Mode';
+ 	WP.name = 'BCD Scan.Mode';
         WP.handleseed = 'TP.UI.H0.Panelette';
         WP.type = 'RockerSwitch';
         WP.row      = S.PnltCurrent.row;
@@ -547,18 +546,18 @@ for disp=1
         WP.text = { '2D or 3D,Random Access or Raster'};
         WP.tip = {'2D random = 2D random access jumping scanning among pixels\n2D raster = 2D diagonal raster scanning\n3D sweep = 3D diagonal raster scanning across multi-layers'};
         WP.inputOptions = {'2D random','2D raster', '3D raster'};
-        WP.inputDefault = TP.D.Ses.Scan.ModeNum;
+        WP.inputDefault = TP.D.Exp.BCD.ScanModeNum;
         Panelette(S, WP, 'TP'); 
-        TP.UI.H.hSes_Scan_Mode_Rocker = TP.UI.H0.Panelette{WP.row,WP.column}.hRocker{1};
+        TP.UI.H.hExp_BCD_Scan_Mode_Rocker = TP.UI.H0.Panelette{WP.row,WP.column}.hRocker{1};
        
-        set(TP.UI.H.hSes_Scan_Mode_Rocker, 'tag', 'hSes_Scan_Mode_Rocker');
-%         htemp = get(TP.UI.H.hSes_Scan_Mode_Rocker,'children'); 
+        set(TP.UI.H.hExp_BCD_Scan_Mode_Rocker, 'tag', 'hExp_BCD_Scan_Mode_Rocker');
+%         htemp = get(TP.UI.H.hExp_BCD_Scan_Mode_Rocker,'children'); 
 %         for j = 1:length(htemp)
-%             set(htemp(j),'tag','hSes_Scan_Mode_Rocker');
+%             set(htemp(j),'tag','hExp_BCD_Scan_Mode_Rocker');
 %         end;
         clear WP;
     
-	WP.name = 'Ses Scan.Scale1';
+	WP.name = 'BCD Scan.Scale1';
         WP.handleseed = 'TP.UI.H0.Panelette';
         WP.type = 'Edit';           
         WP.row      = S.PnltCurrent.row;
@@ -568,18 +567,18 @@ for disp=1
                     '# of SAMPLES on 6115 per pixel (1sample = .1us)'};
         WP.tip = {	'# of PIXELS scanned per axis (pixels)',...
                     '# of SAMPLES on 6115 per pixel (1sample = .1us)'};
-        WP.inputValue = {   TP.D.Ses.Scan.NumPixlPerAxis,...
-                            TP.D.Ses.Image.NumSmplPerPixl}; 
+        WP.inputValue = {   TP.D.Exp.BCD.ScanNumPixlPerAxis,...
+                            TP.D.Exp.BCD.ImageNumSmplPerPixl}; 
         WP.inputFormat = {'%d','%d'};
         WP.inputEnable = {'on','on'};
         Panelette(S, WP, 'TP');
-        TP.UI.H.hSes_Scan_NumPixlPerAxis_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
-        TP.UI.H.hSes_Image_NumSmplPerPixl_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
-        set(TP.UI.H.hSes_Scan_NumPixlPerAxis_Edit, 'tag', 'hSes_Scan_NumPixlPerAxis_Edit');
-        set(TP.UI.H.hSes_Image_NumSmplPerPixl_Edit, 'tag', 'hSes_Scan_NumSmplPerPixl_Edit');
+        TP.UI.H.hExp_BCD_Scan_NumPixlPerAxis_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
+        TP.UI.H.hExp_BCD_Image_NumSmplPerPixl_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
+        set(TP.UI.H.hExp_BCD_Scan_NumPixlPerAxis_Edit, 'tag', 'hExp_BCD_Scan_NumPixlPerAxis_Edit');
+        set(TP.UI.H.hExp_BCD_Image_NumSmplPerPixl_Edit, 'tag', 'hExp_BCD_Scan_NumSmplPerPixl_Edit');
         clear WP;
     
-	WP.name = 'Ses Scan.Scale2';
+	WP.name = 'BCD Scan.Scale2';
         WP.handleseed = 'TP.UI.H0.Panelette';
         WP.type = 'Edit';           
         WP.row      = S.PnltCurrent.row;
@@ -589,18 +588,18 @@ for disp=1
                     '# of LAYERS per volume scan (layers)'};
         WP.tip = {	'Layer spacing, in um, within z+-50um',...
                     '# of LAYERS per volume scan (layers)'};
-        WP.inputValue = {   TP.D.Ses.Scan.LayrSpacingInZ,...
-                            TP.D.Ses.Scan.NumLayrPerVlme};
+        WP.inputValue = {   TP.D.Exp.BCD.ScanLayrSpacingInZ,...
+                            TP.D.Exp.BCD.ScanNumLayrPerVlme};
         WP.inputFormat = {'%d','%d'};
         WP.inputEnable = {'inactive','inactive'};
         Panelette(S, WP, 'TP');          
-        TP.UI.H.hSes_Scan_LayrSpacingInZ_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};  
-        TP.UI.H.hSes_Scan_NumLayrPerVlme_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
-        set(TP.UI.H.hSes_Scan_LayrSpacingInZ_Edit, 'tag', 'hSes_Scan_LayrSpacingInZ_Edit');
-        set(TP.UI.H.hSes_Scan_NumLayrPerVlme_Edit, 'tag', 'hSes_Scan_NumLayrPerVlme_Edit');
+        TP.UI.H.hExp_BCD_Scan_LayrSpacingInZ_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};  
+        TP.UI.H.hExp_BCD_Scan_NumLayrPerVlme_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
+        set(TP.UI.H.hExp_BCD_Scan_LayrSpacingInZ_Edit, 'tag', 'hExp_BCD_Scan_LayrSpacingInZ_Edit');
+        set(TP.UI.H.hExp_BCD_Scan_NumLayrPerVlme_Edit, 'tag', 'hExp_BCD_Scan_NumLayrPerVlme_Edit');
         clear WP;
     
-	WP.name = 'Ses Scan.Speed';
+	WP.name = 'BCD Scan.Speed';
         WP.handleseed = 'TP.UI.H0.Panelette';
         WP.type = 'Edit';           
         WP.row      = S.PnltCurrent.row;
@@ -610,18 +609,18 @@ for disp=1
                     'Volume Rate \n(in Hz)'};
         WP.tip = {	'Update Time \n(in 6115 samples, 1sample = 0.1us)',...
                     'Volume Rate \n(in Hz)'};
-        WP.inputValue = {   TP.D.Ses.Scan.VolumeTime,...
-                            TP.D.Ses.Scan.VolumeRate};
+        WP.inputValue = {   TP.D.Exp.BCD.ScanVolumeTime,...
+                            TP.D.Exp.BCD.ScanVolumeRate};
         WP.inputFormat = {'%d','%d'};    
         WP.inputEnable = {'inactive','inactive'};
         Panelette(S, WP, 'TP');            
-        TP.UI.H.hSes_Scan_VolumeTime_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
-        TP.UI.H.hSes_Scan_VolumeRate_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
-        set(TP.UI.H.hSes_Scan_VolumeTime_Edit, 'tag', 'hSes_Scan_VolumeTime_Edit');
-        set(TP.UI.H.hSes_Scan_VolumeRate_Edit, 'tag', 'hSes_Scan_VolumeRate_Edit');
+        TP.UI.H.hExp_BCD_Scan_VolumeTime_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
+        TP.UI.H.hExp_BCD_Scan_VolumeRate_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
+        set(TP.UI.H.hExp_BCD_Scan_VolumeTime_Edit, 'tag', 'hExp_BCD_Scan_VolumeTime_Edit');
+        set(TP.UI.H.hExp_BCD_Scan_VolumeRate_Edit, 'tag', 'hExp_BCD_Scan_VolumeRate_Edit');
         clear WP;   
 
-	WP.name = 'Ses Updt.Scale1';
+	WP.name = 'BCD Updt.Scale1';
         WP.handleseed = 'TP.UI.H0.Panelette';
         WP.type = 'Edit';           
         WP.row      = S.PnltCurrent.row;
@@ -631,18 +630,18 @@ for disp=1
                     '# of UPDATES per volume scanned'};
         WP.tip = {	'# of VOLUMES per update',...
                     '# of UPDATES per volume scanned'};
-        WP.inputValue = {   TP.D.Ses.Image.NumVlmePerUpdt,...
-                            TP.D.Ses.Image.NumUpdtPerVlme};
+        WP.inputValue = {   TP.D.Exp.BCD.ImageNumVlmePerUpdt,...
+                            TP.D.Exp.BCD.ImageNumUpdtPerVlme};
         WP.inputFormat = {'%d','%d'};
         WP.inputEnable = {'inactive','on'};
         Panelette(S, WP, 'TP');          
-        TP.UI.H.hSes_Image_NumVlmePerUpdt_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
-        TP.UI.H.hSes_Image_NumUpdtPerVlme_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
-        set(TP.UI.H.hSes_Image_NumUpdtPerVlme_Edit, 'tag', 'hSes_Image_NumUpdtPerVlme_Edit');
-        set(TP.UI.H.hSes_Image_NumVlmePerUpdt_Edit, 'tag', 'hSes_Image_NumUpdtPerVlme_Edit');
+        TP.UI.H.hExp_BCD_Image_NumVlmePerUpdt_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
+        TP.UI.H.hExp_BCD_Image_NumUpdtPerVlme_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
+        set(TP.UI.H.hExp_BCD_Image_NumUpdtPerVlme_Edit, 'tag', 'hExp_BCD_Image_NumUpdtPerVlme_Edit');
+        set(TP.UI.H.hExp_BCD_Image_NumVlmePerUpdt_Edit, 'tag', 'hExp_BCD_Image_NumUpdtPerVlme_Edit');
         clear WP;
     
-    WP.name = 'Ses Updt.Speed';
+    WP.name = 'BCD Updt.Speed';
         WP.handleseed = 'TP.UI.H0.Panelette';
         WP.type = 'Edit';           
         WP.row      = S.PnltCurrent.row;
@@ -652,34 +651,34 @@ for disp=1
                     'Update Rate \n(in Hz)'};
         WP.tip = {	'Update Time \n(in Sec)',...
                     'Update Rate \n(in Hz)'};
-        WP.inputValue = {   TP.D.Ses.Image.UpdateTime,...
-                            TP.D.Ses.Image.UpdateRate};
+        WP.inputValue = {   TP.D.Exp.BCD.ImageUpdateTime,...
+                            TP.D.Exp.BCD.ImageUpdateRate};
         WP.inputFormat = {'%d','%d'};    
         WP.inputEnable = {'inactive','inactive'};
         Panelette(S, WP, 'TP');            
-        TP.UI.H.hSes_Image_UpdateTime_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
-        TP.UI.H.hSes_Image_UpdateRate_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
-        set(TP.UI.H.hSes_Image_UpdateTime_Edit, 'tag', 'hSes_Image_UpdateTime_Edit');
-        set(TP.UI.H.hSes_Image_UpdateRate_Edit, 'tag', 'hSes_Image_UpdateRate_Edit');
+        TP.UI.H.hExp_BCD_Image_UpdateTime_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
+        TP.UI.H.hExp_BCD_Image_UpdateRate_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
+        set(TP.UI.H.hExp_BCD_Image_UpdateTime_Edit, 'tag', 'hExp_BCD_Image_UpdateTime_Edit');
+        set(TP.UI.H.hExp_BCD_Image_UpdateRate_Edit, 'tag', 'hExp_BCD_Image_UpdateRate_Edit');
         clear WP; 
         
-  	WP.name = 'Ses Commit';  
+  	WP.name = 'BCD Commit';  
         WP.handleseed = 'TP.UI.H0.Panelette';
         WP.type =       'RockerSwitch';	
         WP.row =        S.PnltCurrent.row;         
         WP.column =     S.PnltCurrent.column;
             S.PnltCurrent.column = S.PnltCurrent.column + 1;
-        WP.text = {     'Commit the Session & NI-DAQ'};
-        WP.tip = {[     'Commit Ses & scanning parameters\n',...
+        WP.text = {     'Commit the BCD & NI-DAQ'};
+        WP.tip = {[     'Commit BCD & scanning parameters\n',...
                         'Generate the scan pattern\n',...
                         'Allocate memories for D.Trl\n',...
                         'Commit NI-DAQ tasks']};
         WP.inputOptions = { 'Commit',   'uncommited',   ''};        
         WP.enable = [       1           0               0];
-        WP.inputDefault = 2-TP.D.Ses.Committed;
+        WP.inputDefault = 2-TP.D.Exp.BCD.Committed;
         Panelette(S, WP, 'TP');
-        TP.UI.H.hSes_Commit_Rocker = TP.UI.H0.Panelette{WP.row,WP.column}.hRocker{1}; 
-        set(TP.UI.H.hSes_Commit_Rocker,	'tag', 'hSes_Commit_Rocker');
+        TP.UI.H.hExp_BCD_Commit_Rocker = TP.UI.H0.Panelette{WP.row,WP.column}.hRocker{1}; 
+        set(TP.UI.H.hExp_BCD_Commit_Rocker,	'tag', 'hExp_BCD_Commit_Rocker');
         clear WP;
 end
 

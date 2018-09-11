@@ -434,17 +434,14 @@ global TP
     % Setup FileHandles and FileSettings
     for i = 1:TP.EX.Dir.FileNum
         fnametemp = TP.EX.Dir.FileListT(i).name;
-        hSessMatTemp = matfile([TP.EX.Dir.DirString, '\', TP.EX.Dir.FileListR(1).name]);
+        hBCDMatTemp = matfile([TP.EX.Dir.DirString, '\', TP.EX.Dir.FileListR(1).name]);
         hFileMatTemp = matfile([TP.EX.Dir.DirString, '\', fnametemp]);
         TP.EX.D.File(i,1).hFileMat =    hFileMatTemp;
-        TP.EX.D.File(i,1).D =           hSessMatTemp.D; 
+        TP.EX.D.File(i,1).D =           hBCDMatTemp.D; 
         TP.EX.D.File(i,1).D.Trl =       hFileMatTemp; 
-        ttemp = evalc('feature(''hotlinks'',0); TP.EX.D.File(i,1).D.Ses.Scan');
-        ttemp = ['Scan:' ttemp(9:end)];
-            TP.EX.D.File(i,1).SettingsMsg = ttemp;
-        ttemp = evalc('feature(''hotlinks'',0); TP.EX.D.File(i,1).D.Ses.Image');
-        ttemp = ['Image:' ttemp(9:end)];
-            TP.EX.D.File(i,1).SettingsMsg = [TP.EX.D.File(i,1).SettingsMsg ttemp];  
+        ttemp = evalc('feature(''hotlinks'',0); TP.EX.D.File(i,1).D.Exp.BCD');
+        ttemp = ['Exp.BCD:' ttemp(9:end)];
+            TP.EX.D.File(i,1).SettingsMsg = ttemp; 
         ttemp = TP.EX.D.File(i,1).D.Trl.ScanScheme;
         ttemp = ['Scan Scheme:', 'newline', '    ', ttemp, 'newline'];
             TP.EX.D.File(i,1).SettingsMsg = [TP.EX.D.File(i,1).SettingsMsg ttemp]; 
@@ -469,11 +466,11 @@ global TP
     % Different from FANTASIA('GUI_ScanParameters')
     TP.D =         TP.EX.D.File(TP.EX.D.CurFileNum).D;
     
-    TP.D.Ses.Image.NumUpdtPerVlme = 1;    
-    TP.D.Ses.Image.NumVlmePerUpdt = 1;
-    TP.D.Ses.Image.NumPixlPerUpdt = TP.D.Ses.Scan.NumSmplPerVlme / TP.D.Ses.Scan.NumSmplPerPixl / TP.D.Ses.Image.NumUpdtPerVlme;                                    
-    TP.D.Ses.Image.NumSmplPerUpdt = TP.D.Ses.Image.NumSmplPerPixl * TP.D.Ses.Image.NumPixlPerUpdt;
-  	TP.D.Ses.Image.NumSmplPerVlme = TP.D.Ses.Image.NumSmplPerUpdt * TP.D.Ses.Image.NumUpdtPerVlme;
+    TP.D.Exp.BCD.ImageNumUpdtPerVlme = 1;    
+    TP.D.Exp.BCD.ImageNumVlmePerUpdt = 1;
+    TP.D.Exp.BCD.ImageNumPixlPerUpdt = TP.D.Exp.BCD.ScanNumSmplPerVlme / TP.D.Exp.BCD.ScanNumSmplPerPixl / TP.D.Exp.BCD.ImageNumUpdtPerVlme;                                    
+    TP.D.Exp.BCD.ImageNumSmplPerUpdt = TP.D.Exp.BCD.ImageNumSmplPerPixl * TP.D.Exp.BCD.ImageNumPixlPerUpdt;
+  	TP.D.Exp.BCD.ImageNumSmplPerVlme = TP.D.Exp.BCD.ImageNumSmplPerUpdt * TP.D.Exp.BCD.ImageNumUpdtPerVlme;
 
     TP.EX.D.CurFileNum =    get(TP.EX.UI.H0.hFileList, 'value'); 
     TP.EX.D.CurFileFid =    TP.EX.D.File(TP.EX.D.CurFileNum).hFileRec;      
@@ -482,7 +479,7 @@ global TP
     SetupImageD;
     
 	TP.EX.UI.H0.hImage = image(...
-            TP.D.Vol.LayerDisp{ (TP.D.Ses.Scan.NumLayrPerVlme+1)/2 },...
+            TP.D.Vol.LayerDisp{ (TP.D.Exp.BCD.ScanNumLayrPerVlme+1)/2 },...
             'parent',           TP.EX.UI.H0.hAxesImage);
     axis off
     axis image
@@ -509,15 +506,15 @@ function SelectVlme
 global TP
     TP.EX.D.CurVlmeNum = get(TP.EX.UI.H0.hVlmeList, 'value');
     fseek(TP.EX.D.CurFileFid, ...
-        (TP.EX.D.CurVlmeNum-1)*TP.D.Ses.Image.NumSmplPerVlme*2, 'bof');
+        (TP.EX.D.CurVlmeNum-1)*TP.D.Exp.BCD.ImageNumSmplPerVlme*2, 'bof');
      
     TP.D.Vol.DataColRaw = ...
-        fread(TP.EX.D.CurFileFid, TP.D.Ses.Image.NumSmplPerVlme, 'int16');
+        fread(TP.EX.D.CurFileFid, TP.D.Exp.BCD.ImageNumSmplPerVlme, 'int16');
     % Imaging Reconstruction
-    feval(TP.D.Ses.Image.ImgFunc);    
+    feval(TP.D.Exp.BCD.ImageImgFunc);    
     % Image Display
     set(TP.EX.UI.H0.hImage,    'cdata', ...
-        TP.D.Vol.LayerDisp{ (TP.D.Ses.Scan.NumLayrPerVlme+1)/2 } );
+        TP.D.Vol.LayerDisp{ (TP.D.Exp.BCD.ScanNumLayrPerVlme+1)/2 } );
     % Histogram Display
     updateImageHistogram(TP.EX.UI.H0.Hist0);
     
@@ -555,13 +552,13 @@ sounddatatype = whos('sounddata');
 TP.EX.D.CurVideoObj = vision.VideoFileWriter(vnametemp,...
     'FileFormat',       'AVI',...
     'AudioInputPort',   true,...
-    'FrameRate',        TP.D.Ses.Scan.VolumeRate,...
+    'FrameRate',        TP.D.Exp.BCD.ScanVolumeRate,...
     'VideoCompressor',	'None (uncompressed)',...
     'AudioDataType',    'int16');
 
 
 % TP.EX.D.CurImgStack = double(TP.D.Vol.LayerAbs{1});
-SoundNum = round(FS/TP.D.Ses.Scan.VolumeRate);
+SoundNum = round(FS/TP.D.Exp.BCD.ScanVolumeRate);
 % SoundSeq = zeros(444 * SoundNum,1);
 SoundSeq = zeros(TP.EX.D.CurFileVlmeMax * SoundNum,1);
 SoundSeq(1:length(sounddata)) = sounddata * (strcmp(TP.D.Trl.ScanScheme, 'GRAB'));
@@ -594,7 +591,7 @@ fnametemp = TP.EX.Dir.FileListT(TP.EX.D.CurFileNum).name;
 vnametemp = [TP.EX.Dir.DirString,'\', fnametemp(1:16), 'mp4'];
 TP.EX.D.CurVideoObj = VideoWriter(vnametemp, 'MPEG-4');
 TP.EX.D.CurVideoObj.Quality = 100;
-TP.EX.D.CurVideoObj.FrameRate = TP.D.Ses.Scan.VolumeRate;
+TP.EX.D.CurVideoObj.FrameRate = TP.D.Exp.BCD.ScanVolumeRate;
 open(TP.EX.D.CurVideoObj);
 
 TP.EX.UI.H0.hWaitBar = waitbar(0,...

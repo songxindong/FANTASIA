@@ -58,17 +58,17 @@ persistent StartTrigStopT
         save([TP.D.Exp.DataDir, datestr(TP.D.Trl.TimeStampStarted, 'yymmddTHHMMSS'),'.mat'],...
             '-struct','Trl');
     end
-
-%% MSG LOG 
-    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tscanStopped\tScanning Stopped w/ # of Volumes Scanned = ',...
-        num2str(TP.D.Trl.Vdone),'\r\n'];
-	updateMsg(TP.D.Exp.hLog, msg);
   
 %% GUI StartTrigStop Coloring
 	h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'Children');
     set(h(1),   'backgroundcolor', TP.UI.C.SelectB);
     set(h(2),   'backgroundcolor', TP.UI.C.TextBG);
 	set(h(3),   'backgroundcolor', TP.UI.C.TextBG);
+    
+%% MSG LOG 
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tscanStopped\tScanning Stopped w/ # of Volumes Scanned = ',...
+        num2str(TP.D.Trl.Vdone),'\r\n'];
+	updateMsg(TP.D.Exp.hLog, msg);
     
 %% Loop Control
     if strcmp(TP.D.Trl.ScanScheme, 'LOOP') && StartTrigStopT==-1

@@ -330,6 +330,7 @@ for disp = 1
     msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tFANTASIA\tFANTASIA Opened, What a BEAUTIFUL day!\r\n'];
         updateMsg(TP.D.Exp.hLog, msg);
     Xin.D.Exp.hLog =            TP.D.Exp.hLog;
+    Xin.D.Exp.DataDir =         TP.D.Exp.DataDir;
     
 	%%%%%%%%%%%%%%%%%%%%%%% Mech
     TP.D.Exp.AngleArm =       	0;
@@ -342,49 +343,44 @@ for disp = 1
         % Z reading # on SM1Z of the cortex surface level
     TP.D.Exp.SurfaceWF =        [];
         % Surface CCD widefield image
+    TP.D.Exp.Mech.Zs_SM1Z =             NaN;
+        % Z reading # on SM1Z of the current recording level
+            % NaN for searching recordings
+  	TP.D.Exp.Mech.EstZ =                NaN;
+        % define as superfacial-deep direction, in um
+        
+    %%%%%%%%%%%%%%%%%%%%%%% BCD Scan & Image
+    TP.D.Exp.BCD.ScanMode =                 '2D random';
+    TP.D.Exp.BCD.ScanModeNum =              1;    
+    TP.D.Exp.BCD.ScanGenFunc =              @GenScanPatn2DrandomFullRaster;
+    TP.D.Exp.BCD.ScanScanSeq =              [];
+    TP.D.Exp.BCD.ScanScanInd =              {};     % may be move to "Image" field
+    TP.D.Exp.BCD.ScanNumSmplPerPixl =       2e6;
+    TP.D.Exp.BCD.ScanNumPixlPerAxis =   	1;
+    TP.D.Exp.BCD.ScanNumLayrPerVlme =    	1;
+    TP.D.Exp.BCD.ScanNumSmplPerVlme =       NaN;    
+    TP.D.Exp.BCD.ScanLayrSpacingInZ =       NaN;
+    TP.D.Exp.BCD.ScanVolumeTime =           NaN;
+    TP.D.Exp.BCD.ScanVolumeRate =         	NaN;
+    
+    TP.D.Exp.BCD.ImageNumSmplPerPixl =      1e6;
+    TP.D.Exp.BCD.ImageNumPixlPerUpdt =   	NaN;
+    TP.D.Exp.BCD.ImageNumSmplPerUpdt =      NaN;
+    TP.D.Exp.BCD.ImageNumUpdtPerVlme =      1;
+    TP.D.Exp.BCD.ImageNumVlmePerUpdt =      1;
+    TP.D.Exp.BCD.ImageUpdateTime =          NaN;
+    TP.D.Exp.BCD.ImageUpdateRate =          NaN;
+    TP.D.Exp.BCD.ImageImgFunc =             '';
+	TP.D.Exp.BCD.ImageEnable =              0;  
+    
+    TP.D.Exp.BCD.Committed =                0;
+    TP.D.Exp.BCD.CommitedTimeStamp =        NaN;    
+    TP.D.Exp.BCD.CommitedFileName =         '';
         
 end
 
 %% D.Ses (Session)
 for disp = 1
-    TP.D.Ses.Committed =                0;
-    TP.D.Ses.TimeStampCommitted =       NaN;    
-    TP.D.Ses.SessionName =              '';
- 	%%%%%%%%%%%%%%%%%%%%%%% Mech
-    TP.D.Ses.Mech.Zs_SM1Z =             NaN;
-        % Z reading # on SM1Z of this session level
-            % NaN for searching session
-  	TP.D.Ses.Mech.EstZ =                NaN;
-        % define as superfacial-deep direction, in um
-    
-    %%%%%%%%%%%%%%%%%%%%%%% Scan
-    TP.D.Ses.Scan.Mode =                '2D random';
-    TP.D.Ses.Scan.ModeNum =             1;
-    
-    TP.D.Ses.Scan.GenFunc =             @GenScanPatn2DrandomFullRaster;
-    TP.D.Ses.Scan.ScanSeq =             [];
-    TP.D.Ses.Scan.ScanInd =             {};     % may be move to "Image" field
-
-    TP.D.Ses.Scan.NumSmplPerPixl =      2e6;
-    TP.D.Ses.Scan.NumPixlPerAxis =   	1;
-    TP.D.Ses.Scan.NumLayrPerVlme =    	1;
-    TP.D.Ses.Scan.NumSmplPerVlme =      NaN;
-    
-    TP.D.Ses.Scan.LayrSpacingInZ =      NaN;
-
-    TP.D.Ses.Scan.VolumeTime =          NaN;
-    TP.D.Ses.Scan.VolumeRate =         	NaN;
-        
-  	%%%%%%%%%%%%%%%%%%%%%%% Image    
-    TP.D.Ses.Image.NumSmplPerPixl = 	1e6;
-    TP.D.Ses.Image.NumPixlPerUpdt =   	NaN;
-    TP.D.Ses.Image.NumSmplPerUpdt =     NaN;
-    TP.D.Ses.Image.NumUpdtPerVlme =     1;
-    TP.D.Ses.Image.NumVlmePerUpdt =     1;
-    TP.D.Ses.Image.UpdateTime =         NaN;
-    TP.D.Ses.Image.UpdateRate =         NaN;
-    TP.D.Ses.Image.ImgFunc =            '';
-	TP.D.Ses.Image.Enable =             0;   
        
 end
 
