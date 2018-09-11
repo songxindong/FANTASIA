@@ -24,8 +24,8 @@ tmax =  lwave/TP.D.Sys.NI.Task_AO_6323_UR;
 feval(TP.D.Sys.Name, 'GUI_Tmax', tmax);
 
 %% Setup hTask_AO_6223
-try TP.HW.NI.T.hTask_AO_6323.abort();       catch;  end;
-try TP.HW.NI.T.hTask_AO_6323.delete();      catch;  end;
+try TP.HW.NI.T.hTask_AO_6323.abort();       catch;  end
+try TP.HW.NI.T.hTask_AO_6323.delete();      catch;  end
 TP.HW.NI.T.hTask_AO_6323 = Task(TP.D.Sys.NI.Task_AO_6323_Name);
 TP.HW.NI.T.hTask_AO_6323.createAOVoltageChan(...
     TP.D.Sys.NI.Chan_AO_SoundWave{1},   TP.D.Sys.NI.Chan_AO_SoundWave{2}, ...
@@ -52,4 +52,6 @@ h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'Children');
 set(h(2),                               'enable',           'on');
 
 %% MSG
-    % loading sound wrong condition
+    % loading sound wrong condition    
+msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tSetup SoundInGRAB\r\n'];
+updateMsg(TP.D.Exp.hLog, msg);

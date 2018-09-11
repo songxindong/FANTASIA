@@ -1,0 +1,19 @@
+Log system reformat timing "yy/mm/dd/ HH:MM:SS.FFF"
+Log system reformat fprintf: updateMsg
+Session file & folder control
+delete all unnecessary ";"
+
+Trl saving structure w/ timestamps & VS reset
+	add TP.D.Ses.TimeStampCommitted
+frame dropping problem 
+
+Integrate Laser Control & Report
+PMT Fan control over a recording session
+
+Scientifica MMBP control
+PI objective stage control
+Experiment alignment control
+Restructure NIDAQ as XINTRINSIC
+
+unifiying function "Panelette"
+check log system in every funciton, whether the msg is composed right

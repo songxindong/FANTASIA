@@ -228,8 +228,8 @@ TP.EX.UI.C =        S.Color;
                             S.SD+(S.S+S.PaneletteHeight)*(i-1),...
                             S.PaneletteWidth, S.PaneletteHeight]);
                         % edge is 2*S.S
-            end;
-        end;
+            end
+        end
         
 %% UI Panelettes   
 S.PnltImage.column = 1;     S.PnltImage.row = 1;
@@ -446,7 +446,7 @@ global TP
         ttemp = ['Image:' ttemp(9:end)];
             TP.EX.D.File(i,1).SettingsMsg = [TP.EX.D.File(i,1).SettingsMsg ttemp];  
         ttemp = TP.EX.D.File(i,1).D.Trl.ScanScheme;
-        ttemp = ['Scan Scheme:', char(10), '    ', ttemp, char(10)];
+        ttemp = ['Scan Scheme:', 'newline', '    ', ttemp, 'newline'];
             TP.EX.D.File(i,1).SettingsMsg = [TP.EX.D.File(i,1).SettingsMsg ttemp]; 
         ttemp = TP.EX.D.File(i,1).D.Trl.GRAB;
         ttemp = ttemp.SoundFname;
@@ -456,7 +456,7 @@ global TP
         ttemp = reshape(ttemp, tn, tl);
         ttemp = [char(32*ones(4, tl)); ttemp; char(10*ones(1, tl))];
         ttemp = reshape(ttemp, 1, []);
-        ttemp = ['Sound:', char(10), ttemp];
+        ttemp = ['Sound:', 'newline', ttemp];
             TP.EX.D.File(i,1).SettingsMsg = [TP.EX.D.File(i,1).SettingsMsg ttemp];      
         TP.EX.D.File(i,1).hFileRec = fopen([TP.EX.Dir.DirString,'\',fnametemp(1:16),'rec'],'r');
     end
@@ -578,7 +578,7 @@ for i = 1:TP.EX.D.CurFileVlmeMax
             SoundSeq((i-1)*SoundNum+1:(i-0)*SoundNum)  );
 %     waitfor(TP.EX.UI.H0.hImage);
     pause(0.05)
-end;
+end
 
 % figure;
 % TP.EX.D.CurImgStackD = zeros(size(TP.EX.D.CurImgStack,1), size(TP.EX.D.CurImgStack,2),3);
@@ -618,7 +618,7 @@ for i = 1:TP.EX.D.CurFileVlmeMax
         TP.EX.UI.H0.hWaitBar,...
         ['Totally ', num2str(TP.EX.D.CurFileVlmeMax), ' frames, ',...
             num2str(i), ' finished.']);
-end;
+end
 % figure;
 % TP.EX.D.CurImgStackD = zeros(size(TP.EX.D.CurImgStack,1), size(TP.EX.D.CurImgStack,2),3);
 % TP.EX.D.CurImgStackD(:,:,2) = TP.EX.D.CurImgStack/max(max(TP.EX.D.CurImgStack));

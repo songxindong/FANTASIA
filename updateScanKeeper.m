@@ -79,7 +79,7 @@ end
         h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'Children');
         set(TP.UI.H.hTrl_StartTrigStop_Rocker, 'SelectedObject', h(1));
         % MSG LOG 
-        msg = [datestr(now) '\tupdateScanKeeper\tScanning Stopping since timeout\r\n'];
+        msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tupdateScanKeeper\tScanning Stopping since timeout\r\n'];
     end
 
 %% Whether Stop HouseKeeping

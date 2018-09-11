@@ -65,6 +65,6 @@ ScanSeqFu = ScanSeqFu(:,1)*2^16 + ScanSeqFu(:,2);
 ScanSeq = reshape(repmat(ScanSeqFu', NumSS, 1),[],1);
 
 %% LOG MSG
-msg = [ datestr(now) '\tGenScanPatn2DrandomFullRandom\t',...
+msg = [ datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGenScanPatn2DrandomFullRandom\t',...
         num2str(NumP),'^2 Pixels Scan Pattern Generated\r\n'];
-fprintf( TP.UI.H0.log,   msg);
+updateMsg(TP.D.Exp.hLog, msg);

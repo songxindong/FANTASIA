@@ -21,21 +21,21 @@ for i =1:size(TP.D.Sys.Power.Meter.ID,1)
                                                 % S310C,130801,29-JUL-2013,2,18,289
                                                 % S170C,701207,17-Dec-2014,1,2,33
         TP.D.Sys.Power.Meter.Sensor = strtok(TP.HW.Thorlabs.PM100{i}.h.fscanf,',');
-    end;    
+    end   
     fprintf(TP.HW.Thorlabs.PM100{i}.h,'SENS:POW:RANG:AUTO 1');
     fprintf(TP.HW.Thorlabs.PM100{i}.h,'SENS:CORR:WAV 920');     
     fprintf(TP.HW.Thorlabs.PM100{i}.h,'SENS:CORR:WAV?'); 
                                                 % 9.200000E+02          % in nm
     if strcmp(TP.HW.Thorlabs.PM100{i}.h.fscanf, '9.200000E+02')
         errordlg('The Wavelength Setup is not 920nm');        
-    end;
+    end
     
     % Send request 1st to save following read time
     if i ==1
         fprintf(TP.HW.Thorlabs.PM100{1}.h,  'MEAS:POW?'); 
         TP.D.Mon.Power.QueryFlag = 1;
-    end;
-end;
+    end
+end
 
     %     fprintf(PM100USB,'CAL:STR?')            % "Calibrated: 20-Nov-2014" 
     %     fprintf(PM100USB,'SENS:CORR:LOSS?')     % 0.000000E+00          % in dB 
@@ -50,5 +50,6 @@ end;
     %     fprintf(PM100USB,'MEAS:POW?')                   % read of power
 
 %% LOG MSG
-msg = [datestr(now) '\tSetupNIDAQ\tNI-DAQmx tasks initialized\r\n'];
+msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tSetupThorlabsPowerMeter\tSetup Thorlabs Power Meters\r\n'];
+updateMsg(TP.D.Exp.hLog, msg);
 

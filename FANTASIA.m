@@ -26,39 +26,27 @@ end
 
 %% CLEAN AND RECREATE THE WORKSPACE
 clc;
-clear java global;
-global TP Xin;
+clear global;
+global TP;
 
 %% INITIALIZATION
-    StringTemp = SetupD;   
-    TP.D.Sys.Name = mfilename;
-    if isempty(dir(TP.D.Sys.PC.Data_Dir))
-        mkdir(TP.D.Sys.PC.Data_Dir);
-    end      
-    logfilename = [TP.D.Sys.PC.Data_Dir, datestr(now,30), '_', TP.D.Sys.Name, '_log.txt'];
-    TP.D.Sys.PC.hLog = fopen(logfilename, 'w');
-    Xin.D.Exp.hLog =    TP.D.Sys.PC.hLog;
-    
-    fprintf( TP.D.Sys.PC.hLog,	[datestr(now) '\t', TP.D.Sys.Name,...
-                            '\tProgram Opened, What a BEAUTIFUL day!\r\n']);
-    fprintf( TP.D.Sys.PC.hLog,	StringTemp);
-    fprintf( TP.D.Sys.PC.hLog,	SetupFigure);
-        set(TP.UI.H0.hFigTP,    'Visible',  'off');	
+TP.D.Sys.Name =         mfilename;          % Grab the current script's name
+SetupD;                                     % Initiate parameters
+SetupFigure;                    set(TP.UI.H0.hFigTP,    'Visible',  'off');	
+SetupThorlabsPowerMeter;
+SetupThorlabsMotor;
+SetupNIDAQ;
+SetupPointGreyCams;
 %     TP.D.Mon.Power.CalibFlag = 1;
-    fprintf( TP.D.Sys.PC.hLog,	SetupThorlabsPowerMeter);
-    fprintf( TP.D.Sys.PC.hLog,	SetupThorlabsMotor);
-  	fprintf( TP.D.Sys.PC.hLog,	SetupNIDAQ);    
-  	fprintf( TP.D.Sys.PC.hLog,	SetupPointGreyCams);    
-
     GUI_ScanScheme(1);  
   	GUI_PresetCfg(13);
     % GUI_ScanScheme should be in ahead of GUI_PresetCfg, otherwise,
     % "Start" would be enabled
-  	set(TP.UI.H0.hFigTP,    'Visible',  'on');
+                                set(TP.UI.H0.hFigTP,    'Visible',  'on');
     
 %% SETUP GUI CALLBACKS
 % Sys Registrations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-set(TP.UI.H.hSys_PowerCalib_Momentary,       'callback',             'SetupPowerCalibration');
+set(TP.UI.H.hSys_PowerCalib_Momentary,      'callback',             'SetupPowerCalibration');
 
 % Mky / Exp / Ses Registrations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Parameter Input
@@ -180,8 +168,8 @@ function msg = GUI_MkyExpSes(varargin)
     set(h(2),   'enable',           'inactive');
     
 	%% MSG LOG
-    msg = [datestr(now) '\tGUI_MkyExpSes\tUpdated','\r\n'];
-    fprintf( TP.D.Sys.PC.hLog,   msg);  
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_MkyExpSes\tUpdated','\r\n'];
+    updateMsg(TP.D.Exp.hLog, msg);  
 
 function msg = GUI_ExpWideField(varargin)
     global Xin TP
@@ -191,7 +179,7 @@ function msg = GUI_ExpWideField(varargin)
     else
         N = varagin(1);
     end
-    Xin.D.Sys.hLog = TP.D.Sys.PC.hLog;
+    Xin.D.Sys.hLog = TP.D.Exp.hLog;
     SetupFigurePointGrey(N);
     CtrlPointGreyCams('InitializeCallbacks', N);
     CtrlPointGreyCams('Cam_DispGain', N, 1);
@@ -265,8 +253,8 @@ function msg = GUI_PresetCfg(varargin)
     GUI_ScanParameters(0);
 
     %% LOG MSG
-    msg = [datestr(now) '\tGUI_ScanCfg\tScanCfg ''',ScanCfg,''' is selected\r\n'];
-    fprintf( TP.D.Sys.PC.hLog,   msg);
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_ScanCfg\tScanCfg ''',ScanCfg,''' is selected\r\n'];
+    updateMsg(TP.D.Exp.hLog, msg);
        
 function msg = GUI_ScanParameters(varargin)
     global TP
@@ -282,9 +270,9 @@ function msg = GUI_ScanParameters(varargin)
         catch 
             tagmsg = get(get(h,'SelectedObject'),'string');
         end
-        msg = [datestr(now) '\tGUI_ScanParameters\t''',...
+        msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_ScanParameters\t''',...
             tag ,''' is updated to ''',tagmsg,'''\r\n'];
-        fprintf( TP.D.Sys.PC.hLog,   msg);
+        updateMsg(TP.D.Exp.hLog, msg);
     else
         % called by general update:	GUI_ScanParameters(0)
         % do not have log msg output to the file
@@ -371,8 +359,7 @@ function msg = GUI_ScanParameters(varargin)
 %% GUI updates w/ NI-DAQ modifications
 function msg = GUI_SesCommit
     global TP
-    global Trl
-    %% Generate ScanSeq and ScanLUT, update NumSmplPerUpdt6115 and VolumeRate 
+    %% Generate Scanning Pattern: ScanSeq and ScanLUT
  	[TP.D.Ses.Scan.ScanSeq, TP.D.Ses.Scan.ScanInd] = feval(...
         TP.D.Ses.Scan.GenFunc, ...
         TP.D.Ses.Scan.NumSmplPerPixl,	TP.D.Ses.Image.NumSmplPerPixl, ...
@@ -380,62 +367,44 @@ function msg = GUI_SesCommit
 		TP.D.Ses.Scan.NumLayrPerVlme,	TP.D.Ses.Scan.LayrSpacingInZ, ...
         TP.D.Sys.AOD.FreqCF,            TP.D.Sys.AOD.FreqBW );
     
-    % Volume 
+    %% Session parameters: Calculate & GUI Updates
+	TP.D.Ses.Committed =            1;
+    TP.D.Ses.TimeStampCommitted =   datestr(now, 'yy/mm/dd HH:MM:SS.FFF');
+    TP.D.Ses.SessionName =          [   datestr( datenum(TP.D.Ses.TimeStampCommitted), 'yymmddTHHMMSS'),...
+                                        '_Ses_', replace(TP.D.Ses.Scan.Mode, ' ', '_')];
     TP.D.Ses.Scan.NumSmplPerVlme =  length(TP.D.Ses.Scan.ScanSeq);
     TP.D.Ses.Scan.VolumeRate = TP.D.Sys.NI.Task_DO_6536_SR / TP.D.Ses.Scan.NumSmplPerVlme;
     TP.D.Ses.Scan.VolumeTime = TP.D.Ses.Scan.NumSmplPerVlme / TP.D.Sys.NI.Task_DO_6536_SR;
-    set(TP.UI.H.hSes_Scan_VolumeRate_Edit,	'string',   sprintf('%5.2f',TP.D.Ses.Scan.VolumeRate));
-  	set(TP.UI.H.hSes_Scan_VolumeTime_Edit,  'string',   sprintf('%5.7f',TP.D.Ses.Scan.VolumeTime));
- 
-  	% Update
     TP.D.Ses.Image.NumPixlPerUpdt = TP.D.Ses.Scan.NumSmplPerVlme / TP.D.Ses.Scan.NumSmplPerPixl / TP.D.Ses.Image.NumUpdtPerVlme;                                    
     TP.D.Ses.Image.NumSmplPerUpdt = TP.D.Ses.Image.NumSmplPerPixl * TP.D.Ses.Image.NumPixlPerUpdt;
     TP.D.Ses.Image.UpdateRate = TP.D.Sys.NI.Task_AI_6115_SR / TP.D.Ses.Image.NumSmplPerUpdt;
     TP.D.Ses.Image.UpdateTime = TP.D.Ses.Image.NumSmplPerUpdt / TP.D.Sys.NI.Task_AI_6115_SR;
-  	set(TP.UI.H.hSes_Image_UpdateRate_Edit,	'string',   sprintf('%5.2f',TP.D.Ses.Image.UpdateRate));
+    set(TP.UI.H.hSes_Scan_VolumeRate_Edit,	'string',   sprintf('%5.2f',TP.D.Ses.Scan.VolumeRate));
+  	set(TP.UI.H.hSes_Scan_VolumeTime_Edit,  'string',   sprintf('%5.7f',TP.D.Ses.Scan.VolumeTime));
+ 	set(TP.UI.H.hSes_Image_UpdateRate_Edit,	'string',   sprintf('%5.2f',TP.D.Ses.Image.UpdateRate));
   	set(TP.UI.H.hSes_Image_UpdateTime_Edit, 'string',   sprintf('%5.7f',TP.D.Ses.Image.UpdateTime));
 
-    %% NI-DAQ unreserved
-    try TP.HW.NI.T.hTask_DO_6536.control('DAQmx_Val_Task_Unreserve');   catch;	end
-    try TP.HW.NI.T.hTask_AI_6115.control('DAQmx_Val_Task_Unreserve');   catch;  end
-    
-    %% Allocate Memories
-	if TP.D.Ses.Image.Enable     
-        % Allocate Memory
-        Vmax = floor( TP.D.Trl.Tmax4GB * TP.D.Ses.Scan.VolumeRate);
-        SetupImageD;    % Setup TP.D.Vol        
-        % Display Image
+	%% Image Enabled
+    if TP.D.Ses.Image.Enable   
+        if ~exist(TP.D.Exp.DataDir, 'dir')
+            mkdir(TP.D.Exp.DataDir);
+        end
+        save([TP.D.Exp.DataDir, TP.D.Ses.SessionName, '.mat'],...
+            '-struct','TP','D');
+            % Save Session Data
+            % this save along takes 1.27s on T5810 @2015/1/4
+        SetupImageD;    
+            % Setup TP.D.Vol 
         TP.UI.H0.hImage = image(...
                 TP.D.Vol.LayerDisp{ (TP.D.Ses.Scan.NumLayrPerVlme+1)/2 },...
                 'parent',           TP.UI.H0.hAxesImage);
-        axis off image; box on;         
-    else
-    	Vmax = 0;
+        axis off image; box on;                
+            % Display Image
     end
-        TP.D.Trl.VS.TimeStampUpdt =             zeros(Vmax,1);
-        TP.D.Trl.VS.PMT_PMTctrl =               zeros(Vmax,1);
-        TP.D.Trl.VS.PMT_FANctrl =               zeros(Vmax,1);
-        TP.D.Trl.VS.PMT_PELctrl =               zeros(Vmax,1);
-        TP.D.Trl.VS.PMT_StatusLED =             false(Vmax,5);
-        TP.D.Trl.VS.PMT_CtrlGainValue =         zeros(Vmax,1);
-        TP.D.Trl.VS.PMT_MontGainValue =         zeros(Vmax,1);
-        TP.D.Trl.VS.PMT_MontGainNoise =         zeros(Vmax,1);
-        TP.D.Trl.VS.Power_AOD_CtrlAmpValue =	zeros(Vmax,1);
-        TP.D.Trl.VS.Power_AOD_MontAmpValue =    zeros(Vmax,2);
-        TP.D.Trl.VS.Power_AOD_MontAmpNoise =    zeros(Vmax,2);
-        TP.D.Trl.VS.Power_PmeasuredS121C =      zeros(Vmax,1);
-        TP.D.Trl.VS.Power_PinferredAtCtx =      zeros(Vmax,1);
-    Trl = TP.D.Trl;
     
-    %% Save Session Data, and Leave TimeStampTag for later Trls
-	TP.D.Ses.Committed =            1;
-    TP.D.Ses.TimeStampCommitted =   datestr(now, 'dd-mmm-yyyy HH:MM:SS.FFF');
-    % this save along takes 1.27s on T5810 @2015/1/4
-    save([TP.D.Sys.PC.Data_Dir, datestr(TP.D.Ses.TimeStampCommitted,30),'_Ses.mat'],...
-        '-struct','TP','D');
-        
-    %% NI-DAQ committed    
+    %% NI-DAQ: Unreserved & Committed   
     % hTask_DO_6536
+    try TP.HW.NI.T.hTask_DO_6536.control('DAQmx_Val_Task_Unreserve');   catch;	end
     TP.HW.NI.T.hTask_DO_6536.cfgSampClkTiming(...
         TP.D.Sys.NI.Task_DO_6536_SR,    'DAQmx_Val_ContSamps',  TP.D.Ses.Scan.NumSmplPerVlme);
     TP.HW.NI.T.hTask_DO_6536.set(...
@@ -446,6 +415,7 @@ function msg = GUI_SesCommit
     TP.HW.NI.T.hTask_DO_6536.writeDigitalData(TP.D.Ses.Scan.ScanSeq);
         
     % hTask_AI_6115
+    try TP.HW.NI.T.hTask_AI_6115.control('DAQmx_Val_Task_Unreserve');   catch;  end
     TP.HW.NI.T.hTask_AI_6115.cfgSampClkTiming(...
         TP.D.Sys.NI.Task_AI_6115_SR,    'DAQmx_Val_ContSamps',  TP.D.Ses.Image.NumSmplPerUpdt*8);
     TP.HW.NI.T.hTask_AI_6115.cfgDigEdgeStartTrig(...
@@ -453,8 +423,14 @@ function msg = GUI_SesCommit
     TP.HW.NI.T.hTask_AI_6115.registerEveryNSamplesEvent(...
         @updateScanKeeper,              TP.D.Ses.Image.NumSmplPerUpdt,...
         true,                           'native');
+
+    %% Turn Laser Shutter ON
     
-    %% Session Committed & GUI update & "Start" Enabled
+    %% Turn PMT FAN OFF    
+    
+    %% Turn TDT
+    
+    %% Session Committed: GUI update & "Start" Enabled
     h = get(TP.UI.H.hSes_Commit_Rocker, 'children');
     set(TP.UI.H.hSes_Commit_Rocker, 'SelectedObject',   h(3));
     set(h(3),	'backgroundcolor',  TP.UI.C.SelectB);
@@ -463,8 +439,8 @@ function msg = GUI_SesCommit
     set(h(2),   'enable',           'on');
   	
     %% MSG LOG
-    msg = [datestr(now) '\tGUI_SesCommit\tSession is committed\r\n'];
-    fprintf( TP.D.Sys.PC.hLog,   msg);         
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_SesCommit\tSession is committed\r\n'];
+    updateMsg(TP.D.Exp.hLog, msg);  
     
 function msg = GUI_ScanScheme(varargin)
     global TP;
@@ -546,9 +522,9 @@ function msg = GUI_ScanScheme(varargin)
     end
     
   	%% MSG LOG
-    msg = [datestr(now) '\tGUI_ScanScheme\tScanScheme is selected as ''',...
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_ScanScheme\tScanScheme is selected as ''',...
         TP.D.Trl.ScanScheme, ''' and Start Trigger as ''', TP.D.Trl.ScanTrigType ,'''\r\n'];
-    fprintf( TP.D.Sys.PC.hLog,   msg);     
+    updateMsg(TP.D.Exp.hLog, msg);     
 
 %% Trl/Mon GUI updates w/o touching NI-DAQ
 function msg = GUI_Tmax(varargin)
@@ -566,9 +542,9 @@ function msg = GUI_Tmax(varargin)
     set(TP.UI.H.hTrl_Tmax_Edit, 'string', sprintf('%5.1f',TP.D.Trl.Tmax));
     
   	%% MSG LOG
-    msg = [datestr(now) '\tGUI_Tmax\tTmax is adjusted to ',...
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_Tmax\tTmax is adjusted to ',...
         num2str(TP.D.Trl.Tmax),' seconds\r\n'];
-    fprintf( TP.D.Sys.PC.hLog,   msg);  
+    updateMsg(TP.D.Exp.hLog, msg);  
     
 function msg = GUI_ImageDataLogging(varargin)
     global TP;
@@ -595,9 +571,9 @@ function msg = GUI_ImageDataLogging(varargin)
     end
     
 	%% MSG LOG
-    msg = [datestr(now) '\tGUI_ImageDataLogging\tImage Data Logging selected as ''',...
-        TP.D.Trl.DataLogging, '''\r\n'];
-    fprintf( TP.D.Sys.PC.hLog,   msg);
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_ImageDataLogging\tImage Data Logging selected as ''',...
+        num2str(TP.D.Trl.DataLogging), '''\r\n'];
+    updateMsg(TP.D.Exp.hLog, msg);
     
 function msg = GUI_ImageDisplayEnable(varargin)
     global TP;
@@ -623,9 +599,9 @@ function msg = GUI_ImageDisplayEnable(varargin)
         otherwise
     end   
 	%% MSG LOG
-    msg = [datestr(now) '\tGUI_ImageDisplayEnable\tImage Display Enable selected as ''',...
-        TP.D.Mon.Image.DisplayEnable, '''\r\n'];
-    fprintf( TP.D.Sys.PC.hLog,   msg);   
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_ImageDisplayEnable\tImage Display Enable selected as ''',...
+        num2str(TP.D.Mon.Image.DisplayEnable), '''\r\n'];
+    updateMsg(TP.D.Exp.hLog, msg);   
         
 function msg = GUI_ImageDisplayMode(varargin)
     global TP;
@@ -651,9 +627,9 @@ function msg = GUI_ImageDisplayMode(varargin)
         otherwise
     end   
 	%% MSG LOG
-    msg = [datestr(now) '\tGUI_ImageDisplayMode\tImage Display Mode selected as ''',...
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_ImageDisplayMode\tImage Display Mode selected as ''',...
         TP.D.Mon.Image.DisplayMode, '''\r\n'];
-    fprintf( TP.D.Sys.PC.hLog,   msg);     
+    updateMsg(TP.D.Exp.hLog, msg);     
        
 %% GUI Inputs w/ Updating Housekeeing NI-DAQ Tasks 
 function msg = GUI_AO_6115(varargin)
@@ -693,13 +669,13 @@ function msg = GUI_AO_6115(varargin)
         TP.D.Mon.Power.AOD_CtrlAmpValue =   AO2;
         TP.HW.NI.T.hTask_AO_6115.writeAnalogData(...
             [AO1 AO2*   (TP.D.Trl.StartTrigStop==2)]);
-                        % 0 = Stop: Only update PMT_Gain. 
+                        % 0 = Stop: Only update PMT_Gain.    
                         % 1 = Start: Only update PMT_Gain
                         % 2 = Triggered: update both PMT_Gain and AOD_Amp
         %% MSG LOG
-        msg = [datestr(now) '\tGUI_AO_6115\tAO_6115 is updated to ''',...
+        msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_AO_6115\tAO_6115 is updated to ''',...
             num2str(AO1),', ',num2str(AO2),''' Volt\r\n'];
-        fprintf( TP.D.Sys.PC.hLog,   msg);        
+        updateMsg(TP.D.Exp.hLog, msg);        
     else
         errordlg('Analog output level is out of range');
         AO1 = TP.D.Mon.PMT.CtrlGainValue;
@@ -748,9 +724,9 @@ function msg = GUI_DO_6115(varargin)
         end
     end
     %% MSG LOG
-    msg = [datestr(now) '\tGUI_DO_6115\tDO_6115 is updated to [',...
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_DO_6115\tDO_6115 is updated to [',...
         num2str(DO'),']\r\n'];
-    fprintf( TP.D.Sys.PC.hLog,   msg);       
+    updateMsg(TP.D.Exp.hLog, msg);       
 
 function msg = GUI_PowerHWP(varargin)
     global TP;
@@ -793,9 +769,9 @@ function msg = GUI_PowerHWP(varargin)
     set(TP.UI.H.hMon_Power_HWP_CtrlAglValue_PotenEdit,	'Foregroundcolor', TP.UI.C.SelectT);
     
     %% MSG LOG
-    msg = [datestr(now), '\tGUI_PowerHWP\tHWP Motor is updated to ',...
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF'), '\tGUI_PowerHWP\tHWP Motor is updated to ',...
         sprintf('%5.1f',angle), ' Degree.\r\n'];
-    fprintf( TP.D.Sys.PC.hLog,   msg);        
+    updateMsg(TP.D.Exp.hLog, msg);        
 
 function msg = GUI_PowerMax(varargin)
     global TP;
@@ -813,9 +789,9 @@ function msg = GUI_PowerMax(varargin)
         'string',   sprintf('%5.1f',   TP.D.Mon.Power.PmaxCtxAllowed));
     
   	%% MSG LOG
-    msg = [datestr(now) '\tGUI_PowerMax\tPowerMax is adjusted to ',...
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_PowerMax\tPowerMax is adjusted to ',...
         num2str(TP.D.Mon.Power.PmaxCtxAllowed),' mW\r\n'];
-    fprintf( TP.D.Sys.PC.hLog,   msg);      
+    updateMsg(TP.D.Exp.hLog, msg);      
     
 %% GUI Inputs w/ SCAN & IMAGE Tasks    
 function msg = GUI_ScanStartTrigStop(varargin)
@@ -830,14 +806,16 @@ function msg = GUI_ScanStartTrigStop(varargin)
         StartTrigStop = varargin{1};
     end
     
-    %% Controlling the UI &  Start or Stop
-        
- 	switch StartTrigStop
+	%% MSG LOG
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_ScanStartTrigStop Called\r\n'];
+    updateMsg(TP.D.Exp.hLog, msg);  
+    %% Controlling the UI &  Start or Stop         
+	switch StartTrigStop
       	case 'Start'
             h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'Children');
             set(TP.UI.H.hTrl_StartTrigStop_Rocker, 'SelectedObject', h(2));
             % GUI Exclusive StartTrigStop Selection
-            msg = scanStarted; 
+            scanStarted; 
       	case 'Stop'             
         	h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'Children');
             set(TP.UI.H.hTrl_StartTrigStop_Rocker, 'SelectedObject', h(1));            
@@ -847,13 +825,11 @@ function msg = GUI_ScanStartTrigStop(varargin)
             %   (2) GUI_ScanStartTrigStop('Stop')
             % These two are functionally identical, and different from 
             % externally triggered stop in scanStopped
-            msg = scanStopping;        
+            scanStopping;        
         case 'Trig'
             % Theoretically not available     
         otherwise
-    end
-	%% MSG LOG
-    fprintf( TP.D.Sys.PC.hLog, msg);  
+	end
        
 function GUI_CleanUp
     global TP
@@ -914,9 +890,14 @@ function GUI_CleanUp
 
             %% MSG LOG and close log file
             try
-                msg = [datestr(now) '\t' TP.D.Sys.Name '\tProgram Closed, Two Photon ROCKS! \r\n'];
-                fprintf( TP.D.Sys.PC.hLog, msg);
-                fclose(  TP.D.Sys.PC.hLog);
+                msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\t' TP.D.Sys.Name '\tProgram Closed, Two Photon ROCKS! \r\n'];
+                updateMsg(  TP.D.Exp.hLog, msg);
+                fclose(     TP.D.Exp.hLog);
+                if exist(TP.D.Exp.DataDir, 'dir')   
+                    movefile(   [TP.D.Sys.DataDir, TP.D.Exp.LogFileName],...
+                                [TP.D.Exp.DataDir, TP.D.Exp.LogFileName]); 
+                end
+                
             catch
                 warndlg('Can not write log file');
             end

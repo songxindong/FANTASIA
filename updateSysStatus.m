@@ -20,8 +20,8 @@ persistent C
         round(1e7*str2double(TP.HW.Thorlabs.PM100{1}.h.fscanf))/1e4;  
                                                                 % xx.xxxx mW
         catch
-        end;
-    end;
+        end
+    end
     
 %% Read AI_6323 Data
 
@@ -29,8 +29,7 @@ persistent C
         % if the system is too busy to respond, size(evnt.date) = [0 0] 
         sysAIstatus = evnt.data;        % ~5us on T5810-2014
         % Dev3/AI: [PMT#1 Gain Mont, AOD X Amp Mont, AOD Y Amp Mont]
-    end;
-    TP.D.testt = sysAIstatus;
+    end
     sysAmp =        round(mean(sysAIstatus)*1000)/1000;
         % in x.xxx Volts precision 
     sysNoise =      round(std(sysAIstatus)*1000);
@@ -41,43 +40,43 @@ persistent C
         % Dev1/line3:7 [M9012, Status, Error, TooBright, TooHot]
         
 %% Load C Data
-    try 	if ~isfield(C, 'HWP_pmax'); C = TP.D.Sys.Power.C;   end;
-    catch;                              C = TP.D.Sys.Power.C;   end;
+    try 	if ~isfield(C, 'HWP_pmax'); C = TP.D.Sys.Power.C;   end
+    catch;                              C = TP.D.Sys.Power.C;   end
     
 %% Update PMT Gain and AOD Amp & Noise
-    if sysAmp(1) ~= TP.D.Mon.PMT.MontGainValue;             % Update PMT Gain Mont
+    if sysAmp(1) ~= TP.D.Mon.PMT.MontGainValue             % Update PMT Gain Mont
         set(TP.UI.H.hMon_PMT_MontGainValue_Edit,        'string',	sprintf('%5.3f',sysAmp(1)));
         TP.D.Mon.PMT.MontGainValue =            sysAmp(1);
-    end;
-    if sysAmp(2) ~= TP.D.Mon.Power.AOD_MontAmpValue(1);     % Update AOD X Amp Mont
+    end
+    if sysAmp(2) ~= TP.D.Mon.Power.AOD_MontAmpValue(1)     % Update AOD X Amp Mont
         set(TP.UI.H.hMon_Power_AOD_MontAmpValueX_Edit,	'string',   sprintf('%5.3f',sysAmp(2)));
         TP.D.Mon.Power.AOD_MontAmpValue(1) =    sysAmp(2);
-    end;
+    end
     if sysAmp(3) ~= TP.D.Mon.Power.AOD_MontAmpValue(2)      % Update AOD Y Amp Mont
         set(TP.UI.H.hMon_Power_AOD_MontAmpValueY_Edit,  'string',   sprintf('%5.3f',sysAmp(3)));
         TP.D.Mon.Power.AOD_MontAmpValue(2) =    sysAmp(3);
-    end;
+    end
 
-    if sysNoise(1) ~= TP.D.Mon.PMT.MontGainNoise;           % Update PMT Gain Mont Noise
+    if sysNoise(1) ~= TP.D.Mon.PMT.MontGainNoise           % Update PMT Gain Mont Noise
         set(TP.UI.H.hMon_PMT_MontGainNoise_Edit,        'string',   sprintf('%d',sysNoise(1)));
         TP.D.Mon.PMT.MontGainNoise =            sysNoise(1);
-    end;
-    if sysNoise(2) ~= TP.D.Mon.Power.AOD_MontAmpNoise(1);   % Update AOD X Amp Mont Noise
+    end
+    if sysNoise(2) ~= TP.D.Mon.Power.AOD_MontAmpNoise(1)   % Update AOD X Amp Mont Noise
         set(TP.UI.H.hMon_Power_AOD_MontAmpNoiseX_Edit,  'string',   sprintf('%d',sysNoise(2)));
         TP.D.Mon.Power.AOD_MontAmpNoise(1) =    sysNoise(2);
-    end;
-    if sysNoise(3) ~= TP.D.Mon.Power.AOD_MontAmpNoise(2);   % Update AOD Y Amp Mont Noise
+    end
+    if sysNoise(3) ~= TP.D.Mon.Power.AOD_MontAmpNoise(2)   % Update AOD Y Amp Mont Noise
         set(TP.UI.H.hMon_Power_AOD_MontAmpNoiseY_Edit,  'string',   sprintf('%d',sysNoise(3)));
         TP.D.Mon.Power.AOD_MontAmpNoise(2) =    sysNoise(3);
-    end;
+    end
 
 %% Update PMT status LEDs   
     for i = 1:TP.D.Sys.NI.Chan_DI_PMT_Status{6}
         if xor(PMTstatus(i),TP.D.Mon.PMT.StatusLED(i))
             set(TP.D.Sys.NI.Chan_DI_PMT_Status{7}{i}, 'BackgroundColor',...
             (1-PMTstatus(i))*TP.UI.C.BG + PMTstatus(i)*TP.D.Sys.NI.Chan_DI_PMT_Status{4}(i,:));
-        end;
-    end;
+        end
+    end
     TP.D.Mon.PMT.StatusLED = PMTstatus;
 
 %% Update PowerMeter Monitored
@@ -93,16 +92,16 @@ persistent C
                     %           PMT Gain Control            0, && StartTrigStop==2
             TP.D.Trl.PowerOverload = 1;  
             set(TP.UI.H.hMon_Power_PinferredAtCtx_Edit, 'ForegroundColor', [0.8 0 0]);
-        end;
+        end
         set(TP.UI.H.hMon_Power_PmeasuredS121C_Edit, 'string', ...
             sprintf('%5.4f',    TP.D.Mon.Power.PmeasuredS121C) );
         set(TP.UI.H.hMon_Power_PinferredAtCtx_Edit, 'string', ...
             sprintf('%5.4f',    TP.D.Mon.Power.PinferredAtCtx) );
-    end;
+    end
     
 %% Send PowerMeter request
     if ~TP.D.Mon.Power.CalibFlag
         fprintf(TP.HW.Thorlabs.PM100{1}.h,  'MEAS:POW?'); 	% 2-6 ms by itself
-    end;
+    end
 
     

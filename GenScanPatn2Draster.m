@@ -17,6 +17,7 @@ function [ScanSeq, ScanInd] = GenScanPatn2Draster(...
 %   .PixlStop           PixlLength  for 2D raster
 %   .Ind                linear reconstruction index for pixel rearrangement
 
+global TP;
 NumSS =     NumSmplPerPixlScan;     % should be 2
 NumSI =     NumSmplPerPixlImage;    % usually is 1
 NumP =      NumPixlPerAxis;
@@ -79,7 +80,6 @@ ScanSeqFu = ScanSeqFu + 2^15;
 ScanSeq = ScanSeqFu(:,1)*2^16 + ScanSeqFu(:,2); 
 
 %% LOG MSG
-msg = [ datestr(now) '\tGenScanPatn2Draster\t',...
+msg = [ datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGenScanPatn2Draster\t',...
         num2str(NumP-1),'x',num2str(NumP),' Pixels Scan Pattern Generated\r\n'];
-global TP;
-% fprintf( TP.D.Sys.PC.hLog,   msg);
+updateMsg(TP.D.Exp.hLog, msg);

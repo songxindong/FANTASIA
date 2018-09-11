@@ -215,9 +215,9 @@ Power.DataAOD.S170C =       zeros(length(Power.CaliAOD.VoltSweep),Power.CaliAOD.
 	disp(['PM100A + S170C reported ', num2str(power), ' Walt']);
                 Power.DataAOD.S170C(i,j) = power;                   
 
-            end;    
+            end   
             disp(' ');
-        end;
+        end
         scanStopping; 
 
 %% Fitting:
@@ -305,7 +305,8 @@ Power.DataAOD.S170C =       zeros(length(Power.CaliAOD.VoltSweep),Power.CaliAOD.
 save PowerCalibration.mat Power;
 
 %% LOG MSG
-msg = [datestr(now) '\tCalibPowerInput\r\n'];
+msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tCalibPowerInput\r\n'];
+updateMsg(TP.D.Exp.hLog, msg);
 
 %% Restart The Real Time Power Monitoring    	
     

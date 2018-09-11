@@ -44,11 +44,11 @@ eval(['global ', GlobalName]);
 %% Prepare Scale, Scale should be in the S.olor field,
 %   if not, use default values as follows
 
-if ~isfield(S, 'PaneletteWidth');   S.PaneletteWidth =  100;    end;
-if ~isfield(S, 'PaneletteHeight');  S.PaneletteHeight = 150;    end;
-if ~isfield(S, 'PaneletteTitle');   S.PaneletteTitle =  18;     end;
-if ~isfield(S, 'SP');               S.SP =              10;     end;
-if ~isfield(S, 'S');                S.S =               2;      end;
+if ~isfield(S, 'PaneletteWidth');   S.PaneletteWidth =  100;    end
+if ~isfield(S, 'PaneletteHeight');  S.PaneletteHeight = 150;    end
+if ~isfield(S, 'PaneletteTitle');   S.PaneletteTitle =  18;     end
+if ~isfield(S, 'SP');               S.SP =              10;     end
+if ~isfield(S, 'S');                S.S =               2;      end
 
 %% Prepare Color, Color should be in the S.Color field,
 %   if not, use default values as follows
@@ -61,7 +61,7 @@ catch
  	S.Color.TextBG =    [   0.94    0.94    0.94];
 	S.Color.SelectB =  	[   0.94    0.94    0.94];
 	S.Color.SelectT =   [   0.18    0.57   	0.77];
-end;
+end
  	S.Color.Textdiff =  S.Color.TextBG - S.Color.BG;
 	S.Color.BTdiff =    S.Color.BG - S.Color.TextBG;
     S.TextFont = 7;                                         % small text font
@@ -111,7 +111,7 @@ eval(strcat(WP.handleseed,'{',num2str(WP.row),',',num2str(WP.column),...
 set(h,'title',WP.name);
 
 %% Create by type
-switch WP.type;
+switch WP.type
     case 'LED'
         % create LEDs
         for i = 1:2
@@ -151,27 +151,27 @@ switch WP.type;
                 % register LED handles to global TPLSM
                 eval(strcat(WP.handleseed,'{',num2str(WP.row),',',num2str(WP.column),...
                     '}.hLED{',num2str(num),'}=hhh;'));
-            end;
-        end;
+            end
+        end
     case 'ToggleSwitch'
         % Create two toggle switches panels
         for i = 1:2
             % Parameter Initiation
-            if isfield(WP,'buttonnum');
+            if isfield(WP,'buttonnum')
                 buttonnum = WP.buttonnum(i);
             else
                 buttonnum = 3;
-            end;
-        	if isfield(WP,'inputOptions');
+            end
+        	if isfield(WP,'inputOptions')
                 string = WP.inputOptions(i,:);
             else
                 string = {'High','Low',''};
-            end;
-           	if isfield(WP,'inputDefault');
+            end
+           	if isfield(WP,'inputDefault')
                 defaultbutton = WP.inputDefault(i);
             else
                 defaultbutton = 2;
-            end;
+            end
             
             % Toggle Button Group
             hh = uibuttongroup(...
@@ -195,28 +195,28 @@ switch WP.type;
                     'string',               string{1,j},...
                     'userdata',             2-j,...
                     'TooltipString',        sprintf(WP.tip{i})); 
-                if j==defaultbutton;
+                if j==defaultbutton
                     set(hhh(j), ...
                     'BackgroundColor',      S.Color.SelectB);
-                end;
+                end
                 if isempty(string{j})
                     set(hhh(j),...
                     'Enable',               'off');
-                end;
+                end
                 if isfield(WP,'enable')
                     if WP.enable(i,j)==0
                     	set(hhh(j),...
                     'Enable',               'off');
-                    end;
-                end;
+                    end
+                end
                 
-            end;
+            end
             % set default button
             if defaultbutton
                 set(hh,'SelectedObject',hhh(defaultbutton));
             else
                 set(hh,'SelectedObject',[]);
-            end;
+            end
             % Title Labels
             hhh = uicontrol(...
                     'parent',               h,...
@@ -237,21 +237,21 @@ switch WP.type;
     case 'RockerSwitch'
         for i = 1:1
             % Parameter Initiation
-            if isfield(WP,'buttonnum');
+            if isfield(WP,'buttonnum')
                 buttonnum = WP.buttonnum(i);
             else
                 buttonnum = 3;
-            end;
-        	if isfield(WP,'inputOptions');
+            end
+        	if isfield(WP,'inputOptions')
                 string = WP.inputOptions(i,:);
             else
                 string = {'High','Low',''};
-            end;
-           	if isfield(WP,'inputDefault');
+            end
+           	if isfield(WP,'inputDefault')
                 defaultbutton = WP.inputDefault(i);
             else
                 defaultbutton = 2;
-            end;
+            end
             
             % Toggle Button Group
             hh = uibuttongroup(...
@@ -275,21 +275,21 @@ switch WP.type;
                     'String',               string{j},...
                     'UserData',             2-j,...
                     'TooltipString',        sprintf(WP.tip{i}));
-                if j==defaultbutton;
+                if j==defaultbutton
                     set(hhh(j),...
                     'BackgroundColor',      S.Color.SelectB);
-                end;
+                end
                 if isempty(string{j})
                     set(hhh(j),...
                     'Enable',               'off');
-                end;
+                end
                 if isfield(WP,'enable')
                     if WP.enable(i,j)==0
                     	set(hhh(j),...
                     'Enable',               'off');
-                    end;
-                end;
-            end;
+                    end
+                end
+            end
             % set default button
             if defaultbutton
                 set(hh,...
@@ -297,7 +297,7 @@ switch WP.type;
             else
                 set(hh,...
                     'SelectedObject',       []);
-            end;          
+            end       
             % Title Labels
             hhh = uicontrol(...
                     'parent',               h,...
@@ -316,11 +316,11 @@ switch WP.type;
         end   
     case 'Potentiometer'
         for i = 1:1
-        if isfield(WP, 'inputValue');
+        if isfield(WP, 'inputValue')
             inputValue = WP.inputValue;
         else
             inputValue = 0;
-        end;
+        end
         % Edit Numbers
         hh =uicontrol(...
                     'parent',               h,...
@@ -432,7 +432,7 @@ switch WP.type;
                 '}.hMomentary{1}=hh1;')); 
         eval(strcat(WP.handleseed,'{',num2str(WP.row),',',num2str(WP.column),...
                 '}.hMomentary{2}=hh2;')); 
-        end;
+        end
     case 'Edit'
         % Create 2 Edit Box
         for i = 1:2           
@@ -451,14 +451,14 @@ switch WP.type;
                                             S.EditWidth, S.EditHeight]...
                 );
             switch WP.inputEnable{i}
-                case 'inactive';    
+                case 'inactive' 
                     set(hh,...
                     'ForegroundColor',      S.Color.FG);
-                case 'on';
+                case 'on'
                     set(hh,...
                     'ForegroundColor',      S.Color.SelectT);
                 otherwise
-            end;
+            end
             % Text
             hhh = uicontrol(...
                     'parent',               h,...
@@ -476,7 +476,7 @@ switch WP.type;
                 );
             eval(strcat(WP.handleseed,'{',num2str(WP.row),',',num2str(WP.column),...
                     '}.hEdit{',num2str(i),'}=hh;')); 
-        end;
+        end
     otherwise
         error('unknown panelette type');
-end;
+end

@@ -15,4 +15,4 @@ else
         TP.D.Sys.Power.C.ARM_p1 * pS121C + TP.D.Sys.Power.C.ARM_p2;
     set( TP.UI.H.hMon.Power_PmaxAtCurAngle_Edit, 'string', ...
         sprintf('%5.1f',TP.D.Mon.Power.PmaxAtCurAngle) );
-end;
+end

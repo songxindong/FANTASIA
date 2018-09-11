@@ -10,13 +10,13 @@ function msg = scanStopping(~,~)
 global TP
 
 %% Time & Flag, for Stopping
-    TP.D.Trl.TimeStampStopping =	datestr(now, 'dd-mmm-yyyy HH:MM:SS.FFF');
+    TP.D.Trl.TimeStampStopping =	datestr(now, 'yy/mm/dd HH:MM:SS.FFF');
     
 	str = get(get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'SelectedObject'), 'String');
     if strcmp(str, 'Stop')
         % from GUI or GUI_ScanStartTrigStop
         TP.D.Trl.StartTrigStop =    -2;
-        if ~TP.HW.NI.T.hTask_CO_TrigListener.isTaskDone;
+        if ~TP.HW.NI.T.hTask_CO_TrigListener.isTaskDone
             % Not triggered yet, 
             %   if the Trial is already triggered, then just wait for
             %   updateScanKeeper to finish it and "cancel" the current Trial. 
@@ -30,9 +30,10 @@ global TP
         % GUI Exclusive StartTrigStop Selection
         h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'Children');
         set(TP.UI.H.hTrl_StartTrigStop_Rocker, 'SelectedObject', h(1));
-    end;
+    end
     %   -3 = Timeout,       -2 = Stopping by GUI,   -1=Stopping by ExtTrig, 
     %   0 = Stopped,        1 = Started,            2 = Triggered  
        
 %% MSG LOG 
-    msg = [datestr(now) '\tscanStopping\tScanning Stopping since Triggered / Pressed\r\n'];
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tscanStopping\tScanning Stopping since Triggered / Pressed\r\n'];
+	updateMsg(TP.D.Exp.hLog, msg);

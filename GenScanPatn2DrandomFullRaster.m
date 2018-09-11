@@ -12,7 +12,6 @@ function [ScanSeq, ScanInd] = GenScanPatn2DrandomFullRaster(...
 % ScanInd is the a linear reconstruction index for pixel rearrangement
 
 global TP;
-
 NumSS =     NumSmplPerPixlScan;
 NumSI =     NumSmplPerPixlImage;
 NumP =      NumPixlPerAxis;
@@ -62,6 +61,6 @@ ScanSeqFu = ScanSeqFu(:,1)*2^16 + ScanSeqFu(:,2);
 ScanSeq = reshape(repmat(ScanSeqFu', NumSS, 1),[],1);
 
 %% LOG MSG
-msg = [ datestr(now) '\tGenScanPatn2DrandomFullRaster\t',...
+msg = [ datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGenScanPatn2DrandomFullRaster\t',...
         num2str(NumP),'^2 Pixels Scan Pattern Generated\r\n'];
-fprintf( TP.D.Sys.PC.hLog,   msg);
+updateMsg(TP.D.Exp.hLog, msg);

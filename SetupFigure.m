@@ -270,7 +270,8 @@ S.S = 2;            % Small Spacer
 TP.UI.S = S;
 
 %% LOG MSG
-msg = [datestr(now) '\tSetupFigure\tGUI initialized\r\n'];
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tSetupFigure\tGUI initialized\r\n'];
+    updateMsg(TP.D.Exp.hLog, msg);
 
 function createPanelettes(S)
 %% create panelettes

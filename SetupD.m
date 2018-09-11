@@ -39,17 +39,22 @@ end
 
 %% D.SYS (System)
 for disp = 1
- 	TP.D.Sys.Name =           	'FANTASIA';
-    TP.D.Sys.FullName =         '[Flexible Agile, and Noise-free Two-photon AOD Scanning Imaging for Awake animals]';
-    %%%%%%%%%%%%%%%%%%%%%%% PC
-    TP.D.Sys.PC.Data_Dir =  	['D:\=',TP.D.Sys.Name,'=\'];
-    TP.D.Sys.PC.CCD_Device =    '';
+	%%%%%%%%%%%%%%%%%%%%%%% Name & Folder
+    % avoid writing again if already run by the main script
+        TP.D.Sys.FullName =     '[Flexible Agile, and Noise-free Two-photon AOD Scanning Imaging for Awake animals]';
+    if ~isfield(TP.D.Sys, 'Name')      % No defined in the main program yet
+        TP.D.Sys.Name =           	'FANTASIA';
+    end    
+        TP.D.Sys.DataDir =     ['D:\=',TP.D.Sys.Name,'=\'];
+    if isempty(dir(TP.D.Sys.DataDir))  % Create the Sys.Data folder if not yet
+        mkdir(TP.D.Sys.DataDir);
+    end     
+        TP.D.Sys.SoundDir =	'D:\Dropbox\==LightUp==\=M #8 Functional Imaging\=S=Sound Stimuli\';
     
     %%%%%%%%%%%%%%%%%%%%%%% LASER
     TP.D.Sys.Laser.Port =       'COM3';    
     TP.D.Sys.Laser.WAVELENGTH = '920';          % in nm
-    TP.D.Sys.Laser.GDD =        '7000';         % in fs^2
-    
+    TP.D.Sys.Laser.GDD =        '7000';         % in fs^2    
     
     %%%%%%%%%%%%%%%%%%%%%%% NI
     % ScanImage 5.1, released by end of 2015, support Matlab calling from 
@@ -284,7 +289,7 @@ for disp = 1
 	Xin.D.Sys.PointGreyCam(1).UpdatePreviewWindowFcn =	@updatePreviewFrame;
     
 	Xin.D.Sys.PointGreyCam(2).DeviceName =      'Flea3 FL3-U3-88S2C';
-%     Xin.D.Sys.PointGreyCam(2).Format =          'F7_BayerRG8_4000x3000_Mode10';
+    %     Xin.D.Sys.PointGreyCam(2).Format =          'F7_BayerRG8_4000x3000_Mode10';
     Xin.D.Sys.PointGreyCam(2).Format =          'F7_Mono8_4000x3000_Mode10';
     Xin.D.Sys.PointGreyCam(2).SerialNumber =	'14301633';
     Xin.D.Sys.PointGreyCam(2).Comments =        'FANTASIA FOV finder';
@@ -299,41 +304,32 @@ for disp = 1
     Xin.D.Sys.PointGreyCam(2).RecFrameBlockNum =        NaN;       
 	Xin.D.Sys.PointGreyCam(2).UpdatePreviewHistogram =  0;  
 	Xin.D.Sys.PointGreyCam(2).UpdatePreviewWindowFcn =	@updatePreviewFrame;                                      
-   
-% 	% Trigger Modes
-%     i = 1;
-%     Xin.D.Sys.PointGreyCam(1).TriggerMode(i).Name =              'SoftwareGrab';
-%     Xin.D.Sys.PointGreyCam(1).TriggerMode(i).TriggerType =       'immediate';
-%     Xin.D.Sys.PointGreyCam(1).TriggerMode(i).TriggerCondition =  'none';
-%     Xin.D.Sys.PointGreyCam(1).TriggerMode(i).TriggerSource =     'none';   
-%     ic = 1;
-%     Xin.D.Sys.PointGreyCam(1).TriggerName =      Xin.D.Sys.PointGreyCam(1).TriggerMode(ic).Name;  
-%     Xin.D.Sys.PointGreyCam(1).TriggerType =      Xin.D.Sys.PointGreyCam(1).TriggerMode(ic).TriggerType;         
-%     Xin.D.Sys.PointGreyCam(1).TriggerCondition = Xin.D.Sys.PointGreyCam(1).TriggerMode(ic).TriggerCondition; 
-%     Xin.D.Sys.PointGreyCam(1).TriggerSource =    Xin.D.Sys.PointGreyCam(1).TriggerMode(ic).TriggerSource;
-%     
-%     i = 1;
-%     Xin.D.Sys.PointGreyCam(2).TriggerMode(i).Name =              'SoftwareGrab';
-%     Xin.D.Sys.PointGreyCam(2).TriggerMode(i).TriggerType =       'immediate';
-%     Xin.D.Sys.PointGreyCam(2).TriggerMode(i).TriggerCondition =  'none';
-%     Xin.D.Sys.PointGreyCam(2).TriggerMode(i).TriggerSource =     'none';   
-%     ic = 1;
-%     Xin.D.Sys.PointGreyCam(2).TriggerName =      Xin.D.Sys.PointGreyCam(2).TriggerMode(ic).Name;  
-%     Xin.D.Sys.PointGreyCam(2).TriggerType =      Xin.D.Sys.PointGreyCam(2).TriggerMode(ic).TriggerType;         
-%     Xin.D.Sys.PointGreyCam(2).TriggerCondition = Xin.D.Sys.PointGreyCam(2).TriggerMode(ic).TriggerCondition; 
-%     Xin.D.Sys.PointGreyCam(2).TriggerSource =    Xin.D.Sys.PointGreyCam(2).TriggerMode(ic).TriggerSource;
-%     
     
 end
 
 %% D.Mky (Monkey)
 for disp = 1    
-    TP.D.Mky.ID =             	'M00X';
-    TP.D.Mky.Side =          	'LEFT'; 
+	%%%%%%%%%%%%%%%%%%%%%%% Monkey 
+    TP.D.Mky.Lists.ID =            {'M00x', '', ''; 'M80Z', 'MCal', ''};
+    TP.D.Mky.Lists.Side =          {'LEFT', 'RIGHT', ''};    
+    
+    TP.D.Mky.ID =                  TP.D.Mky.Lists.ID{1};
+    TP.D.Mky.Side =                TP.D.Mky.Lists.Side{1};
 end
 
 %% D.Exp (Experiment)
 for disp = 1
+    %%%%%%%%%%%%%%%%%%%%%%% Date
+    TP.D.Exp.Date =             now; 
+    TP.D.Exp.DateStr =          datestr(TP.D.Exp.Date, 'yymmdd-HH'); 
+    TP.D.Exp.DataDir =          [   TP.D.Sys.DataDir,...
+                                    TP.D.Mky.ID, '-',...
+                                    TP.D.Exp.DateStr, '\'];                            
+    TP.D.Exp.LogFileName =      [datestr(now, 'yymmddTHHMMSS'), '_', TP.D.Sys.Name, '_log.txt'];  
+    TP.D.Exp.hLog =             fopen([TP.D.Sys.DataDir, TP.D.Exp.LogFileName], 'w');
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tFANTASIA\tFANTASIA Opened, What a BEAUTIFUL day!\r\n'];
+        updateMsg(TP.D.Exp.hLog, msg);
+    Xin.D.Exp.hLog =            TP.D.Exp.hLog;
     
 	%%%%%%%%%%%%%%%%%%%%%%% Mech
     TP.D.Exp.AngleArm =       	0;
@@ -352,7 +348,8 @@ end
 %% D.Ses (Session)
 for disp = 1
     TP.D.Ses.Committed =                0;
-    TP.D.Ses.TimeStampCommitted =       NaN;
+    TP.D.Ses.TimeStampCommitted =       NaN;    
+    TP.D.Ses.SessionName =              '';
  	%%%%%%%%%%%%%%%%%%%%%%% Mech
     TP.D.Ses.Mech.Zs_SM1Z =             NaN;
         % Z reading # on SM1Z of this session level
@@ -771,4 +768,5 @@ for disp = 1
 end
 
 %% LOG MSG
-msg = [datestr(now) '\tSetupD\tTP.D initialized\r\n'];
+msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tSetupD\tTP.D initialized\r\n'];
+updateMsg(TP.D.Exp.hLog, msg);

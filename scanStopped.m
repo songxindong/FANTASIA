@@ -17,7 +17,7 @@ persistent StartTrigStopT
     TP.D.Trl.StartTrigStop =        0;
     %   -3 = Timeout,       -2 = Stopping by GUI,   -1=Stopping by ExtTrig, 
     %   0 = Stopped,        1 = Started,            2 = Triggered  
-    TP.D.Trl.TimeStampStopped =     datestr(now, 'dd-mmm-yyyy HH:MM:SS.FFF');  
+    TP.D.Trl.TimeStampStopped =     datestr(now, 'yy/mm/dd HH:MM:SS.FFF');  
 
 %% Switch AOD & PMT accordingly
     feval(TP.D.Sys.Name,...
@@ -31,7 +31,7 @@ persistent StartTrigStopT
     TP.HW.NI.T.hTask_DO_6536.stop();                    % Scanning
     TP.HW.NI.T.hTask_AI_6115.stop();                    % Imaging
     TP.HW.NI.T.hTask_CO_TrigListener.abort();        	% Trigger Listener
-	switch TP.D.Trl.ScanScheme
+    switch TP.D.Trl.ScanScheme
         case 'FOCUS'
             TP.HW.NI.T.hTask_CO_IntTrig.stop();         % Internal Trigger 
         case 'GRAB'
@@ -43,7 +43,7 @@ persistent StartTrigStopT
         case 'LOOP'
          	TP.HW.NI.T.hTask_CO_StopListener.abort();   % Stop Listerner
         otherwise
-	end;  
+    end
 
 %% TP.D Save
     if TP.D.Trl.DataLogging
@@ -55,14 +55,14 @@ persistent StartTrigStopT
             %%
             %%
         Trl = TP.D.Trl;
-        save([TP.D.Sys.PC.Data_Dir, datestr(TP.D.Trl.TimeStampStarted,30),'.mat'],...
+        save([TP.D.Exp.DataDir, datestr(TP.D.Trl.TimeStampStarted, 'yymmddTHHMMSS'),'.mat'],...
             '-struct','Trl');
-    end;   
+    end
 
 %% MSG LOG 
-    msg = [datestr(now) '\tscanStopped\tScanning Stopped w/ # of Volumes Scanned = ',...
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tscanStopped\tScanning Stopped w/ # of Volumes Scanned = ',...
         num2str(TP.D.Trl.Vdone),'\r\n'];
- 	fprintf( TP.D.Sys.PC.hLog,   msg); 
+	updateMsg(TP.D.Exp.hLog, msg);
   
 %% GUI StartTrigStop Coloring
 	h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'Children');

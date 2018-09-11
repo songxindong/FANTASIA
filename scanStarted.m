@@ -12,11 +12,10 @@ global TP
     TP.D.Trl.StartTrigStop =        1;    
     %   -3 = Timeout,       -2 = Stopping by GUI,   -1=Stopping by ExtTrig, 
     %   0 = Stopped,        1 = Started,            2 = Triggered
-    TP.D.Trl.TimeStampStarted =     datestr(now, 'dd-mmm-yyyy HH:MM:SS.FFF'); 
+    TP.D.Trl.TimeStampStarted =     datestr(now, 'yy/mm/dd HH:MM:SS.FFF'); 
     TP.D.Trl.TimeStampSesCom =      TP.D.Ses.TimeStampCommitted; 
           
 %% TP.D Initialization / Reset & Stream File Openned
-
     % Setup Timing
     TP.D.Trl.Udone = 0;     TP.D.Trl.Vdone = 0;     TP.D.Trl.Tdone = 0;
     TP.D.Trl.Unum = 0;      TP.D.Trl.Vnum = 0;
@@ -28,15 +27,32 @@ global TP
     set(TP.UI.H.hMon_Power_PinferredAtCtx_Edit, 'ForegroundColor',  TP.UI.C.FG);
     set(TP.UI.H.hTrl_Tdone_Edit,                'string',           sprintf('%5.1f',TP.D.Trl.Tdone));
 
+%% Imaging Data Allocation    
 	if TP.D.Ses.Image.Enable  
         %% Clean Up TP.D.Trl.VS.
         %%
-        %%
-        %%
+        %% Allocate Memories  
+        %% MOVE THE FOLLOWING PART INTO TRL CTRL
+        %% save TP.D.Ses.SessionName for later Trls
+        Vmax = floor( TP.D.Trl.Tmax4GB * TP.D.Ses.Scan.VolumeRate);
+        TP.D.Trl.VS.TimeStampUpdt =             zeros(Vmax,1);
+        TP.D.Trl.VS.PMT_PMTctrl =               zeros(Vmax,1);
+        TP.D.Trl.VS.PMT_FANctrl =               zeros(Vmax,1);
+        TP.D.Trl.VS.PMT_PELctrl =               zeros(Vmax,1);
+        TP.D.Trl.VS.PMT_StatusLED =             false(Vmax,5);
+        TP.D.Trl.VS.PMT_CtrlGainValue =         zeros(Vmax,1);
+        TP.D.Trl.VS.PMT_MontGainValue =         zeros(Vmax,1);
+        TP.D.Trl.VS.PMT_MontGainNoise =         zeros(Vmax,1);
+        TP.D.Trl.VS.Power_AOD_CtrlAmpValue =	zeros(Vmax,1);
+        TP.D.Trl.VS.Power_AOD_MontAmpValue =    zeros(Vmax,2);
+        TP.D.Trl.VS.Power_AOD_MontAmpNoise =    zeros(Vmax,2);
+        TP.D.Trl.VS.Power_PmeasuredS121C =      zeros(Vmax,1);
+        TP.D.Trl.VS.Power_PinferredAtCtx =      zeros(Vmax,1);
+        
         TP.D.Trl.StreamFname = ...
-            [TP.D.Sys.PC.Data_Dir, datestr(TP.D.Trl.TimeStampStarted,30),'.rec'];
+            [TP.D.Exp.DataDir, datestr(TP.D.Trl.TimeStampStarted, 'yymmddTHHMMSS'),'.rec'];
         TP.D.Trl.StreamFid = fopen(TP.D.Trl.StreamFname,'w');  
-	end;
+	end
  
 %% Setup NIDAQ
     TP.HW.NI.T.hTask_DO_6536.start();                   % Scanning
@@ -51,7 +67,7 @@ global TP
         case 'LOOP'
          	TP.HW.NI.T.hTask_CO_StopListener.start(); 	% Stop Listerner
         otherwise
-	end;  
+	end
     
 %% GUI StartTrigStop Coloring
 	h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'Children');
@@ -60,6 +76,6 @@ global TP
 	set(h(3),   'backgroundcolor', TP.UI.C.TextBG);
 
 %% MSG LOG
-    msg = [datestr(now) '\tscanStarted\tScanning Started w/ Volume time = ',...
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tscanStarted\tScanning Started w/ Volume time = ',...
         num2str(TP.D.Ses.Scan.VolumeTime),' sec\r\n'];
-    
+    updateMsg(TP.D.Exp.hLog, msg);

@@ -69,5 +69,5 @@ global TP
 %     r = bitget(abs(StatusBits),5)||bitget(abs(StatusBits),6);
 
 %% LOG MSG
-msg = [datestr(now) '\tSetupThorlabsMotor\tNI-DAQmx tasks initialized\r\n'];
-
+msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tSetupThorlabsMotor\tSetup Thorlabs Motors\r\n'];
+updateMsg(TP.D.Exp.hLog, msg);

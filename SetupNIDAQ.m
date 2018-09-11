@@ -17,7 +17,7 @@ NI = TP.D.Sys.NI;
     for i = 1:length(TP.D.Sys.NI.Dev_Names) 
         TP.HW.NI.hDev{i} = Device(TP.D.Sys.NI.Dev_Names{i});
         TP.HW.NI.hDev{i}.reset();
-    end;
+    end
 
 %% Timing Routing
     % Export Timebase to bridge, (/Dev1/20MHzTimebase to /Dev1/RTSI7)
@@ -141,5 +141,5 @@ NI = TP.D.Sys.NI;
         NI.Task_CO_StopListener_Func);
         
 %% LOG MSG
-msg = [datestr(now) '\tSetupNIDAQ\tNI-DAQmx tasks initialized\r\n'];
-
+msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tSetupNIDAQ\tNI-DAQmx tasks initialized\r\n'];
+updateMsg(TP.D.Exp.hLog, msg);

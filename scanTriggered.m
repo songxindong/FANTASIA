@@ -12,7 +12,7 @@ global TP
     TP.D.Trl.StartTrigStop =        2;
     %   -3 = Timeout,       -2 = Stopping by GUI,   -1=Stopping by ExtTrig, 
     %   0 = Stopped,        1 = Started,            2 = Triggered
-    TP.D.Trl.TimeStampTriggered =	datestr(now, 'dd-mmm-yyyy HH:MM:SS.FFF'); 
+    TP.D.Trl.TimeStampTriggered =	datestr(now, 'yy/mm/dd HH:MM:SS.FFF'); 
 
 %% Switch AOD & PMT accordingly
     feval(TP.D.Sys.Name,...
@@ -33,6 +33,6 @@ global TP
 	set(h(2),   'backgroundcolor', TP.UI.C.TextBG);
 
 %% MSG LOG
-    msg = [datestr(now) '\tScanning Triggered\r\n'];
-  	fprintf( TP.D.Sys.PC.hLog,   msg); 
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tScanning Triggered\r\n'];
+	updateMsg(TP.D.Exp.hLog, msg);
     
