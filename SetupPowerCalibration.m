@@ -59,7 +59,7 @@ Power.DataAOD.S170C =       zeros(length(Power.CaliAOD.VoltSweep),Power.CaliAOD.
     try TP.HW.Thorlabs.PM100{1}.h.fscanf;   catch;  end;
 
     % Pretend the task is triggered
-    TP.D.Trl.StartTrigStop = 2;
+    TP.D.Trl.State = 2;
     
     % Temporarily set Pmax to be big enough (800mW)
     tempPmaxCtxAllowed = TP.D.Mon.Power.PmaxCtxAllowed;
@@ -314,7 +314,7 @@ updateMsg(TP.D.Exp.hLog, msg);
     fprintf(TP.HW.Thorlabs.PM100{1}.h,  'MEAS:POW?');
     
     % Set the scan flag back as the task is stopped
-    TP.D.Trl.StartTrigStop =    0;
+    TP.D.Trl.State =    0;
     
     % Lower the Calibration Flag
     TP.D.Mon.Power.CalibFlag =  0;

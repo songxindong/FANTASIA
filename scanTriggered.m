@@ -1,36 +1,26 @@
-function scanTriggered(~,~)
+function scanTriggered(src,~)
 % This function is called by 
 %   (1) TrigListener Task callbacks 
-% and is the only function that accompanys scanning & imaging triggered
-% start
-% takes ? s on T5810 @ 2015/1
 
-%% State
+
+
 global TP
+disp(src)
 
-%% Time & Flag, for Triggered
-    TP.D.Trl.StartTrigStop =        2;
-    %   -3 = Timeout,       -2 = Stopping by GUI,   -1=Stopping by ExtTrig, 
-    %   0 = Stopped,        1 = Started,            2 = Triggered
-    TP.D.Trl.TimeStampTriggered =	datestr(now, 'yy/mm/dd HH:MM:SS.FFF'); 
+%% Trial State Timing
+        TP.D.Trl.TimeStampTriggered =	datestr(now, 'yy/mm/dd HH:MM:SS.FFF'); 
+        TP.D.Trl.State =                2; 
+        %   -1 =    Stopping,  
+        %   0 =     Stopped,
+        %   1 =     Started,
+        %   2 =     Triggered
+    feval(TP.D.Sys.Name,'GUI_Rocker','hTrl_StartTrigStop_Rocker',   'Triggered');
 
-%% Switch AOD & PMT accordingly
+%% Setup NIDAQ
+    % Turn AOD & PMT Amplitude accordingly
     feval(TP.D.Sys.Name,...
   	'GUI_AO_6115',[ TP.D.Mon.PMT.CtrlGainValue  TP.D.Mon.Power.AOD_CtrlAmpValue]);
         %           PMT Gain Control            AOD Amp, && StartTrigStop==2
-    feval(TP.D.Sys.Name,...        
-	'GUI_DO_6115',[ TP.D.Exp.BCD.ImageEnable;	TP.D.Exp.BCD.ImageEnable;	0]);
-    	%       	PMTon,                  FANoff,                 PELoff
-    % Speed Testing on T3500, 12GB RAM, 7200rpm HD
-    % w/ PMT GUI update,    these 2 cells takes ~0.015s,    15ms
-    % w/o PMT GUI update,   these 2 cells takes ~0.004s,    4ms
-    
-%% GUI Exclusive StartTrigStop Selection & Coloring
-	h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'Children');
-	set(TP.UI.H.hTrl_StartTrigStop_Rocker, 'SelectedObject', h(3));
-    set(h(3),   'backgroundcolor', TP.UI.C.SelectB);
-	set(h(1),   'backgroundcolor', TP.UI.C.TextBG);
-	set(h(2),   'backgroundcolor', TP.UI.C.TextBG);
 
 %% MSG LOG
     msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tScanning Triggered\r\n'];

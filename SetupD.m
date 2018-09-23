@@ -49,7 +49,10 @@ for disp = 1
     if isempty(dir(TP.D.Sys.DataDir))  % Create the Sys.Data folder if not yet
         mkdir(TP.D.Sys.DataDir);
     end     
-        TP.D.Sys.SoundDir =	'D:\Dropbox\==LightUp==\=M #8 Functional Imaging\=S=Sound Stimuli\';
+    
+    %%%%%%%%%%%%%%%%%%%%%%% Sound
+    TP.D.Sys.Sound.SR =     100e3;
+    TP.D.Sys.SoundDir =     'D:\Dropbox\==LightUp==\=M #8 Functional Imaging\=S=Sound Stimuli\';
     
     %%%%%%%%%%%%%%%%%%%%%%% LASER
     TP.D.Sys.Laser.Port =       'COM3';    
@@ -380,49 +383,109 @@ for disp = 1
 end
 
 %% D.Ses (Session)
-for disp = 1
-       
+for disp = 1     
+    %%%%%%%%%%%%%%%%%%%%%%% Load (for SetupSesLoad)
+    TP.D.Ses.Load.SoundFile =           'test.wav';
+    TP.D.Ses.Load.SoundDir =            '';
+    TP.D.Ses.Load.SoundSR =             TP.D.Sys.Sound.SR;
+    TP.D.Ses.Load.SoundTitle =          '';
+    TP.D.Ses.Load.SoundArtist =         '';
+    TP.D.Ses.Load.SoundComment =        '';    
+    TP.D.Ses.Load.SoundFigureTitle =	[': now playing "' TP.D.Ses.Load.SoundTitle '"'];
+    TP.D.Ses.Load.SoundWave =           int16([]);                          
+    TP.D.Ses.Load.SoundDurTotal =       NaN;    
+    TP.D.Ses.Load.SoundMat =            int16([]);  
+    
+    TP.D.Ses.Load.AddAtts =             0; 
+    TP.D.Ses.Load.AddAttString =        num2str(TP.D.Ses.Load.AddAtts);
+    TP.D.Ses.Load.AddAttNumTotal =      length(TP.D.Ses.Load.AddAtts);     
+    TP.D.Ses.Load.CycleDurTotal =       NaN;
+    TP.D.Ses.Load.CycleDurCurrent =     NaN;  
+    TP.D.Ses.Load.TrlIndexSoundNum =    [];
+    TP.D.Ses.Load.TrlIndexAddAttNum =   [];
+    
+	TP.D.Ses.Load.CycleNumTotal =       2;    
+    TP.D.Ses.Load.CycleNumCurrent =     NaN; 
+    TP.D.Ses.Load.DurTotal =            NaN;
+	TP.D.Ses.Load.DurCurrent =          NaN;   
+
+    TP.D.Ses.Load.TrlOrder =            'Sequential';
+    TP.D.Ses.Load.TrlOrderMat =         NaN;
+    TP.D.Ses.Load.TrlOrderVec =         reshape(TP.D.Ses.Load.TrlOrderMat',1,[]);
+    TP.D.Ses.Load.TrlOrderSoundVec =    [];
+    
+    %%%%%%%%%%%%%%%%%%%%%%% Scan Scheme     
+    TP.D.Ses.ScanScheme =    	'Search';      
+    TP.D.Ses.ScanTrigType =   	'internal';
+    
+    %%%%%%%%%%%%%%%%%%%%%%% Session Control    
+    TP.D.Ses.State =                    0;
+    %   -2 =    Stopping by GUI,
+    %   0 =     Stopped,
+    %   1 =     Started,
+    TP.D.Ses.TimeStampStart =           NaN;
+    TP.D.Ses.FileName =                 '';
+    TP.D.Ses.TargetedCycleNumTotal =	TP.D.Ses.Load.CycleNumTotal; 
+    TP.D.Ses.TargetedTrlNumTotal =      NaN; 
+    TP.D.Ses.TargetedTrlNumCurrent =    NaN;      
+    
+    TP.D.Ses.OverloadLasser =           0;
+    TP.D.Ses.OverloadPMT =              0;
 end
 
 %% D.Trl (Trial)
 for disp = 1
+   	%%%%%%%%%%%%%%%%%%%%%%% Load (for SetupSesLoad)
+	TP.D.Trl.Load.Names =               {};
+    TP.D.Trl.Load.Attenuations =        [];
+    TP.D.Trl.Load.SoundNumTotal =       NaN;
+    TP.D.Trl.Load.DurTotal =            NaN;
+	TP.D.Trl.Load.DurCurrent =          NaN;
+    TP.D.Trl.Load.DurPreStim =          NaN;
+    TP.D.Trl.Load.DurStim =             NaN; 
+    TP.D.Trl.Load.DurPostStim =         TP.D.Trl.Load.DurTotal - ...
+                                        TP.D.Trl.Load.DurPreStim - ...
+                                        TP.D.Trl.Load.DurStim;
     
-    TP.D.Trl.ScanScheme =    	'FOCUS';            
-    TP.D.Trl.ScanSchemeNum =   	1;
-    TP.D.Trl.ScanTrigType =   	'internal';
-%     TP.D.Trl.FileName =         '';    
+    TP.D.Trl.Load.NumTotal =            NaN;
+    TP.D.Trl.Load.NumCurrent =          NaN;
+    
+    TP.D.Trl.Load.AttNumCurrent =       NaN;
+    TP.D.Trl.Load.AttDesignCurrent =	NaN;
+    TP.D.Trl.Load.AttAddCurrent =       NaN;
+    TP.D.Trl.Load.AttCurrent =          NaN;
+        
+    TP.D.Trl.Load.StimNumCurrent =      NaN;
+    TP.D.Trl.Load.StimNumNext =         NaN;
+    TP.D.Trl.Load.SoundNumCurrent =     NaN;
+    TP.D.Trl.Load.SoundNameCurrent =	'';
 
-    TP.D.Trl.DataLogging =    	0;     
+        
+    TP.D.Trl.State =        0;
+    %   -3 =    Timeout,       
+    %   -2 =    Stopping by GUI,
+    %   -1 =    Stopping by ExtTrig, 
+    %   0 =     Stopped,
+    %   1 =     Started,
+    %   2 =     Triggered
+    TP.D.Trl.TimeStampBCDCom =          TP.D.Exp.BCD.CommitedTimeStamp; 
+    TP.D.Trl.TimeStampSesStart =        TP.D.Ses.TimeStampStart; 
+    TP.D.Trl.TimeStampStarted =         NaN;
+    TP.D.Trl.TimeStampTriggered =       NaN;
+    TP.D.Trl.TimeStampStopping =        NaN;
+    TP.D.Trl.TimeStampStopped =         NaN;
+    TP.D.Trl.FileName =                 '';
+    TP.D.Trl.TargetedTrlDurTotal =      NaN;  
+    
     TP.D.Trl.Udone =          	0;     	% Update # done
     TP.D.Trl.Vdone =           	0;     	% Volume # done
     TP.D.Trl.Tdone =           	0;    	% Time done (in sec)
     
     TP.D.Trl.Unum =             0;
     TP.D.Trl.Vnum =             0;
-    
-    TP.D.Trl.Vmax =             NaN;    % Max Volume # in a trial
-    TP.D.Trl.Tmax =            	Inf;
-    TP.D.Trl.TmaxFocusDefault = Inf;
-    TP.D.Trl.TmaxGrabDefault =	214;
-    TP.D.Trl.TmaxLoopDefault =  214;    % limited to the external trigger counting:
-                                        %   as 2^32/20e6 ~= 214.7 seconds
-    TP.D.Trl.Tmax4GB =          214;    % limited to the 4GB Tiff size (w/o compression)
-                                        
-    
-    TP.D.Trl.StartTrigStop =        0;
-    %   -3 = Timeout,       -2 = Stopping by GUI,   -1=Stopping by ExtTrig, 
-    %   0 = Stopped,        1 = Started,            2 = Triggered
-    TP.D.Trl.TimeStampStarted =     0;
-    TP.D.Trl.TimeStampTriggered =	0;
-    TP.D.Trl.TimeStampStopping =    0;
-    TP.D.Trl.TimeStampStopped =     0;
-    
-    TP.D.Trl.PowerOverload =        0;
-    
+                                         
     TP.D.Trl.VS =               [];
-
-    TP.D.Trl.GRAB.SoundFname =      '';
-    TP.D.Trl.GRAB.SoundWave =       [];
+    TP.D.Trl.ITI =              0.2;
 end
 
 %% D.Vol (Volume)
@@ -461,7 +524,7 @@ for disp = 1
     TP.D.Mon.Power.AOD_MontAmpNoise =   [0 0];         	% in mV
 
     TP.D.Mon.Power.PmaxAtCurAngle =     NaN;            % in mW, need calibration
-    TP.D.Mon.Power.PmaxCtxAllowed =     200;            % in mW, need calibration
+    TP.D.Mon.Power.PmaxCtxAllowed =     300;            % in mW, need calibration
     TP.D.Mon.Power.PinferredAtCtx =     0;              % Predicted by Power Control
     TP.D.Mon.Power.PmeasuredS121C =     0;              % Monitored at Dichroic   
    
@@ -476,8 +539,7 @@ for disp = 1
     TP.D.Mon.PMT.MontGainValue =        0.00;          	% in Volt
     TP.D.Mon.PMT.MontGainNoise =        0;             	% in mV
     
-    TP.D.Mon.Image.DisplayEnable =      0;    
-    TP.D.Mon.Image.DisplayMode =     	'Rltv';
+    TP.D.Mon.Image.DisplayMode =     	'Rltv';         % it was 'Abs' or 'Rltv'
     TP.D.Mon.Image.DisplayModeNum =     2;
 	TP.D.Mon.Image.UpdtCallback =       @updateImage2Drandom;
 

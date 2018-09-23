@@ -1,78 +1,65 @@
 function scanStopped
 % This function is called by
-%   (1) scanStopping if
-%           GUI "Stop" button or GUI_ScanStartTrigStop('Stop')
-%           External trigger falling edge
-%   (2) updateScanKeeper if timeout
-% and is the only function that controls the trial stopped procedure
-% takes ? s on T5810 @ 2015/1
+%   (1) updateScanKeeper if timeout by the end of a VOL
+%   (2) Ses_StartStop with TP.D.Ses.State = -1
+%           Session Stopping by CANCELLING the current TRIAL before TRIGGERED in 'XBlaster'
 
-%% State
 global 	TP
-global  Trl
-persistent StartTrigStopT
 
-%% Time & Flag, for Stopped
-    StartTrigStopT =                TP.D.Trl.StartTrigStop;        
-    TP.D.Trl.StartTrigStop =        0;
-    %   -3 = Timeout,       -2 = Stopping by GUI,   -1=Stopping by ExtTrig, 
-    %   0 = Stopped,        1 = Started,            2 = Triggered  
-    TP.D.Trl.TimeStampStopped =     datestr(now, 'yy/mm/dd HH:MM:SS.FFF');  
+%% Trial State Timing  
+    if TP.D.Trl.State == 1  % Stopped from GUI before a trial is triggered
+        TP.D.Trl.TimeStampStopping =	datestr(now, 'yy/mm/dd HH:MM:SS.FFF'); 
+        TP.D.Trl.State =                -1;
+    end
+        TP.D.Trl.TimeStampStopped =     datestr(now, 'yy/mm/dd HH:MM:SS.FFF');   
+        TP.D.Trl.State =                0; 
+        %   -1 =    Stopping,  
+        %   0 =     Stopped,
+        %   1 =     Started,
+        %   2 =     Triggered
+    feval(TP.D.Sys.Name,'GUI_Rocker','hTrl_StartTrigStop_Rocker',   'Stopped');
 
-%% Switch AOD & PMT accordingly
+%% Setup NIDAQ
+    % Switch AOD & PMT accordingly
     feval(TP.D.Sys.Name,...
   	'GUI_AO_6115',[ TP.D.Mon.PMT.CtrlGainValue  TP.D.Mon.Power.AOD_CtrlAmpValue]);
-        %           PMT Gain Control            AOD Amp, && StartTrigStop==2
-    feval(TP.D.Sys.Name,...        
-	'GUI_DO_6115',[ 0;                      0;                      0]);
-    	%       	PMTon,                  FANoff,                 PELoff
-    
-%% Setup NIDAQ
+        %           PMT Gain Control            AOD Amp, && Trl.State==2
     TP.HW.NI.T.hTask_DO_6536.stop();                    % Scanning
     TP.HW.NI.T.hTask_AI_6115.stop();                    % Imaging
     TP.HW.NI.T.hTask_CO_TrigListener.abort();        	% Trigger Listener
-    switch TP.D.Trl.ScanScheme
-        case 'FOCUS'
+    switch TP.D.Ses.ScanScheme
+        case 'Search'
             TP.HW.NI.T.hTask_CO_IntTrig.stop();         % Internal Trigger 
-        case 'GRAB'
+        case 'Record'
             TP.HW.NI.T.hTask_CO_IntTrig.stop();         % Internal Trigger  
             TP.HW.NI.T.hTask_AO_6323.abort();         	% Sound Playback   
             TP.HW.NI.T.hTask_AO_6323.delete();            
-            h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'Children');
-            set(h(2),       'enable',           'inactive');
-        case 'LOOP'
+        case 'XBlaster'
          	TP.HW.NI.T.hTask_CO_StopListener.abort();   % Stop Listerner
         otherwise
     end
 
-%% TP.D Save
-    if TP.D.Trl.DataLogging
-        % Stream File Closed
-        fclose(TP.D.Trl.StreamFid);
-        % Save TP.D.Trl, CUT TP.D.Trl.VS. to the finished length?
-            %% 
-            %%
-            %%
-            %%
+%% Trial Data
+    % Trim VS
+    if TP.D.Exp.BCD.ImageEnable 
+        fclose(TP.D.Trl.Fid);
         Trl = TP.D.Trl;
-        save([TP.D.Exp.DataDir, datestr(TP.D.Trl.TimeStampStarted, 'yymmddTHHMMSS'),'.mat'],...
+        save([TP.D.Exp.DataDir, TP.D.Trl.FileName,'.mat'],...
             '-struct','Trl');
-    end
-  
-%% GUI StartTrigStop Coloring
-	h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'Children');
-    set(h(1),   'backgroundcolor', TP.UI.C.SelectB);
-    set(h(2),   'backgroundcolor', TP.UI.C.TextBG);
-	set(h(3),   'backgroundcolor', TP.UI.C.TextBG);
+    end  
     
 %% MSG LOG 
     msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tscanStopped\tScanning Stopped w/ # of Volumes Scanned = ',...
         num2str(TP.D.Trl.Vdone),'\r\n'];
 	updateMsg(TP.D.Exp.hLog, msg);
     
-%% Loop Control
-    if strcmp(TP.D.Trl.ScanScheme, 'LOOP') && StartTrigStopT==-1
-        % LOOP and not final stopped
-        feval(TP.D.Sys.Name, 'GUI_ScanStartTrigStop', 'Start');
+%% Trl Restart Control
+    if TP.D.Ses.TargetedTrlNumCurrent < TP.D.Ses.TargetedTrlNumTotal
+        % Session CONTINUES
+        pause(TP.D.Trl.ITI);
+        scanStarted;
+    else
+        % Session ENDS
+        feval(TP.D.Sys.Name,    'Ses_StartStop',    0)
     end
     

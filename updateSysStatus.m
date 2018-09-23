@@ -78,6 +78,7 @@ persistent C
         end
     end
     TP.D.Mon.PMT.StatusLED = PMTstatus;
+    % update TP.D.Ses.OverloadPMT
 
 %% Update PowerMeter Monitored
     if PmeasuredS121C ~= TP.D.Mon.Power.PmeasuredS121C
@@ -86,11 +87,11 @@ persistent C
             C.ARM_p1 * TP.D.Mon.Power.PmeasuredS121C + C.ARM_p2;
         
         if (TP.D.Mon.Power.PinferredAtCtx > TP.D.Mon.Power.PmaxCtxAllowed)...
-            && ~TP.D.Trl.PowerOverload
+            && ~TP.D.Ses.OverloadLasser
             feval(TP.D.Sys.Name,...
                 'GUI_AO_6115',[ TP.D.Mon.PMT.CtrlGainValue  0]);
                     %           PMT Gain Control            0, && StartTrigStop==2
-            TP.D.Trl.PowerOverload = 1;  
+            TP.D.Ses.OverloadLasser = 1;  
             set(TP.UI.H.hMon_Power_PinferredAtCtx_Edit, 'ForegroundColor', [0.8 0 0]);
         end
         set(TP.UI.H.hMon_Power_PmeasuredS121C_Edit, 'string', ...

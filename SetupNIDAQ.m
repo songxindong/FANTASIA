@@ -104,7 +104,10 @@ NI = TP.D.Sys.NI;
         NI.Chan_AI_PMT1{1},             NI.Chan_AI_PMT1{2},...
         NI.Chan_AI_PMT1{3},             NI.Chan_AI_PMT1{4}(1),...
         NI.Chan_AI_PMT1{4}(2),          'DAQmx_Val_Volts');    
-          
+
+%% SOUND TASK
+% AO_6323 for Sound Playback
+    
 %% TIMING TASKS
 % Internal Triger
     TP.HW.NI.T.hTask_CO_IntTrig = Task(NI.Task_CO_IntTrig_Name);

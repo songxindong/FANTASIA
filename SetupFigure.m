@@ -62,13 +62,14 @@ S.S = 2;            % Small Spacer
     S.PaneletteTitle = 18;
 
     % Panelette, Total #s of rows and columns
-    S.PaneletteRowNum = 6;      S.PaneletteColumnNum = 7;
+    S.PaneletteRowNum = 7;      S.PaneletteColumnNum = 8;
 
     % Panelette, layout of rows    
-    S.PnltSys.row =         6;    S.PnltSys.column =        1;
-    S.PnltMech.row =        5;    S.PnltMech.column =       1;
-    S.PnltScan.row =        4;    S.PnltScan.column =       1;
-    S.PnltTrial.row =       3;    S.PnltTrial.column =      1;
+    S.PnltSys.row =         7;    S.PnltSys.column =        1;
+    S.PnltMech.row =        6;    S.PnltMech.column =       1;
+    S.PnltBCD.row =         5;    S.PnltBCD.column =        1;
+    S.PnltSes.row =         4;    S.PnltSes.column =        1;
+    S.PnltTrl.row =         3;    S.PnltTrl.column =        1;
     S.PnltMonImage.row =    2;    S.PnltMonImage.column	=   1;
     S.PnltMonPower.row =    1;    S.PnltMonPower.column =   1;
 
@@ -454,23 +455,23 @@ for disp=1
         set(TP.UI.H.hExp_Mech_EstX_Edit,	'tag', 'hExp_Mech_EstX_Edit');
         clear WP;
         
-   	WP.name = 'Exp LensCfg';
-        WP.handleseed = 'TP.UI.H0.Panelette';
-        WP.type = 'RockerSwitch';
-        WP.row      = S.PnltCurrent.row;
-        WP.column   = S.PnltCurrent.column;
-            S.PnltCurrent.column = S.PnltCurrent.column + 1;
-        WP.text = { 'Obj & Comp Lens Configuration'};
-        WP.tip = {'\n2D raster = 2D diagonal raster scanning\n3D sweep = 3D diagonal raster scanning across multi-layers'};
-        WP.inputOptions = {'10x + 1000mm','25x + 1000mm', '25x + 500mm'};
-        WP.inputDefault = 1; % TP.D.Exp.BCD.ScanModeNum; unfinished
-        Panelette(S, WP, 'TP'); 
-        TP.UI.H.hExp_Mech_LensCfg_Rocker = TP.UI.H0.Panelette{WP.row,WP.column}.hRocker{1};
-        htemp = get(TP.UI.H.hExp_Mech_LensCfg_Rocker,'children');
-        for j = 1:length(htemp)
-            set(htemp(j),'tag','hExp_BCD_Scan_Mode_Rocker');
-        end
-        clear WP;
+%    	WP.name = 'Exp LensCfg';
+%         WP.handleseed = 'TP.UI.H0.Panelette';
+%         WP.type = 'RockerSwitch';
+%         WP.row      = S.PnltCurrent.row;
+%         WP.column   = S.PnltCurrent.column;
+%             S.PnltCurrent.column = S.PnltCurrent.column + 1;
+%         WP.text = { 'Obj & Comp Lens Configuration'};
+%         WP.tip = {'\n2D raster = 2D diagonal raster scanning\n3D sweep = 3D diagonal raster scanning across multi-layers'};
+%         WP.inputOptions = {'10x + 1000mm','25x + 1000mm', '25x + 500mm'};
+%         WP.inputDefault = 1; % TP.D.Exp.BCD.ScanModeNum; unfinished
+%         Panelette(S, WP, 'TP'); 
+%         TP.UI.H.hExp_Mech_LensCfg_Rocker = TP.UI.H0.Panelette{WP.row,WP.column}.hRocker{1};
+%         htemp = get(TP.UI.H.hExp_Mech_LensCfg_Rocker,'children');
+%         for j = 1:length(htemp)
+%             set(htemp(j),'tag','hExp_BCD_Scan_Mode_Rocker');
+%         end
+%         clear WP;
         
    WP.name = 'Exp Cameras';
         WP.handleseed = 'TP.UI.H0.Panelette';
@@ -534,8 +535,8 @@ end
 %% Exp.BCD
 for disp=1
 
-    S.PnltCurrent.row       = S.PnltScan.row;
-    S.PnltCurrent.column    = S.PnltScan.column;
+    S.PnltCurrent.row       = S.PnltBCD.row;
+    S.PnltCurrent.column    = S.PnltBCD.column;
            
  	WP.name = 'BCD Scan.Mode';
         WP.handleseed = 'TP.UI.H0.Panelette';
@@ -545,7 +546,8 @@ for disp=1
             S.PnltCurrent.column = S.PnltCurrent.column + 1;
         WP.text = { '2D or 3D,Random Access or Raster'};
         WP.tip = {'2D random = 2D random access jumping scanning among pixels\n2D raster = 2D diagonal raster scanning\n3D sweep = 3D diagonal raster scanning across multi-layers'};
-        WP.inputOptions = {'2D random','2D raster', '3D raster'};
+        WP.inputOptions = { '2D random',    '2D raster',    '3D raster'};
+        WP.inputEnable = {  'inactive',     'inactive',     'inactive'};
         WP.inputDefault = TP.D.Exp.BCD.ScanModeNum;
         Panelette(S, WP, 'TP'); 
         TP.UI.H.hExp_BCD_Scan_Mode_Rocker = TP.UI.H0.Panelette{WP.row,WP.column}.hRocker{1};
@@ -660,6 +662,22 @@ for disp=1
         TP.UI.H.hExp_BCD_Image_UpdateRate_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
         set(TP.UI.H.hExp_BCD_Image_UpdateTime_Edit, 'tag', 'hExp_BCD_Image_UpdateTime_Edit');
         set(TP.UI.H.hExp_BCD_Image_UpdateRate_Edit, 'tag', 'hExp_BCD_Image_UpdateRate_Edit');
+        clear WP;      
+        
+	WP.name = 'BCD ImageEnable';
+        WP.handleseed = 'TP.UI.H0.Panelette';
+        WP.type = 'RockerSwitch';	
+        WP.row      = S.PnltCurrent.row;
+        WP.column   = S.PnltCurrent.column;
+            S.PnltCurrent.column = S.PnltCurrent.column + 1;
+        WP.text = { 'Image Enable & Data Logging'};
+        WP.tip = {  'Image Enable & Data Logging ON/OFF'};
+        WP.inputOptions = { 'ON',       'OFF',      ''};
+        WP.inputEnable = {  'inactive',	'inactive',	'off'};
+        WP.inputDefault = 2-TP.D.Exp.BCD.ImageEnable;
+        Panelette(S, WP, 'TP');
+        TP.UI.H.hExp_BCD_ImageEnable_Rocker = TP.UI.H0.Panelette{WP.row,WP.column}.hRocker{1};
+        set(TP.UI.H.hExp_BCD_ImageEnable_Rocker,	'tag', 'hExp_BCD_ImageEnable_Rocker');
         clear WP; 
         
   	WP.name = 'BCD Commit';  
@@ -673,8 +691,8 @@ for disp=1
                         'Generate the scan pattern\n',...
                         'Allocate memories for D.Trl\n',...
                         'Commit NI-DAQ tasks']};
-        WP.inputOptions = { 'Commit',   'uncommited',   ''};        
-        WP.enable = [       1           0               0];
+        WP.inputOptions = { 'Commit',   'Uncommit',     ''};        
+        WP.inputEnable = {  'on',       'inactive',     'inactive'};
         WP.inputDefault = 2-TP.D.Exp.BCD.Committed;
         Panelette(S, WP, 'TP');
         TP.UI.H.hExp_BCD_Commit_Rocker = TP.UI.H0.Panelette{WP.row,WP.column}.hRocker{1}; 
@@ -682,13 +700,313 @@ for disp=1
         clear WP;
 end
 
+%% Ses
+for disp=1
+
+    S.PnltCurrent.row       = S.PnltSes.row;
+    S.PnltCurrent.column    = S.PnltSes.column;
+    	
+    WP.name = 'Ses Load&Start';
+        WP.handleseed = 'TP.UI.H0.Panelette';
+        WP.type =       'MomentarySwitch'; 
+        WP.row =        S.PnltCurrent.row;         
+        WP.column =     S.PnltCurrent.column;
+            S.PnltCurrent.column = S.PnltCurrent.column + 1;
+        WP.text = { 'Load SOUND for the session',...
+                    'START / STOP the session'};
+        WP.tip = {	'This will load a sound file and setup an AO_6323 Task to play that sound,\n',...
+                    'START / STOP the session' };
+        WP.inputEnable = {'off', 'off'};
+        Panelette(S, WP, 'TP');
+        TP.UI.H.hSes_Load_Momentary =       TP.UI.H0.Panelette{WP.row,WP.column}.hMomentary{1}; 
+        TP.UI.H.hSes_StartStop_Momentary =	TP.UI.H0.Panelette{WP.row,WP.column}.hMomentary{2};
+        set(TP.UI.H.hSes_Load_Momentary,        'Tag', 'hSes_Load_Momentary');
+        set(TP.UI.H.hSes_StartStop_Momentary,	'Tag', 'hSes_Start_Momentary');
+        clear WP; 
+        
+ 	WP.name = 'Ses TrlOrder';
+        WP.handleseed = 'TP.UI.H0.Panelette';
+        WP.type =       'RockerSwitch';	
+        WP.row =        S.PnltCurrent.row;
+        WP.column =     S.PnltCurrent.column;
+            S.PnltCurrent.column = S.PnltCurrent.column + 1;
+        WP.text = { 'Trial Order'};
+        WP.tip = {  'Trial Order'};
+        WP.inputOptions = {'Sequential',    'Randomized',   ''};
+        WP.inputEnable = {  'on',           'on',           'off'};
+        WP.inputDefault = 1;
+        Panelette(S, WP, 'TP');
+        TP.UI.H.hSes_TrlOrder_Rocker =      TP.UI.H0.Panelette{WP.row,WP.column}.hRocker{1};
+        set(TP.UI.H.hSes_TrlOrder_Rocker,	'Tag',  'hSes_TrlOrder_Rocker');
+        clear WP;        
+        
+  	WP.name = 'Ses CycleNum';
+        WP.handleseed =	'TP.UI.H0.Panelette';
+        WP.type =       'Edit';           
+        WP.row =        S.PnltCurrent.row;
+        WP.column =     S.PnltCurrent.column;
+            S.PnltCurrent.column = S.PnltCurrent.column + 1;     
+        WP.text = {	'Cycle Num Current (cycle)',...
+                    'Cycle Num Total (cycle)'};
+        WP.tip = {	'Cycle Num Current (cycle)',...
+                    'Cycle Num Total (cycle)'};
+        WP.inputValue = {   TP.D.Ses.Load.CycleNumCurrent,...
+                            TP.D.Ses.Load.CycleNumTotal};
+        WP.inputFormat = {'%d','%d'};    
+        WP.inputEnable = {'inactive','on'};
+        Panelette(S, WP, 'TP');    
+        TP.UI.H.hSes_CycleNumCurrent_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
+        TP.UI.H.hSes_CycleNumTotal_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
+        set(TP.UI.H.hSes_CycleNumCurrent_Edit,	'Tag', 'hSes_CycleNumCurrent_Edit');
+        set(TP.UI.H.hSes_CycleNumTotal_Edit,	'Tag', 'hSes_CycleNumTotal_Edit');
+        clear WP;      
+    
+	WP.name = 'Ses AddAtt';
+        WP.handleseed =	'TP.UI.H0.Panelette';
+        WP.type =       'Edit';           
+        WP.row =        S.PnltCurrent.row;
+        WP.column =     S.PnltCurrent.column;
+            S.PnltCurrent.column = S.PnltCurrent.column + 1;     
+        WP.text = {	'Additional Attenuations (dB)',...
+                    'Additional Attenuation Number Total'};
+        WP.tip = {	'Additional Attenuations (dB)',...
+                    'Additional Attenuation Number Total'};
+        WP.inputValue = {   TP.D.Ses.Load.AddAtts,...
+                            TP.D.Ses.Load.AddAttNumTotal};
+        WP.inputFormat = {'%d','%d'};    
+        WP.inputEnable = {'on','inactive'};
+        Panelette(S, WP, 'TP');    
+        TP.UI.H.hSes_AddAtts_Edit =         TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
+        TP.UI.H.hSes_AddAttNumTotal_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
+        set(TP.UI.H.hSes_AddAtts_Edit,          'Tag', 'hSes_AddAtts_Edit');
+        set(TP.UI.H.hSes_AddAttNumTotal_Edit,	'Tag', 'hSes_AddAttNumTotal_Edit');
+        clear WP;    	
+
+	WP.name = 'Ses SoundTime';
+        WP.handleseed =	'TP.UI.H0.Panelette';
+        WP.type =       'Edit';           
+        WP.row =        S.PnltCurrent.row;
+        WP.column =     S.PnltCurrent.column;
+            S.PnltCurrent.column = S.PnltCurrent.column + 1;     
+        WP.text = {	'',...
+                    'Sound Duration Total (s)'};
+        WP.tip = {	'',...
+                    'Cycle Duration Total (s)'};
+        WP.inputValue = {   0,...
+                            TP.D.Ses.Load.SoundDurTotal};
+        WP.inputFormat = {'','%5.1f'};    
+        WP.inputEnable = {'inactive','inactive'};
+        Panelette(S, WP, 'TP');    
+        TP.UI.H.hSes_SoundDurTotal_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2}; 
+        set(TP.UI.H.hSes_SoundDurTotal_Edit,	'Tag', 'hSes_SoundDurTotal_Edit');
+        clear WP;   
+        
+    WP.name = 'Ses CycleTime';
+        WP.handleseed =	'TP.UI.H0.Panelette';
+        WP.type =       'Edit';           
+        WP.row =        S.PnltCurrent.row;
+        WP.column =     S.PnltCurrent.column;
+            S.PnltCurrent.column = S.PnltCurrent.column + 1;     
+        WP.text = {	'Cycle Duration Current (s)',...
+                    'Cycle Duration Total (s)'};
+        WP.tip = {	'Cycle Duration Current (s)',...
+                    'Cycle Duration Total (s)'};
+        WP.inputValue = {   TP.D.Ses.Load.CycleDurCurrent,...
+                            TP.D.Ses.Load.CycleDurTotal};
+        WP.inputFormat = {'%5.1f','%5.1f'};    
+        WP.inputEnable = {'inactive','inactive'};
+        Panelette(S, WP, 'TP');    
+        TP.UI.H.hSes_CycleDurCurrent_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
+        TP.UI.H.hSes_CycleDurTotal_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2}; 
+        set(TP.UI.H.hSes_CycleDurCurrent_Edit,	'Tag', 'hSes_CycleDurCurrent_Edit');
+        set(TP.UI.H.hSes_CycleDurTotal_Edit,	'Tag', 'hSes_CycleDurTotal_Edit');
+        clear WP;   
+        
+  	WP.name = 'Ses Time';
+        WP.handleseed =	'TP.UI.H0.Panelette';
+        WP.type =       'Edit';           
+        WP.row =        S.PnltCurrent.row;
+        WP.column =     S.PnltCurrent.column;
+            S.PnltCurrent.column = S.PnltCurrent.column + 1;     
+        WP.text = {	'Session Current Time (s)',...
+                    'Session Duraion (s)'};
+        WP.tip = {	'Session Current Time (s)',...
+                    'Session Duraion (s)'};
+        WP.inputValue = {   TP.D.Ses.Load.DurCurrent,...
+                            TP.D.Ses.Load.DurTotal};
+        WP.inputFormat = {'%d','%d'};    
+        WP.inputEnable = {'inactive','inactive'};
+        Panelette(S, WP, 'TP');    
+        TP.UI.H.hSes_DurCurrent_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
+        TP.UI.H.hSes_DurTotal_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
+        set(TP.UI.H.hSes_DurCurrent_Edit,	'Tag', 'hSes_DurCurrent_Edit');
+        set(TP.UI.H.hSes_DurTotal_Edit,     'Tag', 'hSes_DurTotal_Edit');        
+        clear WP; 
+        
+	WP.name = 'Ses ScanScheme'; 
+        WP.handleseed = 'TP.UI.H0.Panelette';
+        WP.type =       'RockerSwitch';   
+        WP.row =        S.PnltCurrent.row;         
+        WP.column =     S.PnltCurrent.column;
+            S.PnltCurrent.column = S.PnltCurrent.column + 1;
+        WP.text =   {   'Search / Record / XBlaster'};
+        WP.tip =    {[  'Search: "FOCUS i" as in ScanImage = \n'...
+                        '   Started and \n'...
+                        '   Triggered Immediately with GUI "Start" & the Internal trigger, \n'...
+                        '   Stopped with GUI "Stop" (no auto timeout) \n\n',...
+                        'Record: "GRAB i" as in ScanImage  =  \n'...
+                        '   Started with GUI "Start", should be following sound loading first, \n'...
+                        '   Triggered Immediately with GUI "Start" & the Internal trigger, \n'....
+                        '       Triggered together with the AO_6323 task for playing sounds \n'...
+                        '   Stopped with either GUI "stop" or PC counted time out\n\n',...
+                        'XBlaster: "LOOP e" as in ScanImage =  \n',...
+                        '   Start with GUI "Start", and then wait for XBlaster3 control \n'...
+                        '   Triggered with real External trigger rising edge, \n'...
+                        '       Stopped, and re-Started with real external trigger falling edge or auto time out, \n'... 
+                        '   Fully Stopped or Cancelled with GUI "Stop"']};
+        WP.inputOptions = { 'Search',   'Record',   'XBlaster'};
+        WP.inputEnable = {  'on',       'on',       'inactive'};
+        WP.inputDefault = 1;
+        Panelette(S, WP, 'TP');
+        TP.UI.H.hSes_ScanScheme_Rocker = TP.UI.H0.Panelette{WP.row,WP.column}.hRocker{1};
+        set(TP.UI.H.hSes_ScanScheme_Rocker,	'Tag',  'hSes_ScanScheme_Rocker');
+        clear WP;         
+end
+
 %% Trl
 for disp=1
-        
-    S.PnltCurrent.row       = S.PnltTrial.row;
-    S.PnltCurrent.column    = S.PnltTrial.column;  
+
+    S.PnltCurrent.row       = S.PnltTrl.row;
+    S.PnltCurrent.column    = S.PnltTrl.column;
     
-	WP.name = 'Trl Start/Stop';
+      	WP.name = 'Trl Number';
+        WP.handleseed =	'TP.UI.H0.Panelette';
+        WP.type =       'Edit';           
+        WP.row =        S.PnltCurrent.row;
+        WP.column =     S.PnltCurrent.column;
+            S.PnltCurrent.column = S.PnltCurrent.column + 1;     
+        WP.text = {	'Current Trial Number',...
+                    'Total Trial Number / Cycle'};
+        WP.tip = {	'Current Trial Number',...
+                    'Total Trial Number / Cycle'};
+        WP.inputValue = {   TP.D.Trl.Load.NumCurrent,...
+                            TP.D.Trl.Load.NumTotal};
+        WP.inputFormat = {'%d','%d'};    
+        WP.inputEnable = {'inactive','inactive'};
+        Panelette(S, WP, 'TP');    
+        TP.UI.H.hTrl_NumCurrent_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
+        TP.UI.H.hTrl_NumTotal_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
+        set(TP.UI.H.hTrl_NumCurrent_Edit,	'Tag', 'hTrl_NumCurrent_Edit');
+        set(TP.UI.H.hTrl_NumTotal_Edit,     'Tag', 'hTrl_NumTotal_Edit');
+        clear WP;  
+        
+	WP.name = 'Trl Stim #';
+        WP.handleseed =	'TP.UI.H0.Panelette';
+        WP.type =       'Edit';           
+        WP.row =        S.PnltCurrent.row;
+        WP.column =     S.PnltCurrent.column;
+            S.PnltCurrent.column = S.PnltCurrent.column + 1;     
+        WP.text = {	'CURRENT Trial Stim #',...
+                    'NEXT Trial Stim #'};
+        WP.tip = {	'CURRENT Trial Stim #',...
+                    'NEXT Trial Stim #'};
+        WP.inputValue = {   TP.D.Trl.Load.StimNumCurrent,...
+                            TP.D.Trl.Load.StimNumNext};
+        WP.inputFormat = {'%d','%d'};    
+        WP.inputEnable = {'inactive','inactive'};
+        Panelette(S, WP, 'TP');    
+        TP.UI.H.hTrl_StimNumCurrent_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
+        TP.UI.H.hTrl_StimNumNext_Edit =     TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
+        set(TP.UI.H.hTrl_StimNumCurrent_Edit,	'Tag', 'hTrl_StimNumCurrent_Edit');
+        set(TP.UI.H.hTrl_StimNumNext_Edit,      'Tag', 'hTrl_StimNumNext_Edit');
+        clear WP;  
+        
+	WP.name = 'Trl Sound #';
+        WP.handleseed =	'TP.UI.H0.Panelette';
+        WP.type =       'Edit';           
+        WP.row =        S.PnltCurrent.row;
+        WP.column =     S.PnltCurrent.column;
+            S.PnltCurrent.column = S.PnltCurrent.column + 1;     
+        WP.text = {	'Current Sound #',...
+                    'Total Sound #'};
+        WP.tip = {	'Current Sound #',...
+                    'Total Sound #'};
+        WP.inputValue = {   TP.D.Trl.Load.SoundNumCurrent,...
+                            TP.D.Trl.Load.SoundNumTotal};
+        WP.inputFormat = {'%s','%d'};    
+        WP.inputEnable = {'inactive','inactive'};
+        Panelette(S, WP, 'TP');    
+        TP.UI.H.hTrl_SoundNumCurrent_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
+        TP.UI.H.hTrl_SoundNumTotal_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
+        set(TP.UI.H.hTrl_SoundNumCurrent_Edit,	'Tag', 'hTrl_SoundNumCurrent_Edit');
+        set(TP.UI.H.hTrl_SoundNumTotal_Edit,	'Tag', 'hTrl_SoundNumTotal_Edit');
+        clear WP;  	
+        
+    WP.name = 'Trl SoundFeature';
+        WP.handleseed =	'TP.UI.H0.Panelette';
+        WP.type =       'Edit';           
+        WP.row =        S.PnltCurrent.row;
+        WP.column =     S.PnltCurrent.column;
+            S.PnltCurrent.column = S.PnltCurrent.column + 1;     
+        WP.text = {	'Sound Design Attenuation (dB)',...
+                    'CURRENT Sound Name'};
+        WP.tip = {	'Sound Design Attenuation (dB)',...
+                    'CURRENT Sound Name'};
+        WP.inputValue = {   TP.D.Trl.Load.AttDesignCurrent,...
+                            TP.D.Trl.Load.SoundNameCurrent};
+        WP.inputFormat = {'%5.1f','%d'};    
+        WP.inputEnable = {'inactive','inactive'};
+        Panelette(S, WP, 'TP');    
+        TP.UI.H.hTrl_AttDesignCurrent_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
+        TP.UI.H.hTrl_SoundNameCurrent_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
+        set(TP.UI.H.hTrl_SoundNameCurrent_Edit, 'FontSize', 9);
+        set(TP.UI.H.hTrl_AttDesignCurrent_Edit,	'Tag', 'hTrl_AttDesignCurrent_Edit');
+        set(TP.UI.H.hTrl_SoundNameCurrent_Edit,	'Tag', 'hTrl_SoundNameCurrent_Edit');
+        clear WP; 
+        
+	WP.name = 'Trl Attenuation';
+        WP.handleseed =	'TP.UI.H0.Panelette';
+        WP.type =       'Edit';           
+        WP.row =        S.PnltCurrent.row;
+        WP.column =     S.PnltCurrent.column;
+            S.PnltCurrent.column = S.PnltCurrent.column + 1;     
+        WP.text = {	'Additional Attenuation (dB)',...
+                    'Total Attenuation (dB)'};
+        WP.tip = {	'Additional Attenuation (dB)',...
+                    'Total Attenuation (dB)'};
+        WP.inputValue = {  	TP.D.Trl.Load.AttAddCurrent,...
+                            TP.D.Trl.Load.AttCurrent};
+        WP.inputFormat = {'%5.1f','%5.1f'};    
+        WP.inputEnable = {'inactive','inactive'};
+        Panelette(S, WP, 'TP');    
+        TP.UI.H.hTrl_AttAddCurrent_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
+        TP.UI.H.hTrl_AttCurrent_Edit =      TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
+        set(TP.UI.H.hTrl_AttAddCurrent_Edit,	'Tag', 'hTrl_AttAddCurrent_Edit');
+        set(TP.UI.H.hTrl_AttCurrent_Edit,       'Tag', 'hTrl_AttCurrent_Edit');
+        clear WP;  
+        
+  	WP.name = 'Trl Time';
+        WP.handleseed =	'TP.UI.H0.Panelette';
+        WP.type =       'Edit';           
+        WP.row =        S.PnltCurrent.row;
+        WP.column =     S.PnltCurrent.column;
+            S.PnltCurrent.column = S.PnltCurrent.column + 1;     
+        WP.text = {	'Trial Current Time',...
+                    'Trial Duraion'};
+        WP.tip = {	'Trial Current Time',...
+                    'Trial Duraion'};
+        WP.inputValue = {   TP.D.Trl.Load.DurCurrent,...
+                            TP.D.Trl.Load.DurTotal};
+        WP.inputFormat = {'%d','%d'};    
+        WP.inputEnable = {'inactive','inactive'};
+        Panelette(S, WP, 'TP');    
+        TP.UI.H.hTrl_DurCurrent_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
+        TP.UI.H.hTrl_DurTotal_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
+        set(TP.UI.H.hTrl_DurCurrent_Edit,	'Tag', 'hTrl_DurCurrent_Edit');
+        set(TP.UI.H.hTrl_DurTotal_Edit,     'Tag', 'hTrl_DurTotal_Edit');
+        clear WP;   
+        
+ 	WP.name = 'Trl Start/Stop';
         WP.handleseed = 'TP.UI.H0.Panelette';
         WP.type =       'RockerSwitch';   
         WP.row =        S.PnltCurrent.row;         
@@ -696,92 +1014,13 @@ for disp=1
             S.PnltCurrent.column = S.PnltCurrent.column + 1;
         WP.text =   {   'Scan Start/Stop  Switch'};
         WP.tip =    {   'Start / Stop the Scanning & Imaging Task'};
-        WP.inputOptions = { 'Triggered',    'Start',    'Stop'};
-        WP.enable = [       0               1           1];
-        WP.inputDefault = 3 - TP.D.Trl.StartTrigStop;
+        WP.inputOptions = { 'Triggered',    'Started',    'Stopped'};
+        WP.inputEnable = {  'inactive',     'inactive', 'inactive'};
+        WP.inputDefault = 3 - TP.D.Trl.State;
         Panelette(S, WP, 'TP');
         TP.UI.H.hTrl_StartTrigStop_Rocker = TP.UI.H0.Panelette{WP.row,WP.column}.hRocker{1};
-        clear WP;   
-    
-    WP.name = 'Trl Duration';
-        WP.handleseed = 'TP.UI.H0.Panelette';
-        WP.type =       'Edit';          
-        WP.row =        S.PnltCurrent.row;         
-        WP.column =     S.PnltCurrent.column;
-            S.PnltCurrent.column = S.PnltCurrent.column + 1; 
-        WP.text = {	'Duration SCANNING MAX (seconds)',...
-                    'Duration SCANNED (seconds)'};
-        WP.tip = {	'Duration SCANNING MAX (seconds)',...
-                    'Duration SCANNED (seconds)'};
-        WP.inputValue = {   TP.D.Trl.Tmax,...
-                            TP.D.Trl.Tdone};
-        WP.inputFormat = {'%5.1f','%5.1f'};
-        WP.inputEnable = {'inactive','inactive'};
-        Panelette(S, WP, 'TP');    
-        TP.UI.H.hTrl_Tmax_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
-        TP.UI.H.hTrl_Tdone_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
-        clear WP;
-            
-	WP.name = 'Trl DataLogging';
-        WP.handleseed = 'TP.UI.H0.Panelette';
-        WP.type = 'RockerSwitch';	
-        WP.row      = S.PnltCurrent.row;
-        WP.column   = S.PnltCurrent.column;
-            S.PnltCurrent.column = S.PnltCurrent.column + 1;
-        WP.text = { 'Data Logging'};
-        WP.tip = {  'Image Data Logging ON/OFF'};
-        WP.inputOptions = {'ON', 'OFF', ''};
-        WP.inputDefault = 2-TP.D.Trl.DataLogging;
-        Panelette(S, WP, 'TP');
-        TP.UI.H.hTrl_DataLogging_Rocker = TP.UI.H0.Panelette{WP.row,WP.column}.hRocker{1};
+        set(TP.UI.H.hTrl_StartTrigStop_Rocker,	'Tag',  'hTrl_StartTrigStop_Rocker');
         clear WP; 
-        
-	WP.name = 'Trl ScanScheme'; 
-        WP.handleseed = 'TP.UI.H0.Panelette';
-        WP.type =       'RockerSwitch';   
-        WP.row =        S.PnltCurrent.row;         
-        WP.column =     S.PnltCurrent.column;
-            S.PnltCurrent.column = S.PnltCurrent.column + 1;
-        WP.text =   {   'FOCUS / GRAB / LOOP similar as in scanimage'};
-        WP.tip =    {[  'FOCUS i = \n'...
-                        '   Started and \n'...
-                        '   Triggered Immediately with GUI "Start" & the Internal trigger, \n'...
-                        '   Stopped with GUI "Stop" (no auto timeout) \n\n',...
-                        'GRAB i =  \n'...
-                        '   Started with GUI "Start", should be following sound loading first, \n'...
-                        '   Triggered Immediately with GUI "Start" & the Internal trigger, \n'....
-                        '       Triggered together with the AO_6323 task for playing sounds \n'...
-                        '   Stopped with either GUI "stop" or PC counted time out\n\n',...
-                        'LOOP e =  \n',...
-                        '   Start with GUI "Start", and then wait for XBlaster3 control \n'...
-                        '   Triggered with real External trigger rising edge, \n'...
-                        '       Stopped, and re-Started with real external trigger falling edge or auto time out, \n'... 
-                        '   Fully Stopped or Cancelled with GUI "Stop"']};
-        WP.inputOptions = {'FOCUS i','GRAB i','LOOP e'};
-        WP.inputDefault = TP.D.Trl.ScanSchemeNum;
-        Panelette(S, WP, 'TP');
-        TP.UI.H.hTrl_ScanScheme_Rocker = TP.UI.H0.Panelette{WP.row,WP.column}.hRocker{1};
-        clear WP; 
-        
-	WP.name = 'Trl LoadSound';      % may delete the external trigger button
-        WP.handleseed = 'TP.UI.H0.Panelette';
-        WP.type = 'MomentarySwitch'; 
-        WP.row =        S.PnltCurrent.row;         
-        WP.column =     S.PnltCurrent.column;
-            S.PnltCurrent.column = S.PnltCurrent.column + 1;
-        WP.text = { 'Load Sound File, Start Sound & Imaging Tasks',...
-                    'Wait to be deleted, The External Trigger'};
-        WP.tip = {  [   'This will load a sound file and setup an AO_6323 Task to play that sound,\n',...
-                        'and build (reset) an "external" trigger CO task to control the other tasks.\n,',...
-                        'AO_6223, AI_6115, DO_6536, CO_TrigListener are all triggered by this'],...
-                        'To start this "external" trigger and trigger all the tasks mentioned.'};
-        WP.inputEnable = {'inactive','inactive'};
-        Panelette(S, WP, 'TP');
-        TP.UI.H.hTrl_LoadSound_Momentary = TP.UI.H0.Panelette{WP.row,WP.column}.hMomentary{1}; 
-        TP.UI.H.hTrl_IntTrig_Momentary = TP.UI.H0.Panelette{WP.row,WP.column}.hMomentary{2}; 
-        set(TP.UI.H.hTrl_LoadSound_Momentary,	'tag', 'hTrl_LoadSound_Momentary');
-        set(TP.UI.H.hTrl_IntTrig_Momentary,     'tag', 'hTrl_IntTrig_Momentary');
-        clear WP;
         
 end
 
@@ -799,7 +1038,8 @@ for disp=1
             S.PnltCurrent.column = S.PnltCurrent.column + 1;
         WP.text =       {'PMT High Voltage ON/OFF'};
         WP.tip =        {  'H = Turn the PMT HV ON\nL = Turn the PMT HV ON'};
-        WP.inputOptions =   {'ON','OFF',''};
+        WP.inputOptions = { 'ON',   'OFF',  ''};
+        WP.inputEnable = {  'on',   'on',   'off'};
         WP.inputDefault =   2 - TP.D.Mon.PMT.PMTctrl;
         Panelette(S, WP, 'TP');
         TP.UI.H.hMon_PMT_PMTctrl_Rocker = TP.UI.H0.Panelette{WP.row,WP.column}.hRocker{1};
@@ -898,24 +1138,18 @@ for disp=1
         
    	WP.name = 'Mon Display';
         WP.handleseed = 'TP.UI.H0.Panelette';
-        WP.type =       'ToggleSwitch';	
+        WP.type =       'RockerSwitch';	
         WP.row      = S.PnltCurrent.row;
         WP.column   = S.PnltCurrent.column;
             S.PnltCurrent.column = S.PnltCurrent.column + 1;
-        WP.text = { 'Display Enable', 'Display Mode'};
-        WP.tip = {  'Display Enable ON/OFF', 
-                    'Image Display Mode'};
-        WP.inputOptions = { 'ON', 'OFF', '';
-                            'Abs','Rltv',''};
-        WP.inputDefault = [ 2-TP.D.Mon.Image.DisplayEnable,...
-                            TP.D.Mon.Image.DisplayModeNum];
+        WP.text = { 'Display Mode'};
+        WP.tip = {  'Image Display Mode'};
+        WP.inputOptions = {	'Absolute', 'Relative', ''};
+        WP.inputEnable = {  'on',       'on',       'inactive'};
+        WP.inputDefault =   TP.D.Mon.Image.DisplayModeNum;
         Panelette(S, WP, 'TP');
-        TP.UI.H.hMon_Image_DisplayEnable_Toggle = TP.UI.H0.Panelette{WP.row,WP.column}.hToggle{1};
-        TP.UI.H.hMon_Image_DisplayMode_Toggle = TP.UI.H0.Panelette{WP.row,WP.column}.hToggle{2};
-%         htemp = get(TP.UI.H.hMon_Image_DisplayEnable_Toggle,'children');
-%         for j = 2:3
-%             set(htemp(j),'enable', 'inactive');
-%         end;
+        TP.UI.H.hMon_Image_DisplayMode_Rocker = TP.UI.H0.Panelette{WP.row,WP.column}.hRocker{1};
+        set(TP.UI.H.hMon_Image_DisplayMode_Rocker,	'Tag',  'hMon_Image_DisplayMode_Rocker');
         clear WP;
         
 end
@@ -994,6 +1228,7 @@ for disp=1
         Panelette(S, WP, 'TP');
         TP.UI.H.hMon_Power_PmaxCtxAllowed_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};  
         TP.UI.H.hMon.Power_PmaxAtCurAngle_Edit = TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
+        set(TP.UI.H.hMon_Power_PmaxCtxAllowed_Edit, 'Tag',  'hMon_Power_PmaxCtxAllowed_Edit');
         clear WP;      
     
 	WP.name = 'Power Monitored';

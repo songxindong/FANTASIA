@@ -38,17 +38,15 @@ SetupThorlabsMotor;
 SetupNIDAQ;
 SetupPointGreyCams;
 %     TP.D.Mon.Power.CalibFlag = 1;
-    GUI_ScanScheme(1);  
+    GUI_Rocker('hSes_ScanScheme_Rocker', 'Search');  
   	GUI_PresetCfg(13);
-    % GUI_ScanScheme should be in ahead of GUI_PresetCfg, otherwise,
-    % "Start" would be enabled
                                 set(TP.UI.H0.hFigTP,    'Visible',  'on');
     
 %% SETUP GUI CALLBACKS
 % Sys Registrations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 set(TP.UI.H.hSys_PowerCalib_Momentary,      'callback',             'SetupPowerCalibration');
 
-% Mky / Exp Registrations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Mky / Exp Registrations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Parameter Input
 set(TP.UI.H.hMky_ID_Edit,                   'callback',             [TP.D.Sys.Name,'(''GUI_MkyExp'')']);
 set(TP.UI.H.hExp_Mech_EstX_Edit,         	'callback',             [TP.D.Sys.Name,'(''GUI_MkyExp'')']);
@@ -58,17 +56,17 @@ set(TP.UI.H.hExp_Mech_Zs_SM1Z_Edit,        	'callback',             [TP.D.Sys.Na
 set(TP.UI.H.hMky_Side_Edit,                 'callback',             [TP.D.Sys.Name,'(''GUI_MkyExp'')']);
 set(TP.UI.H.hExp_AngleArm_Edit,             'callback',             [TP.D.Sys.Name,'(''GUI_MkyExp'')']);
     % Wide Field
-set(TP.UI.H.hExp_WF1_Momentary,            	'callback',             [TP.D.Sys.Name,'(''GUI_ExpWideField'')']);
-set(TP.UI.H.hExp_WF2_Momentary,            	'callback',             [TP.D.Sys.Name,'(''GUI_ExpWideField'')']);
+set(TP.UI.H.hExp_WF1_Momentary,            	'callback',             [TP.D.Sys.Name,'(''SetupFigurePointGrey'')']);
+set(TP.UI.H.hExp_WF2_Momentary,            	'callback',             [TP.D.Sys.Name,'(''SetupFigurePointGrey'')']);
 
-% Exp.BCD Scanning Pattern %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Exp.BCD Scanning Pattern %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Preset Modes
 for i =1:length(TP.D.Sys.Scan.PresetGroup)
 set(TP.UI.H.hSys_Scan_PresetCfg_Toggle{i},  'SelectionChangeFcn',   [TP.D.Sys.Name,'(''GUI_PresetCfg'')']);
 end
     % Scan Pattern
-set(TP.UI.H.hSys_AOD_FreqBW_Edit,       	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
-set(TP.UI.H.hSys_AOD_FreqCF_Edit,         	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
+set(TP.UI.H.hSys_AOD_FreqBW_Edit,               'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
+set(TP.UI.H.hSys_AOD_FreqCF_Edit,               'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
 set(TP.UI.H.hExp_BCD_Scan_Mode_Rocker,          'SelectionChangeFcn',   [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
 set(TP.UI.H.hExp_BCD_Image_NumSmplPerPixl_Edit,	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
 set(TP.UI.H.hExp_BCD_Scan_NumPixlPerAxis_Edit,	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
@@ -76,17 +74,19 @@ set(TP.UI.H.hExp_BCD_Scan_NumLayrPerVlme_Edit,	'callback',             [TP.D.Sys
 set(TP.UI.H.hExp_BCD_Scan_LayrSpacingInZ_Edit, 	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
 set(TP.UI.H.hExp_BCD_Image_NumUpdtPerVlme_Edit,	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
 set(TP.UI.H.hExp_BCD_Image_NumVlmePerUpdt_Edit,	'callback',             [TP.D.Sys.Name,'(''GUI_ScanParameters'')']);
-    % Scan Commit
-set(TP.UI.H.hExp_BCD_Commit_Rocker,             'SelectionChangeFcn', 	[TP.D.Sys.Name,'(''GUI_BCD_Commit'')']);     
+set(TP.UI.H.hExp_BCD_ImageEnable_Rocker,        'SelectionChangeFcn',   [TP.D.Sys.Name,'(''GUI_Rocker'')']);
+set(TP.UI.H.hExp_BCD_Commit_Rocker,             'SelectionChangeFcn', 	[TP.D.Sys.Name,'(''GUI_Rocker'')']);     
+
+% Session Control %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+set(TP.UI.H.hSes_ScanScheme_Rocker,      	'SelectionChangeFcn',  	[TP.D.Sys.Name, '(''GUI_Rocker'')']);
+set(TP.UI.H.hSes_CycleNumTotal_Edit,        'Callback',             [TP.D.Sys.Name, '(''GUI_Edit'')']);
+set(TP.UI.H.hSes_AddAtts_Edit,              'Callback',             [TP.D.Sys.Name, '(''GUI_Edit'')']);
+set(TP.UI.H.hSes_TrlOrder_Rocker,           'SelectionChangeFcn',   [TP.D.Sys.Name, '(''GUI_Rocker'')']);
+set(TP.UI.H.hSes_Load_Momentary,            'callback',             [TP.D.Sys.Name, '(''Ses_Load'')']);
+set(TP.UI.H.hSes_StartStop_Momentary,       'callback',             [TP.D.Sys.Name, '(''Ses_StartStop'')']);
+
 % Trial Control %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Scheme
-set(TP.UI.H.hTrl_DataLogging_Rocker,        'SelectionChangeFcn',   [TP.D.Sys.Name,'(''GUI_ImageDataLogging'')']);
-set(TP.UI.H.hTrl_ScanScheme_Rocker,      	'SelectionChangeFcn',  	[TP.D.Sys.Name,'(''GUI_ScanScheme'')']);
-    % START/STOP
-set(TP.UI.H.hTrl_StartTrigStop_Rocker,     	'SelectionChangeFcn',   [TP.D.Sys.Name,'(''GUI_ScanStartTrigStop'')']);
-    % Length
-% set(TP.UI.H.hTrl_Tmax_Edit,              	'callback',             [TP.D.Sys.Name,'(''GUI_Tmax'')']);
-set(TP.UI.H.hTrl_LoadSound_Momentary,       'callback',             'SetupSoundInGRAB');
+
 % House Keeping Tasks %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % AO 6115 control
 set(TP.UI.H.hMon_PMT_CtrlGainValue_PotenSlider,     'callback',     [TP.D.Sys.Name,'(''GUI_AO_6115'')']);
@@ -98,12 +98,11 @@ set(TP.UI.H.hMon_PMT_PMTctrl_Rocker,        'SelectionChangeFcn',	[TP.D.Sys.Name
 set(TP.UI.H.hMon_PMT_FANctrl_Toggle,        'SelectionChangeFcn',   [TP.D.Sys.Name,'(''GUI_DO_6115'')']);
 set(TP.UI.H.hMon_PMT_PELctrl_Toggle,        'SelectionChangeFcn',   [TP.D.Sys.Name,'(''GUI_DO_6115'')']);
     % Display State
-set(TP.UI.H.hMon_Image_DisplayEnable_Toggle,'SelectionChangeFcn',   [TP.D.Sys.Name,'(''GUI_ImageDisplayEnable'')']);
-set(TP.UI.H.hMon_Image_DisplayMode_Toggle,  'SelectionChangeFcn',   [TP.D.Sys.Name,'(''GUI_ImageDisplayMode'')']);
+set(TP.UI.H.hMon_Image_DisplayMode_Rocker,  'SelectionChangeFcn',   [TP.D.Sys.Name,'(''GUI_Rocker'')']);
     % Power
 set(TP.UI.H.hMon_Power_HWP_CtrlAglValue_PotenEdit,  'callback',     [TP.D.Sys.Name,'(''GUI_PowerHWP'')']);
 set(TP.UI.H.hMon_Power_HWP_CtrlAglValue_PotenSlider,'callback',     [TP.D.Sys.Name,'(''GUI_PowerHWP'')']);
-set(TP.UI.H.hMon_Power_PmaxCtxAllowed_Edit,         'callback',     [TP.D.Sys.Name,'(''GUI_PowerMax'')']);     
+set(TP.UI.H.hMon_Power_PmaxCtxAllowed_Edit,         'callback',     [TP.D.Sys.Name,'(''GUI_Edit'')']);     
     % CLEANUP
 set(TP.UI.H0.hFigTP,                        'CloseRequestFcn',      [TP.D.Sys.Name,'(''GUI_CleanUp'')']);
 
@@ -117,7 +116,7 @@ function flag = CheckRunning
         flag = 0;
     end
             
-function msg = GUI_MkyExp(varargin)
+function GUI_MkyExp(varargin)
     global TP 	
         % notes by 10/24/2014
         % need to prepare Mky-Exp DATABASE etc
@@ -157,36 +156,181 @@ function msg = GUI_MkyExp(varargin)
         % TP.D.Image.ArmSide =     varargin{1};
         % TP.D.Image.ArmAngle =    varargin{2};
     end
-    
-    %% Uncommit the BCD
-    TP.D.Exp.BCD.Committed =            0;
-    h = get(TP.UI.H.hExp_BCD_Commit_Rocker, 'children');
-    set(TP.UI.H.hExp_BCD_Commit_Rocker, 'SelectedObject',   h(2));
-    set(h(2), 	'backgroundcolor',  TP.UI.C.SelectB);
-    set(h(3), 	'backgroundcolor',  TP.UI.C.TextBG);
-    h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'children');
-    set(h(2),   'enable',           'inactive');
-    
+        
 	%% MSG LOG
     msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_MkyExp\tUpdated','\r\n'];
     updateMsg(TP.D.Exp.hLog, msg);  
-
-function msg = GUI_ExpWideField(varargin)
-    global Xin TP
-    %% Where the call is from
-    if nargin==0
-        N = get(gcbo,   'UserData');
-    else
-        N = varagin(1);
+    
+function GUI_Edit(varargin)
+    global TP
+    %% Where the Call is from   
+    if nargin == 0      % from GUI 
+        tag =   get(gcbo,   'tag');
+        s =     get(gcbo,   'string');
+           
+    else                % from Program
+        tag =   varargin{1};
+        s =     varargin{2};
     end
-    Xin.D.Sys.hLog = TP.D.Exp.hLog;
-    SetupFigurePointGrey(N);
-    CtrlPointGreyCams('InitializeCallbacks', N);
-    CtrlPointGreyCams('Cam_DispGain', N, 1);
-%         SetupWideField;
-        
-%% Exp.BCD.Scan GUI updates w/o touching NI-DAQ
-function msg = GUI_PresetCfg(varargin)  
+    %% Update D and GUI
+    switch tag
+        case 'hSes_CycleNumTotal_Edit'
+            try 
+                t = round(str2double(s));
+                TP.D.Ses.Load.CycleNumTotal = t;
+            catch
+                errordlg('Cycle Number Total input is not valid');
+                return
+            end
+            %% Setup Session Loading
+            SetupSesLoad('TP', 'CycleNumTotal'); 
+        case 'hSes_AddAtts_Edit'
+            try
+                eval(['TP.D.Ses.Load.AddAtts = [', s, '];']);
+                TP.D.Ses.Load.AddAttString = s;
+            catch
+                errordlg('Additonal attenuations input is not valid');
+                return
+            end            
+            %% Setup Session Loading
+            SetupSesLoad('TP', 'AddAtts');     
+        case 'hMon_Power_PmaxCtxAllowed_Edit'
+            try 
+                Pmax = str2double(s);
+                TP.D.Mon.Power.PmaxCtxAllowed = min(round(Pmax), 300);
+                set(TP.UI.H.hMon_Power_PmaxCtxAllowed_Edit,...
+                    'string',   sprintf('%5.1f',   TP.D.Mon.Power.PmaxCtxAllowed));               
+            catch
+                errordlg('Power Max @ Cortex Allowed not set right');
+                return
+            end
+        otherwise
+    end
+	%% MSG LOG
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_Edit\t' tag ' updated to ' s '\r\n'];
+    updateMsg(TP.D.Exp.hLog, msg);
+
+function GUI_Rocker(varargin)
+    global TP
+  	%% where the call is from      
+    if nargin==0
+        % called by GUI:            GUI_Rocker
+        label =     get(gcbo,'Tag'); 
+        val =       get(get(gcbo,'SelectedObject'),'string');
+    else
+        % called by general update: GUI_Rocker('hMky_Side_Rocker', 'LEFT')
+        label =     varargin{1};
+        val =       varargin{2};
+    end   
+    %% Update GUI
+    eval(['h = TP.UI.H.', label ';'])
+    hc = get(h,     'Children');
+    for j = 1:3
+        if strcmp( get(hc(j), 'string'), val )
+            set(hc(j),	'backgroundcolor', TP.UI.C.SelectB);
+            set(h,      'SelectedObject',  hc(j));
+            k = j;  % for later reference
+        else                
+            set(hc(j),	'backgroundcolor', TP.UI.C.TextBG);
+        end
+    end
+    %% Update D & Log
+    switch label
+        case 'hMky_Side_Rocker'
+            TP.D.Mky.Side = val;
+            msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\t', label, '\tSetup the Monkey Side as: '...
+                TP.D.Mky.Side '\r\n'];
+        case 'hExp_BCD_ImageEnable_Rocker'
+            switch val
+                case 'ON'
+                    TP.D.Exp.BCD.ImageEnable =  1;
+                    set(TP.UI.H.hSes_Load_Momentary, 'Enable', 'on');
+                case 'OFF'
+                    TP.D.Exp.BCD.ImageEnable =  0;
+                    set(TP.UI.H.hSes_Load_Momentary, 'Enable', 'off');
+                otherwise
+            end
+            msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\t', label, '\tExp BCD ImageEnable set as: '...
+                val '\r\n'];            
+        case 'hExp_BCD_Commit_Rocker'
+            hc = get(TP.UI.H.hSes_ScanScheme_Rocker,	'Children');
+            switch val
+                case 'Commit'
+                    TP.D.Exp.BCD.Committed =	1;
+                    BCD_Commit;
+                    set(hc(1),  'Enable',   'on');
+                    set(hc(2),  'Enable',   'on');
+                    set(hc(3),  'Enable',   'on');
+                case 'Uncommit'
+                    TP.D.Exp.BCD.Committed =	0;
+                    set(hc(1),  'Enable',   'inactive');
+                    set(hc(2),  'Enable',   'inactive');
+                    set(hc(3),  'Enable',   'inactive');
+                otherwise
+            end
+            GUI_Rocker('hSes_ScanScheme_Rocker', 'Search');
+            msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\t', label, '\tExp BCD Commit set as: '...
+                val '\r\n'];               
+        case 'hSes_TrlOrder_Rocker'
+            TP.D.Ses.Load.TrlOrder = val;
+            msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\t', label, '\tSession trial order selected as: '...
+                TP.D.Ses.Load.TrlOrder '\r\n']; 
+            SetupSesLoad('TP', 'TrlOrder');
+        case 'hSes_ScanScheme_Rocker'
+                    TP.D.Ses.ScanScheme =       val;
+            switch val
+                case 'Search'
+                    TP.D.Ses.ScanTrigType =         'internal';
+                    TP.D.Ses.Load.CycleNumTotal = 	1;
+                    TP.D.Ses.Load.AddAtts =         0;
+                    TP.D.Ses.Load.AddAttString = 	'0';
+                    set(TP.UI.H.hSes_Load_Momentary,'enable',	'inactive');
+                    if TP.D.Exp.BCD.ImageEnable
+                        Ses_Load([pwd, '\=SoundVirtual_ScanScheme_Search_ImageEnable_ON.wav']);
+                    else
+                        Ses_Load([pwd, '\=SoundVirtual_ScanScheme_Search_ImageEnable_OFF.wav']);
+                    end                      
+                case 'Record'
+                    TP.D.Ses.ScanTrigType =         'internal';
+                    TP.D.Ses.Load.CycleNumTotal = 	2;
+                    TP.D.Ses.Load.AddAtts =         [0 10];
+                    TP.D.Ses.Load.AddAttString = 	'[0 10]';
+                    set(TP.UI.H.hSes_Load_Momentary,'enable',	'on');
+                        Ses_Load([pwd, '\=SoundVirtual_ScanScheme_Record.wav']);
+                case 'XBlaster'
+                    TP.D.Ses.ScanTrigType =         'external'; 
+                    TP.D.Ses.Load.CycleNumTotal = 	Inf;
+                    TP.D.Ses.Load.AddAtts =         0;
+                    TP.D.Ses.Load.AddAttString = 	'0';
+                    set(TP.UI.H.hSes_Load_Momentary,'enable',	'inactive');                    
+                        Ses_Load([pwd, '\=SoundVirtual_ScanScheme_XBlaster.wav']);
+                otherwise
+            end
+            NIDAQ_TrigConnection;
+            msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\t', label, '\tSesScanScheme is selected as: '...
+                TP.D.Ses.ScanScheme, ''' and Start Trigger as ''', TP.D.Ses.ScanTrigType ,'''\r\n'];
+        case 'hTrl_StartTrigStop_Rocker'
+            % just update the GUI            
+            msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\t', label, '\tTrl_StartTrigStop is selected as: '...
+                val ,'''\r\n'];
+        case 'hMon_Image_DisplayMode_Rocker'
+            switch val
+                case 'Absolute'
+                    TP.D.Mon.Image.DisplayMode =    val;
+                    TP.D.Mon.Image.DisplayModeNum = 1;
+                case 'Relative'
+                    TP.D.Mon.Image.DisplayMode =    val;
+                    TP.D.Mon.Image.DisplayModeNum = 2;                    
+                otherwise
+            end
+            msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\t', label, '\tMon Image Display Mode selected as ''',...
+                TP.D.Mon.Image.DisplayMode, '''\r\n'];
+        otherwise
+            errordlg('Rocker tag unrecognizable!');
+    end
+    updateMsg(TP.D.Exp.hLog, msg);
+     
+function GUI_PresetCfg(varargin)  
     global TP
     
     %% Where the call is from
@@ -205,7 +349,6 @@ function msg = GUI_PresetCfg(varargin)
         d = 3 - mod(ScanCfgNum-1,3);
         set(TP.UI.H.hSys_Scan_PresetCfg_Toggle{ScanCfgGroup}, 'SelectedObject', h(d));
     end
-
     %% exclusive choice update
     for i=1:length(TP.D.Sys.Scan.PresetGroup)
         % deselect other buttongroups
@@ -222,10 +365,8 @@ function msg = GUI_PresetCfg(varargin)
             end
         end
     end
-
     %% Read the Preset ScanCfg out   
     Cfg = TP.D.Sys.Scan.PresetCfg{ScanCfgNum};
-
     %% Update further GUI elements 
     h1 = get(TP.UI.H.hExp_BCD_Scan_Mode_Rocker,             'children');
   	switch Cfg.ScanMode
@@ -243,20 +384,19 @@ function msg = GUI_PresetCfg(varargin)
     set(TP.UI.H.hExp_BCD_Scan_NumLayrPerVlme_Edit,      'string',   num2str(Cfg.NumLayrPerVlme));
     set(TP.UI.H.hExp_BCD_Scan_LayrSpacingInZ_Edit,      'string',   num2str(Cfg.LayrSpacingInZ));
     set(TP.UI.H.hExp_BCD_Image_NumUpdtPerVlme_Edit,     'string',   num2str(Cfg.NumUpdtPerVlme));
-    set(TP.UI.H.hExp_BCD_Image_NumVlmePerUpdt_Edit,     'string',   num2str(1/Cfg.NumUpdtPerVlme));
-    
+    set(TP.UI.H.hExp_BCD_Image_NumVlmePerUpdt_Edit,     'string',   num2str(1/Cfg.NumUpdtPerVlme));    
     %% Update TP.D, and Generate ScanSeq
     TP.D.Exp.BCD.ScanGenFunc = Cfg.GenFunc;
     TP.D.Exp.BCD.ImageEnable = Cfg.ImagingEnable;
-    GUI_ImageDataLogging(Cfg.ImagingEnable);
-    GUI_ImageDisplayEnable(Cfg.ImagingEnable);
+        if Cfg.ImagingEnable;   IE = 'ON';  else IE = 'OFF';    end
+    GUI_Rocker('hExp_BCD_ImageEnable_Rocker', IE);
     GUI_ScanParameters(0);
 
     %% LOG MSG
     msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_ScanCfg\tScanCfg ''',ScanCfg,''' is selected\r\n'];
     updateMsg(TP.D.Exp.hLog, msg);
        
-function msg = GUI_ScanParameters(varargin)
+function GUI_ScanParameters(varargin)
     global TP
     
     %% LOG MSG
@@ -348,16 +488,9 @@ function msg = GUI_ScanParameters(varargin)
   	set(TP.UI.H.hExp_BCD_Image_UpdateTime_Edit, 'string',   sprintf('%5.7f',TP.D.Exp.BCD.ImageUpdateTime));
 
     %% Uncommit the Exp.BCD
-    TP.D.Exp.BCD.Committed =            0;
-    h = get(TP.UI.H.hExp_BCD_Commit_Rocker, 'children');
-    set(TP.UI.H.hExp_BCD_Commit_Rocker, 'SelectedObject',   h(2));
-    set(h(2),	'backgroundcolor',  TP.UI.C.SelectB);
-    set(h(3), 	'backgroundcolor',  TP.UI.C.TextBG);    
-    h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'children');
-    set(h(2),   'enable',           'inactive');
+    GUI_Rocker('hExp_BCD_Commit_Rocker', 'Uncommit');
 
-%% GUI updates w/ NI-DAQ modifications
-function msg = GUI_BCD_Commit
+function BCD_Commit
     global TP
     %% Generate Scanning Pattern: ScanSeq and ScanLUT
  	[TP.D.Exp.BCD.ScanScanSeq, TP.D.Exp.BCD.ScanScanInd] = feval(...
@@ -426,206 +559,199 @@ function msg = GUI_BCD_Commit
 
     %% Turn Laser Power ON
         
-    %% BCD Committed: GUI update & "Start" Enabled
-    h = get(TP.UI.H.hExp_BCD_Commit_Rocker, 'children');
-    set(TP.UI.H.hExp_BCD_Commit_Rocker, 'SelectedObject',   h(3));
-    set(h(3),	'backgroundcolor',  TP.UI.C.SelectB);
-    set(h(2),  	'backgroundcolor',  TP.UI.C.TextBG);
-    h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'children');
-    set(h(2),   'enable',           'on');
-  	
     %% MSG LOG
-    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_BCD_Commit\tExp.BCD is committed\r\n'];
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tBCD_Commit\tExp.BCD is committed\r\n'];
     updateMsg(TP.D.Exp.hLog, msg);  
-    
-function msg = GUI_ScanScheme(varargin)
+
+function Ses_Load(varargin)
     global TP;
 
-  	%% where the call is from
-    h = get(TP.UI.H.hTrl_ScanScheme_Rocker, 'Children');      
+    %% where the call is from     
     if nargin==0
-        % called by GUI:            GUI_ScanScheme    
-        ScanSchemeNum = get(get(TP.UI.H.hTrl_ScanScheme_Rocker,'SelectedObject'),'UserData');
-                TP.D.Trl.ScanSchemeNum = ScanSchemeNum;
+        % called by GUI:      
+            % FANTASIA Specific: Check Whether Proceed
+            % BCD commit ?
+            if ~TP.D.Exp.BCD.Committed
+                    errordlg('Exp BCD not committed yet!');
+                    return
+            end
+            % Load sound only when ScanScheme == "Record"
+            switch TP.D.Ses.ScanScheme
+                case 'Search'                    
+                    errordlg('"Search" Session scanning Mode does not support manually loading sounds!');
+                    return
+                case 'Record'
+                case 'XBlaster'                    
+                    errordlg('"XBlaster" not supported yet!');
+                    return
+                otherwise
+                    errordlg('What is this?');
+                    return
+            end
+        [TP.D.Ses.Load.SoundFile, TP.D.Ses.Load.SoundDir, FilterIndex] = ...
+            uigetfile('.wav','Select a Sound File',...
+            [TP.D.Sys.SoundDir, 'test.wav']);
+        if FilterIndex == 0
+            return
+        end
     else
-        % called by general update: GUI_ScanScheme(ScanScheme),
-        % ScanScheme =  1,          0,          -1
-        %               'FOCUS i',  'GRAB i',   'LOOP e'
-        ScanSchemeNum = varargin{1}; 
-        switch ScanSchemeNum
-            case 1;	set(TP.UI.H.hTrl_ScanScheme_Rocker, 'SelectedObject', h(3));
-            case 0;	set(TP.UI.H.hTrl_ScanScheme_Rocker, 'SelectedObject', h(2));
-          	case -1;set(TP.UI.H.hTrl_ScanScheme_Rocker, 'SelectedObject', h(1));
+        % called by general update: SetupSoundLoad('D:\Sound.wav')
+        filestr = varargin{1};
+        [filepath,name,ext] = fileparts(filestr);
+        TP.D.Ses.Load.SoundDir =        [filepath '\'];
+        TP.D.Ses.Load.SoundFile =       [name ext];
+    end
+
+    %% Setup Session Loading
+    SetupSesLoad('TP', 'Sound');
+
+    %% FANTASIA Specific Updates
+    TP.D.Sys.FigureTitle =                 [    TP.D.Sys.FullName ...
+                                                TP.D.Ses.Load.SoundFigureTitle];
+        set(TP.UI.H0.hFigTP,                    'Name',      TP.D.Sys.FigureTitle);
+    if ~isnan(TP.D.Trl.Load.DurTotal) && TP.D.Exp.BCD.Committed
+        set(TP.UI.H.hSes_StartStop_Momentary,	'Enable',	'on');
+    else
+        set(TP.UI.H.hSes_StartStop_Momentary,	'Enable',	'off');
+    end
+
+    %% LOG MSG
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tSetupSoundLoad\tSession sound loaded as from file: "' ...
+        TP.D.Ses.Load.SoundFile '"\r\n'];
+    updateMsg(TP.D.Exp.hLog, msg);
+        
+function Ses_StartStop(varargin)
+	global TP
+    persistent Ses
+    %% SESSION STATE: Switching Logic
+    if nargin==0
+        % Called W/O specifying a state number
+        switch TP.D.Ses.State
+            %   0   Session Stopped
+            %   1   Session Started
+            %   -4  Session Stopping by THE END of current CYCLE
+            %   -3  Session Stopping by THE END of current TRIAL
+            %   -2  Session Stopping by ENDING the current TRIAL NOW (after finishing the current VOL)
+            %   -1  Session Stopping by CANCELLING the current TRIAL before TRIGGERED in 'XBlaster'
+            case 0  % Session currently stopped,    so session START
+                            TP.D.Ses.State = 1;
+            case 1  % Session currently started,	so session STOPPING
+                switch TP.D.Ses.ScanScheme
+                    case 'Search'
+                            TP.D.Ses.State = -2;    % Stopping by ENDING the current TRIAL NOW (after finishing the current VOL)
+                    case 'Record'
+                            TP.D.Ses.State = -4;    % Stopping by THE END of current CYCLE
+                    case 'XBlaster'
+                        if TP.D.Trl.State == 1 
+                            TP.D.Ses.State = -1;	% Stopping by CANCELLING the current TRIAL before TRIGGERED in 'XBlaster'                           
+                        else
+                            TP.D.Ses.State = -3;	% Stopping by THE END of current TRIAL
+                        end                            
+                    otherwise                    
+                end 
+            case -4 % session currently Stopping by THE END of current CYCLE, 
+                            TP.D.Ses.State = -3;    % Stopping by THE END of current TRIAL
+            case -3 % session currently Stopping by THE END of current TRIAL, 
+                            TP.D.Ses.State = -2;    % Stopping by ENDING the current TRIAL NOW (after finishing the current VOL)
             otherwise
         end
-    end
-    % exclusive selection
-    for i = 1:3
-        if i==ScanSchemeNum+2;  set(h(i),   'backgroundcolor', TP.UI.C.SelectB);
-        else                    set(h(i),   'backgroundcolor', TP.UI.C.TextBG);	end
-    end
-    
-    %% update TP.D, and Tmax_Edit, Start/Stop, Sound Loading on GUI 
-    h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'Children');
-    switch ScanSchemeNum
-        case 1
-            % set(H.hImage_LengthT_Edit
-            TP.D.Trl.ScanScheme =   'FOCUS';
-            TP.D.Trl.ScanTrigType = 'internal';
-            TP.D.Trl.Tmax =         TP.D.Trl.TmaxFocusDefault;
-            set(TP.UI.H.hTrl_Tmax_Edit,             'enable',           'inactive',...
-                                                    'Foregroundcolor',  TP.UI.C.FG);
-            set(TP.UI.H.hTrl_LoadSound_Momentary,   'enable',           'inactive');
-            set(h(2),                               'enable',           'on');
-        case 0
-            TP.D.Trl.ScanScheme =   'GRAB';
-            TP.D.Trl.ScanTrigType = 'internal';
-            TP.D.Trl.Tmax =         TP.D.Trl.TmaxGrabDefault;
-            set(TP.UI.H.hTrl_Tmax_Edit,             'enable',           'on',...
-                                                    'Foregroundcolor',  TP.UI.C.SelectT);
-            set(TP.UI.H.hTrl_LoadSound_Momentary,   'enable',           'on');
-            set(h(2),                               'enable',           'inactive');
-        case -1            
-            TP.D.Trl.ScanScheme =   'LOOP';
-            TP.D.Trl.ScanTrigType = 'external';            
-            TP.D.Trl.Tmax =         TP.D.Trl.TmaxLoopDefault;
-            set(TP.UI.H.hTrl_Tmax_Edit,             'enable',           'on',...
-                                                    'Foregroundcolor',  TP.UI.C.SelectT);
-            set(TP.UI.H.hTrl_LoadSound_Momentary,   'enable',           'inactive');
-            set(h(2),                               'enable',           'on');
-    end
-    set(TP.UI.H.hTrl_Tmax_Edit, 'string', sprintf('%5.1f',TP.D.Trl.Tmax));
-    
-    %% NI-DAQ Trigger line connection
-    switch TP.D.Trl.ScanTrigType
-        case 'internal'
-%             TP.HW.NI.T.hTask_CO_IntTrig.start();
-%             pause(0.01);
-%             TP.HW.NI.T.hTask_CO_IntTrig.stop();            
-            % Connect the Internal trigger line to the trigger bridge
-            TP.HW.NI.hSys.connectTerms(...
-                ['/', TP.D.Sys.NI.Sys_TrigInternalSrc{1},'/',TP.D.Sys.NI.Sys_TrigInternalSrc{2}],...
-                ['/', TP.D.Sys.NI.Sys_TrigInternalSrc{1},'/',TP.D.Sys.NI.Sys_TrigBridge{2}]);
-        case 'external'
-            % Disconnect the Internal trigger line from the trigger bridge
-            try
-            TP.HW.NI.hSys.disconnectTerms(...
-                ['/', TP.D.Sys.NI.Sys_TrigInternalSrc{1},'/',TP.D.Sys.NI.Sys_TrigInternalSrc{2}],...
-                ['/', TP.D.Sys.NI.Sys_TrigInternalSrc{1},'/',TP.D.Sys.NI.Sys_TrigBridge{2}]);
-            catch
-            end
-        otherwise
-    end
-    
-  	%% MSG LOG
-    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_ScanScheme\tScanScheme is selected as ''',...
-        TP.D.Trl.ScanScheme, ''' and Start Trigger as ''', TP.D.Trl.ScanTrigType ,'''\r\n'];
-    updateMsg(TP.D.Exp.hLog, msg);     
-
-%% Trl/Mon GUI updates w/o touching NI-DAQ
-function msg = GUI_Tmax(varargin)
-    global TP;
-
-  	%% where the call is from
-    if nargin==0
-        % called by GUI:            GUI_Tmax    
-        Tmax = str2double(get(gcbo,'string'));
     else
-        % called by general update: GUI_Tmax(seconds)   
-        Tmax = varargin{1};
+        % Called W/ specifying a state number
+                        TP.D.Ses.State = varargin{1};
     end
-    TP.D.Trl.Tmax = ceil((Tmax)*10)/10;    
-    set(TP.UI.H.hTrl_Tmax_Edit, 'string', sprintf('%5.1f',TP.D.Trl.Tmax));
-    
-  	%% MSG LOG
-    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_Tmax\tTmax is adjusted to ',...
-        num2str(TP.D.Trl.Tmax),' seconds\r\n'];
+    %%  SESSION STATE: Execution
+    switch TP.D.Ses.State
+        %   0   Session Stopped
+        %   1   Session Started
+        %   -4  Session Stopping by THE END of current CYCLE
+        %   -3  Session Stopping by THE END of current TRIAL
+        %   -2  Session Stopping by ENDING the current TRIAL NOW
+        %   -1  Session Stopping by CANCELLING the current TRIAL before TRIGGERED in 'XBlaster'
+        case 1      % Session Started
+            % Session TIMING information
+            TP.D.Ses.TimeStampStart =           datestr(now, 'yy/mm/dd HH:MM:SS.FFF');
+            TP.D.Ses.TargetedCycleNumTotal =	TP.D.Ses.Load.CycleNumTotal; 
+            TP.D.Ses.TargetedTrlNumTotal =      TP.D.Ses.TargetedCycleNumTotal * ...
+                                                TP.D.Trl.Load.NumTotal; 
+            TP.D.Trl.TargetedTrlDurTotal =      TP.D.Trl.Load.DurTotal;  
+            TP.D.Ses.TargetedTrlNumCurrent =    0;                              
+            % Save Session Data if Image Enabled
+            if TP.D.Exp.BCD.ImageEnable   
+                TP.D.Ses.FileName =             [datestr(TP.D.Ses.TimeStampStart, 'yymmddTHHMMSS'),...
+                                                '_Ses_', TP.D.Ses.ScanScheme];
+                if ~exist(TP.D.Exp.DataDir, 'dir')
+                    mkdir(TP.D.Exp.DataDir);
+                end
+                Ses = TP.D.Ses;
+                save([TP.D.Exp.DataDir, TP.D.Ses.FileName, '.mat'],...
+                    '-struct','Ses');
+            end 
+            
+            % Release Overloaded
+            TP.D.Ses.OverloadLasser =           0;
+            TP.D.Ses.OverloadPMT =              0;
+            
+            % GUI Enable/Inactive
+            
+            % Turn Laser Shutter
+            
+            % Turn PMT switches            
+            feval(TP.D.Sys.Name, 'GUI_DO_6115',...
+                TP.D.Exp.BCD.ImageEnable *	[   1;      1;      0]);
+                                            %   PMTon,  FANoff, PELoff               
+            % Turn TDT (if not XBlaster) 
+            if ~strcmp(TP.D.Ses.ScanScheme, 'XBlaster')
+                TP.HW.TDT.PA5 = actxcontrol('PA5.x',[0 0 1 1]);
+                pause(1);
+                invoke(TP.HW.TDT.PA5,'ConnectPA5','USB',1);
+            end  
+            % Start the current (first) trial
+            scanStarted;
+        case -4     % Session Stopping by THE END of current CYCLE        
+            TP.D.Ses.TargetedCycleNumTotal =	TP.D.Ses.Load.CycleNumCurrent; 
+            TP.D.Ses.TargetedTrlNumTotal =      TP.D.Ses.TargetedCycleNumTotal * ...
+                                                    TP.D.Trl.Load.NumTotal; 
+            TP.D.Trl.TargetedTrlDurTotal =      TP.D.Trl.TargetedTrlDurTotal; 
+        case -3     % Session Stopping by THE END of current TRIAL
+            TP.D.Ses.TargetedCycleNumTotal =	TP.D.Ses.Load.CycleNumCurrent; 
+            TP.D.Ses.TargetedTrlNumTotal =      TP.D.Ses.TargetedTrlNumCurrent;
+            TP.D.Trl.TargetedTrlDurTotal =      TP.D.Trl.TargetedTrlDurTotal; 
+        case -2     % Session Stopping by ENDING the current TRIAL NOW (after finishing the current VOL)
+            TP.D.Ses.TargetedCycleNumTotal =	TP.D.Ses.Load.CycleNumCurrent; 
+            TP.D.Ses.TargetedTrlNumTotal =      TP.D.Ses.TargetedTrlNumCurrent; 
+            TP.D.Trl.TargetedTrlDurTotal =      TP.D.Trl.Load.DurCurrent; 
+        case -1     % Session Stopping by CANCELLING the current TRIAL before TRIGGERED in 'XBlaster'
+            TP.D.Ses.TargetedTrlNumCurrent =    TP.D.Ses.TargetedTrlNumCurrent - 1; 
+            TP.D.Ses.TargetedTrlNumTotal =      TP.D.Ses.TargetedTrlNumCurrent; 
+            TP.D.Trl.TargetedTrlDurTotal =      0; 
+            scanStopped;
+        case 0      % Session Stopped    
+            % Session TIMING information    
+            TP.D.Ses.TimeStampStop =            datestr(now, 'yy/mm/dd HH:MM:SS.FFF');                                             
+            % Save Session Data if Image Enabled
+            if TP.D.Exp.BCD.ImageEnable   
+                TP.D.Ses.FileName =             [datestr(TP.D.Ses.TimeStampStart, 'yymmddTHHMMSS'),...
+                                                '_Ses_', TP.D.Ses.ScanScheme];
+                Ses = TP.D.Ses;
+                save([TP.D.Exp.DataDir, TP.D.Ses.FileName, '.mat'],...
+                    '-struct','Ses');
+            end 
+            % GUI Enable/Inactive
+            
+            % Turn Laser Shutter
+            
+            % Turn PMT switches 
+            feval(TP.D.Sys.Name, 'GUI_DO_6115',...
+                TP.D.Exp.BCD.ImageEnable *	[   0;      0;      0]);
+                                            %   PMTon,  FANoff, PELoff  
+            % Turn TDT (if not XBlaster)
+            invoke(TP.HW.TDT.PA5,   'SetAtten', 120);
+            set(TP.UI.H.hTrl_AttCurrent_Edit,	'String',	'Max');
+        otherwise                            
+    end
+	%% MSG LOG
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tSes_StartTrigStop Called\r\n'];
     updateMsg(TP.D.Exp.hLog, msg);  
-    
-function msg = GUI_ImageDataLogging(varargin)
-    global TP;
-    %% Where the Call is from
-	h = get(TP.UI.H.hTrl_DataLogging_Rocker, 'Children');    
-    if nargin ==0
-        % called by GUI:            GUI_ImageDataLogging
-        TP.D.Trl.DataLogging = ...
-            get(get(TP.UI.H.hTrl_DataLogging_Rocker,'SelectedObject'),'userdata');
-    else
-        % called by general update: GUI_ImageDataLogging(1) or 0
-        TP.D.Trl.DataLogging = varargin{1};
-    end
-	switch TP.D.Trl.DataLogging
-        case 1
-            set(TP.UI.H.hTrl_DataLogging_Rocker, 'SelectedObject', h(3));
-            set(h(3),   'backgroundcolor', TP.UI.C.SelectB);
-            set(h(2),   'backgroundcolor', TP.UI.C.TextBG);
-        case 0
-            set(TP.UI.H.hTrl_DataLogging_Rocker, 'SelectedObject', h(2));
-            set(h(2),   'backgroundcolor', TP.UI.C.SelectB);
-            set(h(3),   'backgroundcolor', TP.UI.C.TextBG);
-        otherwise
-    end
-    
-	%% MSG LOG
-    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_ImageDataLogging\tImage Data Logging selected as ''',...
-        num2str(TP.D.Trl.DataLogging), '''\r\n'];
-    updateMsg(TP.D.Exp.hLog, msg);
-    
-function msg = GUI_ImageDisplayEnable(varargin)
-    global TP;
-    %% Where the Call is from
-	h = get(TP.UI.H.hMon_Image_DisplayEnable_Toggle, 'Children');    
-    if nargin ==0
-        % called by GUI:            GUI_ImageDisplayMode
-        TP.D.Mon.Image.DisplayEnable = ...
-            get(get(TP.UI.H.hMon_Image_DisplayEnable_Toggle, 'SelectedObject'), 'userdata');
-    else
-        % called by general update: GUI_ImageDisplayMode(1) or 0
-        TP.D.Mon.Image.DisplayEnable = varargin{1};
-    end
-    switch TP.D.Mon.Image.DisplayEnable
-        case 1
-            set(TP.UI.H.hMon_Image_DisplayEnable_Toggle, 'SelectedObject', h(3));
-            set(h(3),   'backgroundcolor', TP.UI.C.SelectB);
-            set(h(2),   'backgroundcolor', TP.UI.C.TextBG);
-        case 0
-            set(TP.UI.H.hMon_Image_DisplayEnable_Toggle, 'SelectedObject', h(2));
-          	set(h(2),   'backgroundcolor', TP.UI.C.SelectB);
-          	set(h(3),   'backgroundcolor', TP.UI.C.TextBG);
-        otherwise
-    end   
-	%% MSG LOG
-    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_ImageDisplayEnable\tImage Display Enable selected as ''',...
-        num2str(TP.D.Mon.Image.DisplayEnable), '''\r\n'];
-    updateMsg(TP.D.Exp.hLog, msg);   
-        
-function msg = GUI_ImageDisplayMode(varargin)
-    global TP;
-    %% Where the Call is from
-	h = get(TP.UI.H.hMon_Image_DisplayMode_Toggle, 'Children');    
-    if nargin ==0
-        % called by GUI:            GUI_ImageDisplayMode
-        TP.D.Mon.Image.DisplayMode = ...
-            get(get(TP.UI.H.hMon_Image_DisplayMode_Toggle, 'SelectedObject'), 'String');
-    else
-        % called by general update: GUI_ImageDisplayMode('Abs') or 'Rltv'
-        TP.D.Mon.Image.DisplayMode = varargin{1};
-    end
-    switch TP.D.Mon.Image.DisplayMode
-        case 'Abs';     set(TP.UI.H.hMon_Image_DisplayMode_Toggle, 'SelectedObject', h(3));
-                        set(h(3),   'backgroundcolor', TP.UI.C.SelectB);
-                        set(h(2),   'backgroundcolor', TP.UI.C.TextBG);
-                        TP.D.Mon.Image.DisplayModeNum = 1;
-        case 'Rltv';    set(TP.UI.H.hMon_Image_DisplayMode_Toggle, 'SelectedObject', h(2));
-                       	set(h(2),   'backgroundcolor', TP.UI.C.SelectB);
-                      	set(h(3),   'backgroundcolor', TP.UI.C.TextBG);
-                      	TP.D.Mon.Image.DisplayModeNum = 2;
-        otherwise
-    end   
-	%% MSG LOG
-    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_ImageDisplayMode\tImage Display Mode selected as ''',...
-        TP.D.Mon.Image.DisplayMode, '''\r\n'];
-    updateMsg(TP.D.Exp.hLog, msg);     
        
 %% GUI Inputs w/ Updating Housekeeing NI-DAQ Tasks 
 function msg = GUI_AO_6115(varargin)
@@ -664,10 +790,10 @@ function msg = GUI_AO_6115(varargin)
         TP.D.Mon.PMT.CtrlGainValue =        AO1;
         TP.D.Mon.Power.AOD_CtrlAmpValue =   AO2;
         TP.HW.NI.T.hTask_AO_6115.writeAnalogData(...
-            [AO1 AO2*   (TP.D.Trl.StartTrigStop==2)]);
-                        % 0 = Stop: Only update PMT_Gain.    
-                        % 1 = Start: Only update PMT_Gain
-                        % 2 = Triggered: update both PMT_Gain and AOD_Amp
+            [AO1    AO2*(   TP.D.Trl.State==2   )]);
+                            % 0 = Stop:         Only update PMT_Gain.    
+                            % 1 = Start:        Only update PMT_Gain
+                            % 2 = Triggered:    update both PMT_Gain and AOD_Amp
         %% MSG LOG
         msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_AO_6115\tAO_6115 is updated to ''',...
             num2str(AO1),', ',num2str(AO2),''' Volt\r\n'];
@@ -767,71 +893,8 @@ function msg = GUI_PowerHWP(varargin)
     %% MSG LOG
     msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF'), '\tGUI_PowerHWP\tHWP Motor is updated to ',...
         sprintf('%5.1f',angle), ' Degree.\r\n'];
-    updateMsg(TP.D.Exp.hLog, msg);        
-
-function msg = GUI_PowerMax(varargin)
-    global TP;
-
-  	%% where the call is from
-    if nargin==0
-        % called by GUI:            GUI_PowerMax    
-        Pmax = str2double(get(gcbo,'string'));
-    else
-        % called by general update: GUI_PowerMax(128)   
-        Pmax = varargin{1};
-    end
-    TP.D.Mon.Power.PmaxCtxAllowed = min(round(Pmax), 300);
-    set(TP.UI.H.hMon_Power_PmaxCtxAllowed_Edit,...
-        'string',   sprintf('%5.1f',   TP.D.Mon.Power.PmaxCtxAllowed));
-    
-  	%% MSG LOG
-    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_PowerMax\tPowerMax is adjusted to ',...
-        num2str(TP.D.Mon.Power.PmaxCtxAllowed),' mW\r\n'];
-    updateMsg(TP.D.Exp.hLog, msg);      
-    
-%% GUI Inputs w/ SCAN & IMAGE Tasks    
-function msg = GUI_ScanStartTrigStop(varargin)
-    global TP;
-    
-    %% Where the Call is from
-    if nargin ==0
-        % called by GUI:            GUI_ScanStartTrigStop
-        StartTrigStop = get(get(TP.UI.H.hTrl_StartTrigStop_Rocker,'SelectedObject'),'String');
-    else
-        % called by general update: GUI_ScanStartTrigStop('Start') or 'Stop'
-        StartTrigStop = varargin{1};
-    end
-    
-	%% MSG LOG
-    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tGUI_ScanStartTrigStop Called\r\n'];
-    updateMsg(TP.D.Exp.hLog, msg);  
-    
-    %% Turn Laser Shutter Down
-    %% Turn PMT FAN OFF    
-    %% Turn TDT
-    
-    %% Controlling the UI &  Start or Stop         
-	switch StartTrigStop
-      	case 'Start'
-            h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'Children');
-            set(TP.UI.H.hTrl_StartTrigStop_Rocker, 'SelectedObject', h(2));
-            % GUI Exclusive StartTrigStop Selection
-            scanStarted; 
-      	case 'Stop'             
-        	h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'Children');
-            set(TP.UI.H.hTrl_StartTrigStop_Rocker, 'SelectedObject', h(1));            
-            % GUI Exclusive StartTrigStop Selection
-            % This part is called by
-            %   (1) GUI press 'Stop'
-            %   (2) GUI_ScanStartTrigStop('Stop')
-            % These two are functionally identical, and different from 
-            % externally triggered stop in scanStopped
-            scanStopping;        
-        case 'Trig'
-            % Theoretically not available     
-        otherwise
-	end
-       
+    updateMsg(TP.D.Exp.hLog, msg);          
+           
 function GUI_CleanUp
     global TP
     

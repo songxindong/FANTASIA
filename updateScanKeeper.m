@@ -11,17 +11,16 @@ persistent Tdone
 persistent TimeStampUpdt
 
 %% Record Instant Update Time 
-TimeStampUpdt = now;                                            % Read Current Time
+TimeStampUpdt = now;                                        % Read Current Time
 
 %% Stream and Save Data
     if TP.D.Exp.BCD.ImageEnable
-        TP.D.Vol.DataColRaw = evnt.data;                            % Read PMT data
-        fwrite(TP.D.Trl.StreamFid, TP.D.Vol.DataColRaw, 'int16');   % Save Streaming Data 
+        TP.D.Vol.DataColRaw = evnt.data;                    % Read PMT data
+        fwrite(TP.D.Trl.Fid, TP.D.Vol.DataColRaw, 'int16');	% Save Streaming Data 
         % record 0.9s data takes ~9ms to log on to harddrive (T3500, 12GB RAM, Raid 0, 7200rpm x2)
     end
 
 %% Update Imaging Time & GUI
-
     TP.D.Trl.Udone =	TP.D.Trl.Udone + 1;                          	% always integer
     Udone =             TP.D.Trl.Udone;
     TP.D.Trl.Vdone =    TP.D.Trl.Udone * TP.D.Exp.BCD.ImageNumVlmePerUpdt;	% can be float
@@ -49,16 +48,20 @@ TimeStampUpdt = now;                                            % Read Current T
     Tdone =     TP.D.Trl.Udone * TP.D.Exp.BCD.ImageNumSmplPerUpdt /...
                 TP.D.Sys.NI.Task_AI_6115_SR;
     Tdone =     floor(Tdone*10)/10;
-    if TP.D.Trl.Tdone ~= Tdone
+    if TP.D.Trl.Load.DurCurrent ~= Tdone
         % avoid too fast UI update when volume rate is too high
         % the updating rate is <10Hz
-        TP.D.Trl.Tdone = Tdone;
-        set(TP.UI.H.hTrl_Tdone_Edit, 'string', sprintf('%5.1f',TP.D.Trl.Tdone));
+        TP.D.Trl.Load.DurCurrent =      Tdone;
+        TP.D.Ses.Load.DurCurrent =      Tdone + TP.D.Trl.Load.DurTotal*(TP.D.Ses.TargetedTrlNumCurrent-1);
+        TP.D.Ses.Load.CycleDurCurrent = mod(TP.D.Ses.Load.DurCurrent, TP.D.Ses.Load.CycleDurTotal);
+        set(TP.UI.H.hSes_CycleDurCurrent_Edit,	'String',	sprintf('%5.1f (s)',TP.D.Ses.Load.CycleDurCurrent));
+        set(TP.UI.H.hSes_DurCurrent_Edit,       'String',	sprintf('%5.1f (s)',TP.D.Ses.Load.DurCurrent)); 
+        set(TP.UI.H.hTrl_DurCurrent_Edit,       'String',	sprintf('%5.1f (s)',TP.D.Trl.Load.DurCurrent));
     end
     
 %% Imaging Update
 % Render the Image for Dispaly
-if TP.D.Mon.Image.DisplayEnable    
+if TP.D.Exp.BCD.ImageEnable    
     % Imaging Reconstruction
     feval(TP.D.Exp.BCD.ImageImgFunc);    
     % Image Display
@@ -68,27 +71,21 @@ if TP.D.Mon.Image.DisplayEnable
     updateImageHistogram(TP.UI.H0.Hist0);
 end
 
-%% Check if Timeout
-    if Tdone >=TP.D.Trl.Tmax
-        % Time & Flag, for Stopping
-        TP.D.Trl.StartTrigStop =        -3;    
-        %   -3 = Timeout,       -2 = Stopping by GUI,   -1=Stopping by ExtTrig, 
-        %   0 = Stopped,        1 = Started,            2 = Triggered
+%% Check if Trial Timeout
+if (TP.D.Trl.State == 2) && (TP.D.Trl.Load.DurCurrent > TP.D.Trl.TargetedTrlDurTotal)
         TP.D.Trl.TimeStampStopping =	datestr(now, 'dd-mmm-yyyy HH:MM:SS.FFF');
-        % GUI Exclusive StartTrigStop Selection
-        h = get(TP.UI.H.hTrl_StartTrigStop_Rocker, 'Children');
-        set(TP.UI.H.hTrl_StartTrigStop_Rocker, 'SelectedObject', h(1));
-        % MSG LOG 
-        msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tupdateScanKeeper\tScanning Stopping since timeout\r\n'];
-    end
+        TP.D.Trl.State =                -1;   
+        %   -1 =    Stopping,  
+        %   0 =     Stopped,
+        %   1 =     Started,
+        %   2 =     Triggered
+    % MSG LOG 
+    msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tupdateScanKeeper\tScanning Stopping since timeout\r\n'];
+    updateMsg(TP.D.Exp.hLog, msg);
+end
 
-%% Whether Stop HouseKeeping
-if  TP.D.Trl.StartTrigStop<0 && TP.D.Trl.Vdone==TP.D.Trl.Vnum 
-    % if Trl.StartTrigStop <0
-    %   -1: External trigger falling edge triggered scanStopping
-    %   -2: GUI / GUI_ScanStartTrigStop called scanStopping
-    %   -3: Time out from up here 
-    % then check out whether it's a full volume or not, if yes, stop
+%% Wait until the current volume is finished to stop the trial
+if  TP.D.Trl.State == -1 && TP.D.Trl.Vdone == TP.D.Trl.Vnum 
     scanStopped;
 end
 
