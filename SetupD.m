@@ -149,7 +149,7 @@ for disp = 1
     TP.D.Sys.NI.Task_CO_TrigListener_Name = 'Trigger Listener Task';
     TP.D.Sys.NI.Task_CO_TrigListener_Func = @scanTriggered;  
     TP.D.Sys.NI.Task_CO_StopListener_Name = 'Stop Listener Task';
-    TP.D.Sys.NI.Task_CO_StopListener_Func = @scanStopping;
+    TP.D.Sys.NI.Task_CO_StopListener_Func = @scanTriggered;
         % Task_CO_Frame in the future?
     
     %%%%%%%%%%%%%%%%%%%%%%% NI, CHANNAL, ANALOG & DIGITAL 
