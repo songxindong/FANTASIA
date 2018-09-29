@@ -40,9 +40,9 @@ global 	TP
     end
 
 %% Trial Data
-    % Trim VS
     if TP.D.Exp.BCD.ImageEnable 
         fclose(TP.D.Trl.Fid);
+        TP.D.Trl.Updts = TP.D.Trl.Updts(1:TP.D.Trl.Vdone,:);
         Trl = TP.D.Trl;
         save([TP.D.Exp.DataDir, TP.D.Trl.FileName,'.mat'],...
             '-struct','Trl');
@@ -56,7 +56,7 @@ global 	TP
 %% Trl Restart Control
     if TP.D.Ses.TargetedTrlNumCurrent < TP.D.Ses.TargetedTrlNumTotal
         % Session CONTINUES
-        pause(TP.D.Trl.ITI);
+        pause(TP.D.Ses.ITI);
         scanStarted;
     else
         % Session ENDS

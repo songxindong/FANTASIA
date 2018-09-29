@@ -1,14 +1,18 @@
 Ses Trl saving structure w/ timestamps & VS reset
 	add TP.D.Exp.BCD.TimeStampCommitted
-PMT Fan control over a recording session
-frame dropping problem 
+SoundSesLoad log for each block
 
-update TP.D.Trl.OverloadPMT
+Session related GUI activation & inactivation
+
+
+frame dropping problem 
 
 Integrate Laser Control & Report
 Scientifica MMBP control
 PI objective stage control
-Experiment alignment control
+Experiment alignment control design
+	TP.D.Ses.SearchXYZ
+
 Restructure NIDAQ as XINTRINSIC
 
 review function "Panelette"

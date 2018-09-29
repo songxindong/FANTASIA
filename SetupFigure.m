@@ -1022,6 +1022,27 @@ for disp=1
         set(TP.UI.H.hTrl_StartTrigStop_Rocker,	'Tag',  'hTrl_StartTrigStop_Rocker');
         clear WP; 
         
+  	WP.name = 'Trl/Ses Target';
+        WP.handleseed =	'TP.UI.H0.Panelette';
+        WP.type =       'Edit';           
+        WP.row =        S.PnltCurrent.row;
+        WP.column =     S.PnltCurrent.column;
+            S.PnltCurrent.column = S.PnltCurrent.column + 1;     
+        WP.text = {	'Trl.TargetedTrlDurTotal',...
+                    'Ses.TargetedTrlNumTotal'};
+        WP.tip = {	'Trial''s Targeted Trial Duration Total',...
+                    'Session''s Targeted Trial Number Total'};
+        WP.inputValue = {   TP.D.Trl.TargetedTrlDurTotal,...
+                            TP.D.Ses.TargetedTrlNumTotal};
+        WP.inputFormat = {'%d','%d'};    
+        WP.inputEnable = {'inactive','inactive'};
+        Panelette(S, WP, 'TP');    
+        TP.UI.H.hTrl_TargetedTrlDurTotal_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{1};
+        TP.UI.H.hSes_TargetedTrlNumTotal_Edit =	TP.UI.H0.Panelette{WP.row,WP.column}.hEdit{2};
+        set(TP.UI.H.hTrl_TargetedTrlDurTotal_Edit,	'Tag', 'hTrl_TargetedTrlDurTotal_Edit');
+        set(TP.UI.H.hSes_TargetedTrlNumTotal_Edit,	'Tag', 'hSes_TargetedTrlNumTotal_Edit');
+        clear WP;  
+        
 end
 
 %% Mon.Image

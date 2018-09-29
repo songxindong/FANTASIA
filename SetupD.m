@@ -234,12 +234,29 @@ for disp = 1
     % Thorlabs APT Software is required to communicate with the TDC001 motor
     % Thorlabs PM100 series driver  + Communicatior are needed
     % Driver                        + 488.2 instrument coding communication 
-    TP.D.Sys.Power.Meter.ID(1,1:2) = ...
-        {'PM100USB',    'USB0::0x1313::0x8072::P2004081::INSTR'};
+%     TP.D.Sys.Power.Meter.ID(1,1:2) = ...
+%         {'PM100USB',    'USB0::0x1313::0x8072::P2004081::INSTR'};
                                                         % Thorlabs PM100USB
 % 	TP.D.Sys.Power.Meter.ID(2,1:2) = ...
 %         {'PM100A',      'USB0::0x1313::0x8079::P1000623::INSTR'};
                                                         % Thorlabs PM100A
+
+    % Thorlabs PM100A, the 2017 one
+    TP.D.Sys.PowerMeter{1} = struct(...
+        'Console',              'PM100USB',...
+        'RSRCNAME',             'USB0::0x1313::0x8072::P2004081::INSTR',...
+        'IDeNtification',       '',...
+        'LineFRequency',        60,...      & (Hz)
+        'SENSor',               '',...
+        'CALibrationSTRing',    '',...
+        'AVERageCOUNt',         142,...     % averaging rate, 1s~ .3ms, 142-> 23.49fps
+        'WAVelength',           920,...     % (nm)
+        'POWerRANGeAUTO',       1,...       % auto range
+        'POWerRANGeUPPer',      NaN,...     % (W)
+        'INPutFILTering',       1,...       % 15Hz :1, 100kHz :0
+        'InitialMEAsurement',   1);  
+                                                        
+                                                        
     TP.D.Sys.Power.HWProtatorID =       83854755;       % Thorlabs TDC001 SN#
     TP.D.Sys.Power.HWP_RotAnglRange =   [0 90];     	% 0-90 degree rotation range
     TP.D.Sys.Power.HWP_RotAnglSteps =   [1 10];         % translated into [1degree 10degree] real step
@@ -377,13 +394,21 @@ for disp = 1
 	TP.D.Exp.BCD.ImageEnable =              0;  
     
     TP.D.Exp.BCD.Committed =                0;
-    TP.D.Exp.BCD.CommitedTimeStamp =        NaN;    
+    TP.D.Exp.BCD.CommitedTimeStamp =        '';    
     TP.D.Exp.BCD.CommitedFileName =         '';
         
 end
 
 %% D.Ses (Session)
 for disp = 1     
+    %%%%%%%%%%%%%%%%%%%%%%% Exp.BCD information
+    TP.D.Ses.ExpBCDTimeStamp =          TP.D.Exp.BCD.CommitedTimeStamp; 
+    TP.D.Ses.ExpBCDFileName =           TP.D.Exp.BCD.CommitedFileName;
+    
+    %%%%%%%%%%%%%%%%%%%%%%% Scan Scheme     
+    TP.D.Ses.ScanScheme =    	'Search';      
+    TP.D.Ses.ScanTrigType =   	'internal';
+    
     %%%%%%%%%%%%%%%%%%%%%%% Load (for SetupSesLoad)
     TP.D.Ses.Load.SoundFile =           'test.wav';
     TP.D.Ses.Load.SoundDir =            '';
@@ -413,28 +438,36 @@ for disp = 1
     TP.D.Ses.Load.TrlOrderMat =         NaN;
     TP.D.Ses.Load.TrlOrderVec =         reshape(TP.D.Ses.Load.TrlOrderMat',1,[]);
     TP.D.Ses.Load.TrlOrderSoundVec =    [];
-    
-    %%%%%%%%%%%%%%%%%%%%%%% Scan Scheme     
-    TP.D.Ses.ScanScheme =    	'Search';      
-    TP.D.Ses.ScanTrigType =   	'internal';
-    
+
     %%%%%%%%%%%%%%%%%%%%%%% Session Control    
     TP.D.Ses.State =                    0;
     %   -2 =    Stopping by GUI,
     %   0 =     Stopped,
     %   1 =     Started,
-    TP.D.Ses.TimeStampStart =           NaN;
     TP.D.Ses.FileName =                 '';
+    TP.D.Ses.TimeStampStart =           '';
+    TP.D.Ses.TimeStampStop =            ''; 
     TP.D.Ses.TargetedCycleNumTotal =	TP.D.Ses.Load.CycleNumTotal; 
     TP.D.Ses.TargetedTrlNumTotal =      NaN; 
-    TP.D.Ses.TargetedTrlNumCurrent =    NaN;      
+    TP.D.Ses.TargetedTrlNumCurrent =    NaN;   
+    TP.D.Ses.ITI =                      0.2;  
     
-    TP.D.Ses.OverloadLasser =           0;
+    TP.D.Ses.OverloadLaser =            0;
     TP.D.Ses.OverloadPMT =              0;
+    
+    TP.D.Ses.SearchXYZ =                NaN;
+        % this is XYZ information for search sessions
 end
 
 %% D.Trl (Trial)
 for disp = 1
+    %%%%%%%%%%%%%%%%%%%%%%% Exp.BCD & Ses information
+    TP.D.Trl.ExpBCDTimeStamp =          TP.D.Exp.BCD.CommitedTimeStamp; 
+    TP.D.Trl.ExpBCDFileName =           TP.D.Exp.BCD.CommitedFileName;
+    TP.D.Trl.SesTimeStamp =             TP.D.Ses.TimeStampStart; 
+    TP.D.Trl.SesFileName =              TP.D.Ses.FileName;
+    TP.D.Trl.RecordSound =              [];
+    
    	%%%%%%%%%%%%%%%%%%%%%%% Load (for SetupSesLoad)
 	TP.D.Trl.Load.Names =               {};
     TP.D.Trl.Load.Attenuations =        [];
@@ -442,7 +475,7 @@ for disp = 1
     TP.D.Trl.Load.DurTotal =            NaN;
 	TP.D.Trl.Load.DurCurrent =          NaN;
     TP.D.Trl.Load.DurPreStim =          NaN;
-    TP.D.Trl.Load.DurStim =             NaN; 
+    TP.D.Trl.Load.DurStim =             NaN;  
     TP.D.Trl.Load.DurPostStim =         TP.D.Trl.Load.DurTotal - ...
                                         TP.D.Trl.Load.DurPreStim - ...
                                         TP.D.Trl.Load.DurStim;
@@ -459,33 +492,42 @@ for disp = 1
     TP.D.Trl.Load.StimNumNext =         NaN;
     TP.D.Trl.Load.SoundNumCurrent =     NaN;
     TP.D.Trl.Load.SoundNameCurrent =	'';
-
-        
+    
+   	%%%%%%%%%%%%%%%%%%%%%%% Trl Control
     TP.D.Trl.State =        0;
-    %   -3 =    Timeout,       
-    %   -2 =    Stopping by GUI,
-    %   -1 =    Stopping by ExtTrig, 
-    %   0 =     Stopped,
-    %   1 =     Started,
-    %   2 =     Triggered
-    TP.D.Trl.TimeStampBCDCom =          TP.D.Exp.BCD.CommitedTimeStamp; 
-    TP.D.Trl.TimeStampSesStart =        TP.D.Ses.TimeStampStart; 
-    TP.D.Trl.TimeStampStarted =         NaN;
-    TP.D.Trl.TimeStampTriggered =       NaN;
-    TP.D.Trl.TimeStampStopping =        NaN;
-    TP.D.Trl.TimeStampStopped =         NaN;
+        %   -1 =    Stopping,  
+        %   0 =     Stopped,
+        %   1 =     Started,
+        %   2 =     Triggered
     TP.D.Trl.FileName =                 '';
+    TP.D.Trl.TimeStampStarted =         '';
+    TP.D.Trl.TimeStampTriggered =       '';
+    TP.D.Trl.TimeStampStopping =        '';
+    TP.D.Trl.TimeStampStopped =         '';
     TP.D.Trl.TargetedTrlDurTotal =      NaN;  
     
     TP.D.Trl.Udone =          	0;     	% Update # done
     TP.D.Trl.Vdone =           	0;     	% Volume # done
-    TP.D.Trl.Tdone =           	0;    	% Time done (in sec)
     
     TP.D.Trl.Unum =             0;
     TP.D.Trl.Vnum =             0;
-                                         
-    TP.D.Trl.VS =               [];
-    TP.D.Trl.ITI =              0.2;
+               
+   	%%%%%%%%%%%%%%%%%%%%%%% Updts
+    Vmax =  5; % ceil( TP.D.Trl.Load.DurTotal * TP.D.Exp.BCD.ScanVolumeRate);
+    TP.D.Trl.Updts = table;
+    TP.D.Trl.Updts.TimeStampUpdt =          repmat(' ', Vmax, 21);     
+    TP.D.Trl.Updts.PMT_PMTctrl =            zeros(Vmax,1);
+    TP.D.Trl.Updts.PMT_FANctrl =            zeros(Vmax,1);
+    TP.D.Trl.Updts.PMT_PELctrl =            zeros(Vmax,1);
+    TP.D.Trl.Updts.PMT_StatusLED =          false(Vmax,5);
+    TP.D.Trl.Updts.PMT_CtrlGainValue =      zeros(Vmax,1);
+    TP.D.Trl.Updts.PMT_MontGainValue =      zeros(Vmax,1);
+    TP.D.Trl.Updts.PMT_MontGainNoise =      zeros(Vmax,1);
+    TP.D.Trl.Updts.Power_AOD_CtrlAmpValue =	zeros(Vmax,1);
+    TP.D.Trl.Updts.Power_AOD_MontAmpValue =	zeros(Vmax,2);
+    TP.D.Trl.Updts.Power_AOD_MontAmpNoise =	zeros(Vmax,2);
+    TP.D.Trl.Updts.Power_PmeasuredS121C =	zeros(Vmax,1);
+    TP.D.Trl.Updts.Power_PinferredAtCtx =	zeros(Vmax,1);
 end
 
 %% D.Vol (Volume)

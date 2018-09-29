@@ -32,6 +32,7 @@ if Trig
         msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tScanning Triggered\r\n'];
         updateMsg(TP.D.Exp.hLog, msg);
 else
-        TP.D.Trl.TargetedTrlDurTotal =      TP.D.Trl.Load.DurCurrent;
+    TP.D.Trl.TargetedTrlDurTotal =      TP.D.Trl.Load.DurCurrent;    
+    set(TP.UI.H.hTrl_TargetedTrlDurTotal_Edit,  'String', sprintf('%5.1f (s)',TP.D.Trl.TargetedTrlDurTotal));
 end
     

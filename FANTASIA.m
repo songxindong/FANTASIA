@@ -33,7 +33,7 @@ global TP;
 TP.D.Sys.Name =         mfilename;          % Grab the current script's name
 SetupD;                                     % Initiate parameters
 SetupFigure;                    set(TP.UI.H0.hFigTP,    'Visible',  'off');	
-SetupThorlabsPowerMeter;
+SetupThorlabsPowerMeters('TP');             % w/ instrreset
 SetupThorlabsMotor;
 SetupNIDAQ;
 SetupPointGreyCams;
@@ -668,13 +668,16 @@ function Ses_StartStop(varargin)
         %   -2  Session Stopping by ENDING the current TRIAL NOW
         %   -1  Session Stopping by CANCELLING the current TRIAL before TRIGGERED in 'XBlaster'
         case 1      % Session Started
+            % Exp.BCD information
+            TP.D.Ses.ExpBCDTimeStamp =          TP.D.Exp.BCD.CommitedTimeStamp; 
+            TP.D.Ses.ExpBCDFileName =           TP.D.Exp.BCD.CommitedFileName;
             % Session TIMING information
             TP.D.Ses.TimeStampStart =           datestr(now, 'yy/mm/dd HH:MM:SS.FFF');
             TP.D.Ses.TargetedCycleNumTotal =	TP.D.Ses.Load.CycleNumTotal; 
             TP.D.Ses.TargetedTrlNumTotal =      TP.D.Ses.TargetedCycleNumTotal * ...
                                                 TP.D.Trl.Load.NumTotal; 
             TP.D.Trl.TargetedTrlDurTotal =      TP.D.Trl.Load.DurTotal;  
-            TP.D.Ses.TargetedTrlNumCurrent =    0;                              
+            TP.D.Ses.TargetedTrlNumCurrent =    0;
             % Save Session Data if Image Enabled
             if TP.D.Exp.BCD.ImageEnable   
                 TP.D.Ses.FileName =             [datestr(TP.D.Ses.TimeStampStart, 'yymmddTHHMMSS'),...
@@ -685,16 +688,12 @@ function Ses_StartStop(varargin)
                 Ses = TP.D.Ses;
                 save([TP.D.Exp.DataDir, TP.D.Ses.FileName, '.mat'],...
                     '-struct','Ses');
-            end 
-            
+            end             
             % Release Overloaded
-            TP.D.Ses.OverloadLasser =           0;
-            TP.D.Ses.OverloadPMT =              0;
-            
-            % GUI Enable/Inactive
-            
-            % Turn Laser Shutter
-            
+            TP.D.Ses.OverloadLaser =            0;
+            TP.D.Ses.OverloadPMT =              0;            
+            % GUI Enable/Inactive            
+            % Turn Laser Shutter            
             % Turn PMT switches            
             feval(TP.D.Sys.Name, 'GUI_DO_6115',...
                 TP.D.Exp.BCD.ImageEnable *	[   1;      1;      0]);
@@ -736,10 +735,8 @@ function Ses_StartStop(varargin)
                 save([TP.D.Exp.DataDir, TP.D.Ses.FileName, '.mat'],...
                     '-struct','Ses');
             end 
-            % GUI Enable/Inactive
-            
-            % Turn Laser Shutter
-            
+            % GUI Enable/Inactive            
+            % Turn Laser Shutter            
             % Turn PMT switches 
             feval(TP.D.Sys.Name, 'GUI_DO_6115',...
                 TP.D.Exp.BCD.ImageEnable *	[   0;      0;      0]);
@@ -749,6 +746,9 @@ function Ses_StartStop(varargin)
             set(TP.UI.H.hTrl_AttCurrent_Edit,	'String',	'Max');
         otherwise                            
     end
+	set(TP.UI.H.hTrl_TargetedTrlDurTotal_Edit,  'String', sprintf('%5.1f (s)',TP.D.Trl.TargetedTrlDurTotal));
+    set(TP.UI.H.hSes_TargetedTrlNumTotal_Edit,  'String', sprintf('%d',TP.D.Ses.TargetedTrlNumTotal));
+
 	%% MSG LOG
     msg = [datestr(now, 'yy/mm/dd HH:MM:SS.FFF') '\tSes_StartTrigStop Called\r\n'];
     updateMsg(TP.D.Exp.hLog, msg);  
@@ -933,7 +933,7 @@ function GUI_CleanUp
 
             %% Stop & Delete Thorlabs Power Meters
             try 
-                for i =1:size(TP.D.Sys.Power.Meter.ID,1)                    
+                for i =1:length(TP.D.Sys.PowerMeter)                    
                     fprintf(    TP.HW.Thorlabs.PM100{i}.h,'*RST');
                     fclose(     TP.HW.Thorlabs.PM100{i}.h);
                 end

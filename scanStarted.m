@@ -8,8 +8,10 @@ global TP
 
 %% Trial State Timing
     % Timing & Flag Info, for Started
-    TP.D.Trl.TimeStampBCDCom =      TP.D.Exp.BCD.CommitedTimeStamp; 
-    TP.D.Trl.TimeStampSesStart =    TP.D.Ses.TimeStampStart;          
+    TP.D.Trl.ExpBCDTimeStamp =      TP.D.Exp.BCD.CommitedTimeStamp; 
+    TP.D.Trl.ExpBCDFileName =       TP.D.Exp.BCD.CommitedFileName;
+    TP.D.Trl.SesTimeStamp =         TP.D.Ses.TimeStampStart; 
+    TP.D.Trl.SesFileName =          TP.D.Ses.FileName;         
         TP.D.Trl.TimeStampStarted =     datestr(now, 'yy/mm/dd HH:MM:SS.FFF'); 
         TP.D.Trl.TimeStampTriggered =	NaN;
         TP.D.Trl.TimeStampStopping =    NaN;
@@ -30,10 +32,10 @@ global TP
             stimnum =                           TP.D.Ses.Load.TrlOrderVec(tt);
             TP.D.Trl.Load.StimNumCurrent =      ['#', num2str(stimnum)];
             TP.D.Trl.Load.SoundNumCurrent =     TP.D.Ses.Load.TrlIndexSoundNum(stimnum);
-            TP.D.Trl.Load.AttDesginCurrent =    TP.D.Trl.Load.Attenuations(TP.D.Trl.Load.SoundNumCurrent);
+            TP.D.Trl.Load.AttDesignCurrent =    TP.D.Trl.Load.Attenuations(stimnum);
             TP.D.Trl.Load.AttNumCurrent =       TP.D.Ses.Load.TrlIndexAddAttNum(stimnum);
             TP.D.Trl.Load.AttAddCurrent =       TP.D.Ses.Load.AddAtts(TP.D.Trl.Load.AttNumCurrent);        
-            TP.D.Trl.Load.AttCurrent =          TP.D.Trl.Load.AttDesginCurrent + TP.D.Trl.Load.AttAddCurrent;
+            TP.D.Trl.Load.AttCurrent =          TP.D.Trl.Load.AttDesignCurrent + TP.D.Trl.Load.AttAddCurrent;
         try     % if Trl Name available in the sound     
             TP.D.Trl.Load.SoundNameCurrent =    TP.D.Trl.Load.Names{TP.D.Trl.Load.SoundNumCurrent};
         catch   % if Trl Name NA in the sound
@@ -58,17 +60,17 @@ global TP
     set(TP.UI.H.hTrl_NumCurrent_Edit,       'String',	num2str(TP.D.Trl.Load.NumCurrent));
     set(TP.UI.H.hTrl_StimNumCurrent_Edit,   'String',	TP.D.Trl.Load.StimNumCurrent);
     set(TP.UI.H.hTrl_SoundNumCurrent_Edit,  'String',	num2str(TP.D.Trl.Load.SoundNumCurrent));
-    set(TP.UI.H.hTrl_AttDesignCurrent_Edit, 'String',	sprintf('%5.1f (dB)',TP.D.Trl.Load.AttDesginCurrent));
+    set(TP.UI.H.hTrl_AttDesignCurrent_Edit, 'String',	sprintf('%5.1f (dB)',TP.D.Trl.Load.AttDesignCurrent));
     set(TP.UI.H.hTrl_AttAddCurrent_Edit,    'String',	sprintf('%5.1f (dB)',TP.D.Trl.Load.AttAddCurrent));
     set(TP.UI.H.hTrl_AttCurrent_Edit,       'String',	sprintf('%5.1f (dB)',TP.D.Trl.Load.AttCurrent));
     set(TP.UI.H.hTrl_SoundNameCurrent_Edit, 'String',	TP.D.Trl.Load.SoundNameCurrent);
     set(TP.UI.H.hTrl_StimNumNext_Edit,      'String',	TP.D.Trl.Load.StimNumNext);
 
 %% Setup TDT PA5 & Sound
-    if  ~strcmp(TP.D.Ses.ScanScheme, 'XBlaster')
+    if ~strcmp(TP.D.Ses.ScanScheme, 'XBlaster')
         invoke(TP.HW.TDT.PA5,   'SetAtten', TP.D.Trl.Load.AttCurrent);   
     end
-    if strcmp(TP.D.Ses.ScanScheme, 'Record')
+    if  strcmp(TP.D.Ses.ScanScheme, 'Record')
         TP.D.Trl.RecordSound =  TP.D.Ses.Load.SoundMat(...
                                 :,TP.D.Ses.Load.TrlOrderSoundVec(TP.D.Ses.TargetedTrlNumCurrent));
     end
@@ -76,36 +78,35 @@ global TP
 %% Trial Timing
     TP.D.Trl.Udone = 0;     TP.D.Trl.Vdone = 0;
     TP.D.Trl.Unum = 0;      TP.D.Trl.Vnum = 0;  
+	TP.D.Trl.TargetedTrlDurTotal =      TP.D.Trl.Load.DurTotal;
     TP.D.Ses.Load.CycleDurCurrent =     NaN;  
 	TP.D.Ses.Load.DurCurrent =          NaN;  
 	TP.D.Trl.Load.DurCurrent =          NaN;
-	set(TP.UI.H.hSes_CycleDurCurrent_Edit,	'String',	sprintf('%5.1f (s)',TP.D.Ses.Load.CycleDurCurrent));
-	set(TP.UI.H.hSes_DurCurrent_Edit,       'String',	sprintf('%5.1f (s)',TP.D.Ses.Load.DurCurrent)); 
-    set(TP.UI.H.hTrl_DurCurrent_Edit,       'String',	sprintf('%5.1f (s)',TP.D.Trl.Load.DurCurrent));
-  
+    set(TP.UI.H.hTrl_TargetedTrlDurTotal_Edit,  'String',   sprintf('%5.1f (s)',TP.D.Trl.TargetedTrlDurTotal));
+	set(TP.UI.H.hSes_CycleDurCurrent_Edit,      'String',	sprintf('%5.1f (s)',TP.D.Ses.Load.CycleDurCurrent));
+	set(TP.UI.H.hSes_DurCurrent_Edit,           'String',	sprintf('%5.1f (s)',TP.D.Ses.Load.DurCurrent)); 
+    set(TP.UI.H.hTrl_DurCurrent_Edit,           'String',	sprintf('%5.1f (s)',TP.D.Trl.Load.DurCurrent));
+    
 %% Trial Data	
 	if TP.D.Exp.BCD.ImageEnable  
-        % TP.D.Exp & TP.D.Ses
-        TP.D.Trl.FileNameExpBCD =       TP.D.Exp.BCD.CommitedFileName;
-        TP.D.Trl.FileNameSes =          TP.D.Ses.FileName;
         TP.D.Trl.FileName =             [datestr(datenum(TP.D.Trl.TimeStampStarted), 'yymmddTHHMMSS'),...
-                                        '_Trl_#', num2str(TP.D.Ses.TargetedTrlNumCurrent)];
-        
-        % reset kijTP.D.Trl.VS
+                                        '_Trl_#', num2str(TP.D.Ses.TargetedTrlNumCurrent)];     
+        % reset TP.D.Trl.VS
         Vmax =  ceil( TP.D.Trl.Load.DurTotal * TP.D.Exp.BCD.ScanVolumeRate);
-        TP.D.Trl.VS.TimeStampUpdt =             zeros(Vmax,1);
-        TP.D.Trl.VS.PMT_PMTctrl =               zeros(Vmax,1);
-        TP.D.Trl.VS.PMT_FANctrl =               zeros(Vmax,1);
-        TP.D.Trl.VS.PMT_PELctrl =               zeros(Vmax,1);
-        TP.D.Trl.VS.PMT_StatusLED =             false(Vmax,5);
-        TP.D.Trl.VS.PMT_CtrlGainValue =         zeros(Vmax,1);
-        TP.D.Trl.VS.PMT_MontGainValue =         zeros(Vmax,1);
-        TP.D.Trl.VS.PMT_MontGainNoise =         zeros(Vmax,1);
-        TP.D.Trl.VS.Power_AOD_CtrlAmpValue =	zeros(Vmax,1);
-        TP.D.Trl.VS.Power_AOD_MontAmpValue =    zeros(Vmax,2);
-        TP.D.Trl.VS.Power_AOD_MontAmpNoise =    zeros(Vmax,2);
-        TP.D.Trl.VS.Power_PmeasuredS121C =      zeros(Vmax,1);
-        TP.D.Trl.VS.Power_PinferredAtCtx =      zeros(Vmax,1);
+        TP.D.Trl.Updts = table;
+        TP.D.Trl.Updts.TimeStampUpdt =          repmat(' ', Vmax, 21);     
+        TP.D.Trl.Updts.PMT_PMTctrl =            zeros(Vmax,1);
+        TP.D.Trl.Updts.PMT_FANctrl =            zeros(Vmax,1);
+        TP.D.Trl.Updts.PMT_PELctrl =            zeros(Vmax,1);
+        TP.D.Trl.Updts.PMT_StatusLED =          false(Vmax,5);
+        TP.D.Trl.Updts.PMT_CtrlGainValue =      zeros(Vmax,1);
+        TP.D.Trl.Updts.PMT_MontGainValue =      zeros(Vmax,1);
+        TP.D.Trl.Updts.PMT_MontGainNoise =      zeros(Vmax,1);
+        TP.D.Trl.Updts.Power_AOD_CtrlAmpValue =	zeros(Vmax,1);
+        TP.D.Trl.Updts.Power_AOD_MontAmpValue =	zeros(Vmax,2);
+        TP.D.Trl.Updts.Power_AOD_MontAmpNoise =	zeros(Vmax,2);
+        TP.D.Trl.Updts.Power_PmeasuredS121C =	zeros(Vmax,1);
+        TP.D.Trl.Updts.Power_PinferredAtCtx =	zeros(Vmax,1);
         % Stream File Openned
         TP.D.Trl.Fid = fopen([TP.D.Exp.DataDir, TP.D.Trl.FileName, '.rec'],'w');  
 	end
